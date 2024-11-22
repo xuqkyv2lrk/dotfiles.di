@@ -1,0 +1,94 @@
+@define-color	rosewater	rgb(245, 224, 220);
+@define-color	flamingo	rgb(242, 205, 205);
+@define-color	pink		rgb(245, 194, 231);
+@define-color	mauve		rgb(203, 166, 247);
+@define-color	red		rgb(243, 139, 168);
+@define-color	maroon		rgb(235, 160, 172);
+@define-color	peach		rgb(250, 179, 135);
+@define-color	yellow		rgb(249, 226, 175);
+@define-color	green		rgb(166, 227, 161);
+@define-color	teal		rgb(148, 226, 213);
+@define-color	sky		rgb(137, 220, 235);
+@define-color	sapphire	rgb(116, 199, 236);
+@define-color	blue		rgb(137, 180, 250);
+@define-color	lavender	rgb(180, 190, 254);
+@define-color	text		rgb(205, 214, 244);
+@define-color	subtext1	rgb(186, 194, 222);
+@define-color	subtext0	rgb(166, 173, 200);
+@define-color	overlay2	rgb(147, 153, 178);
+@define-color	overlay1	rgb(127, 132, 156);
+@define-color	overlay0	rgb(108, 112, 134);
+@define-color	surface2	rgb(88, 91, 112);
+@define-color	surface1	rgb(69, 71, 90);
+@define-color	surface0	rgba(49, 50, 68, .5);
+@define-color	base		rgb(30, 30, 46);
+@define-color	mantle		rgba(24, 24, 37, 0.85);
+@define-color	crust		rgb(17, 17, 27);
+
+* {
+    font-size: 12px;
+    border: 0;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
+    min-height: 0;
+}
+
+window#waybar {
+    background: @mantle;
+    border-bottom: 3px solid @surface0;
+}
+
+#workspaces {
+    border-radius: 0 10px 0 0;
+    background: @surface0;
+    padding: 0 8px 0 3px;
+}
+
+#workspaces button {
+    color: @text;
+    margin: 5px 0;
+    padding: 0 15px;
+    background: transparent;
+    border-radius: 15px;
+    border: 0;
+    transition: color 300ms ease-out, background 400ms ease-out;
+}
+
+#workspaces button.visible,
+#workspaces button.focused {
+    background: linear-gradient(90deg, @lavender 10%, @mauve 100%);
+    color: @crust;
+    transition: background 400ms ease-in;
+}
+
+#workspaces button:first-child {
+   margin-left: 5px;
+}
+
+#workspaces button:hover {
+    box-shadow: inherit;
+    text-shadow: inherit;
+}
+
+#mpd {
+    margin-left: 20px;
+}
+
+#idle_inhibitor,
+#network,
+#bluetooth,
+#pulseaudio,
+#backlight,
+#battery,
+#clock {
+    background: @surface0;
+    border-radius: 15px;
+    color: @text;
+    font-weight: 500;
+    padding: 3px 10px;
+    margin: 5px 10px 8px 0;
+}
+
+#clock {
+    margin: 5px 6px 8px 0;
+}

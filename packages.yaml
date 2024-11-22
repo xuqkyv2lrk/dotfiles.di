@@ -1,0 +1,28 @@
+packages:
+  - pinentry-tty
+
+desktop_packages:
+  gnome:
+  hyprland:
+  sway:
+    - bemenu
+    - grim
+    - j4-dmenu-desktop # Not in openSUSE repo, build from source
+    - slurp
+    - swayfx
+    - swaylock-effects
+    - SwayNotificationCenter
+
+exceptions:
+  arch:
+    - SwayNotificationCenter: swaync
+  fedora:
+  opensuse-tumbleweed:
+
+repositories:
+  fedora:
+    copr:
+      - "erikreider/SwayNotificationCenter"
+      - "mochaa/swayfx"
+      - "trs-sod/swaylock-effects"
+

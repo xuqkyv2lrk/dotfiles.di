@@ -1,0 +1,234 @@
+#!/usr/bin/env bash
+
+set -eu
+
+BOLD="\033[1m"
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+NC="\033[0m"
+
+# Function: detect_distro
+# Description: Detects the Linux distribution of the current system.
+# Returns: The ID of the detected distribution (e.g., "arch", "fedora") or "unknown" if not detected.
+function detect_distro() {
+    if [[ -f "/etc/os-release" ]]; then
+        source "/etc/os-release"
+        echo "${ID}"
+    else
+        echo "unknown"
+    fi
+}
+
+# Function: get_package_name
+# Description: Retrieves the package name for the defined distro, considering any exceptions defined in packages.yaml.
+# Parameters:
+#   $1 - The default package name
+#   $2 - The distribution ID
+# Returns: The package name to use for installation.
+function get_package_name() {
+    local package
+    local distro
+    local package_name
+    package="${1}"
+    distro="${2}"
+    package_name="${package}"
+    if grep -q "^exceptions:" packages.yaml; then
+        if grep -q "^ $distro:" packages.yaml; then
+            local exception
+            exception=$(sed -n "/^ ""${distro}"":/,/^ [^ ]/p" packages.yaml | grep "^ ${package}:" | cut -d ':' -f2- | sed 's/ //')
+            if [ -n "${exception}" ]; then
+                package_name="${exception}"
+            fi
+        fi
+    fi
+    echo "${package_name}"
+}
+
+# Function: install_package
+# Description: Installs a specified package using the appropriate package manager for the distribution.
+# Parameters:
+#   $1 - The package name to install
+#   $2 - The distribution ID
+# Side effects: Installs the specified package on the system.
+function install_package() {
+    local package
+    local distro
+    local package_name
+    package="${1}"
+    distro="${2}"
+    package_name=$(get_package_name "${package}" "${distro}")
+    echo -e "\n${MAGENTA}Installing ${BOLD}${package_name}${NC}"
+    case $distro in
+        "arch")
+            yay -S --noconfirm "${package_name}"
+            ;;
+        "fedora")
+            sudo dnf install -y --allowerasing "${package_name}"
+            ;;
+        "opensuse-tumbleweed")
+            sudo zypper install -y "${package_name}"
+            ;;
+        *)
+            echo "Unsupported distribution: ${distro}"
+            ;;
+    esac
+}
+
+# Function: add_copr_repo
+# Description: Adds COPR repositories for Fedora.
+# Side effects: Adds the specified COPR repositories.
+function add_copr_repo() {
+    local repositories
+    mapfile -t repositories < <(yq e ".repositories.fedora.copr[]" packages.yaml)
+    for repo in "${repositories[@]}"; do
+        echo -e "\n${YELLOW}Adding COPR repository: ${BOLD}${repo}${NC}"
+        sudo dnf copr enable -y "${repo}"
+    done
+}
+
+# Function: select_desktop_interface
+# Description: Prompts the user to select a desktop interface.
+# Parameters:
+#   $1 - A reference to store the selected desktop interface.
+function select_desktop_interface() {
+    local __choice=$1
+    echo -e "\n${BLUE}${BOLD}Do you want to install a desktop interface?${NC}"
+    select choice in "Yes" "No"; do
+        case $choice in
+            "Yes")
+                echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
+                mapfile -t options < <(yq e '.desktop_packages | keys | .[]' packages.yaml)
+                select de in "${options[@]}"; do
+                    if [[ -n "$de" ]]; then
+                        eval "$__choice"="${de}"
+                        return
+                    else
+                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                    fi
+                done
+                ;;
+            "No")
+                printf "\nSkipping desktop interface installation.\n"
+                exit
+                ;;
+            *)
+                echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                ;;
+        esac
+    done
+}
+
+# Function: install_dependencies
+# Description: Installs necessary dependencies for the installation process.
+function install_dependencies() {
+    local dependencies
+    local distro
+    
+    dependencies=("git" "yq" "stow" "rustc")
+    distro="$(detect_distro)"
+
+    for dep in "${dependencies[@]}"; do
+        if ! command -v "$dep" &> /dev/null; then
+            if [[ "${dep}" == "rustc" ]]; then
+                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+                rustup default stable
+            else
+                install_package "${dep}" "${distro}"
+            fi
+        fi
+    done
+}
+
+# Function: install_packages
+# Description: Installs packages defined in the packages.yaml file.
+function install_packages() {
+    local distro
+    
+    distro="$(detect_distro)"
+
+    mapfile -t packages < <(yq e ".packages[]" packages.yaml)
+    
+    sudo dnf -y update --setopt=protected_packages= --best --allowerasing
+    
+    for package in "${packages[@]}"; do
+        install_package "${package}" "${distro}"
+    done 
+}
+
+# Function: install_desktop_packages 
+# Description: Installs packages specific to the selected desktop interface.
+function install_desktop_packages() {
+    local distro
+    local desktop_interface
+
+    distro="${1}" 
+    desktop_interface="${2}"
+
+    mapfile -t packages < <(yq e ".desktop_packages.${desktop_interface}[]" packages.yaml)
+
+    for package in "${packages[@]}"; do 
+        install_package "${package}" "${distro}" 
+     done 
+}
+
+# Function: configure_distro_specific 
+# Description: Performs distribution-specific configurations.
+function configure_distro_specific() {
+     local distro
+     local desktop_interface
+
+     distro="${1}" 
+     desktop_interface="${2}"
+
+     case "${distro}" in 
+         "arch") ;; 
+         "fedora") 
+             if [[ "${desktop_interface}" == "sway" ]]; then 
+                 add_copr_repo 
+                 
+                 echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
+                 cargo install swaysome 
+                 
+                 echo -e "\n${YELLOW}Swapping default package ${BOLD}sway${NC}${YELLOW} for ${BOLD}swayfx${NC}${YELLOW}...${NC}" 
+                 sudo dnf -y swap --setopt=protected_packages= sway swayfx 
+             fi 
+             ;; 
+         "opensuse-tumbleweed") ;; 
+         *) 
+             echo -e "\n${RED}Unsupported distribution for repository installation: ${BOLD}${distro}${NC}" 
+             ;; 
+     esac 
+}
+
+# Function: main 
+# Description: Main function that orchestrates the installation process. 
+function main() { 
+     local distro
+     local desktop_interface
+
+     distro=$(detect_distro) 
+
+     select_desktop_interface desktop_interface 
+
+     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
+
+     install_dependencies "${distro}" 
+
+     configure_distro_specific "${distro}" "${desktop_interface}"
+
+     install_packages "${distro}"
+
+     install_desktop_packages "${distro}" "${desktop_interface}"
+
+     echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
+
+     for dir in "${desktop_interface}/"*; do 
+         stow -v -t "${HOME}" -d "${desktop_interface}" "$(basename "${dir}")"
+     done 
+
+}
+
+main
