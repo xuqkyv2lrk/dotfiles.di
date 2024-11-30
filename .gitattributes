@@ -1,0 +1,5 @@
+*.sh linguist-detectable=true
+*.bash linguist-detectable=true
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
+* linguist-detectable=false
