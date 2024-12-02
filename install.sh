@@ -165,6 +165,8 @@ function install_packages() {
 
     mapfile -t packages < <(yq -e ".packages[]" "${PACKAGES_YAML}")
     
+    packages=("${packages[@]//\"/}")
+
     # TODO Create an update function for distro
     #sudo dnf -y update --setopt=protected_packages= --best --allowerasing
     
@@ -183,6 +185,8 @@ function install_desktop_packages() {
     desktop_interface="${2}"
 
     mapfile -t packages < <(yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}")
+    
+    packages=("${packages[@]//\"/}")
 
     for package in "${packages[@]}"; do 
         install_package "${package}" "${distro}" 
