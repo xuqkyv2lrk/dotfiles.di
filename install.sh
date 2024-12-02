@@ -48,7 +48,7 @@ function get_package_name() {
     distro="${2}"
     package_name="${package}"
 
-    exception=$(yq e ".exceptions.${distro}.[] | select(has(\"${package}\")) | .\"${package}\"" "${PACKAGES_YAML}")
+    exception=$(yq -e ".exceptions.${distro}.[] | select(has(\"${package}\")) | .\"${package}\"" "${PACKAGES_YAML}")
 
     if [[ -n "${exception}" && "${exception}" != "null" ]]; then
         package_name="${exception}"
@@ -113,7 +113,7 @@ function select_desktop_interface() {
             "Yes")
                 clone_repository
                 echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
-                mapfile -t options < <(yq e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}")
+                mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}")
                 select de in "${options[@]}"; do
                     if [[ -n "$de" ]]; then
                         eval "$__choice"="${de}"
@@ -163,7 +163,7 @@ function install_packages() {
     
     distro="$(detect_distro)"
 
-    mapfile -t packages < <(yq e ".packages[]" "${PACKAGES_YAML}")
+    mapfile -t packages < <(yq -e ".packages[]" "${PACKAGES_YAML}")
     
     # TODO Create an update function for distro
     #sudo dnf -y update --setopt=protected_packages= --best --allowerasing
@@ -182,7 +182,7 @@ function install_desktop_packages() {
     distro="${1}" 
     desktop_interface="${2}"
 
-    mapfile -t packages < <(yq e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}")
+    mapfile -t packages < <(yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}")
 
     for package in "${packages[@]}"; do 
         install_package "${package}" "${distro}" 
