@@ -18,6 +18,7 @@ exceptions:
     - SwayNotificationCenter: swaync
   fedora:
   opensuse-tumbleweed:
+    - pinentry-tty: pinentry
 
 repositories:
   fedora:

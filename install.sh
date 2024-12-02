@@ -42,18 +42,18 @@ function get_package_name() {
     local package
     local distro
     local package_name
+    local exception
+
     package="${1}"
     distro="${2}"
     package_name="${package}"
-    if grep -q "^exceptions:" "${PACKAGES_YAML}"; then
-        if grep -q "^ $distro:" "${PACKAGES_YAML}"; then
-            local exception
-            exception=$(sed -n "/^ ""${distro}"":/,/^ [^ ]/p" "${PACKAGES_YAML}" | grep "^ ${package}:" | cut -d ':' -f2- | sed 's/ //')
-            if [ -n "${exception}" ]; then
-                package_name="${exception}"
-            fi
-        fi
+
+    exception=$(yq e ".exceptions.${distro}.[] | select(has(\"${package}\")) | .\"${package}\"" "${PACKAGES_YAML}")
+
+    if [[ -n "${exception}" && "${exception}" != "null" ]]; then
+        package_name="${exception}"
     fi
+
     echo "${package_name}"
 }
 
@@ -67,9 +67,11 @@ function install_package() {
     local package
     local distro
     local package_name
+
     package="${1}"
     distro="${2}"
     package_name=$(get_package_name "${package}" "${distro}")
+
     echo -e "\n${MAGENTA}Installing ${BOLD}${package_name}${NC}"
     case $distro in
         "arch")
@@ -235,11 +237,11 @@ function main() {
 
      install_dependencies "${distro}" 
 
-     #configure_distro_specific "${distro}" "${desktop_interface}"
+     configure_distro_specific "${distro}" "${desktop_interface}"
 
      install_packages "${distro}"
 
-     #install_desktop_packages "${distro}" "${desktop_interface}"
+     install_desktop_packages "${distro}" "${desktop_interface}"
 
      echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 
