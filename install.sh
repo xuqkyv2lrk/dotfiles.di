@@ -10,6 +10,16 @@ BLUE="\033[34m"
 MAGENTA="\033[35m"
 NC="\033[0m"
 
+BASEDIR="${HOME}/.dotfiles.di"
+PACKAGES_YAML="${BASEDIR}/packages.yaml"
+
+function clone_repository() {
+    if [[ ! -d "${BASEDIR}" ]]; then
+        echo -e "\n${BLUE}Cloning ${BOLD}${MAGENTA}dotfiles.di${NC}${BLUE} to ${BOLD}${MAGENTA}${BASEDIR}${NC}${BLUE}...${GREEN}"
+        git clone -j 5 "https://gitlab.com/wd2nf8gqct/dotfiles.di.git" "${BASEDIR}"
+    fi
+}
+
 # Function: detect_distro
 # Description: Detects the Linux distribution of the current system.
 # Returns: The ID of the detected distribution (e.g., "arch", "fedora") or "unknown" if not detected.
@@ -23,7 +33,7 @@ function detect_distro() {
 }
 
 # Function: get_package_name
-# Description: Retrieves the package name for the defined distro, considering any exceptions defined in packages.yaml.
+# Description: Retrieves the package name for the defined distro, considering any exceptions defined in "packages.yaml".
 # Parameters:
 #   $1 - The default package name
 #   $2 - The distribution ID
@@ -35,10 +45,10 @@ function get_package_name() {
     package="${1}"
     distro="${2}"
     package_name="${package}"
-    if grep -q "^exceptions:" packages.yaml; then
-        if grep -q "^ $distro:" packages.yaml; then
+    if grep -q "^exceptions:" "${PACKAGES_YAML}"; then
+        if grep -q "^ $distro:" "${PACKAGES_YAML}"; then
             local exception
-            exception=$(sed -n "/^ ""${distro}"":/,/^ [^ ]/p" packages.yaml | grep "^ ${package}:" | cut -d ':' -f2- | sed 's/ //')
+            exception=$(sed -n "/^ ""${distro}"":/,/^ [^ ]/p" "${PACKAGES_YAML}" | grep "^ ${package}:" | cut -d ':' -f2- | sed 's/ //')
             if [ -n "${exception}" ]; then
                 package_name="${exception}"
             fi
@@ -82,7 +92,7 @@ function install_package() {
 # Side effects: Adds the specified COPR repositories.
 function add_copr_repo() {
     local repositories
-    mapfile -t repositories < <(yq e ".repositories.fedora.copr[]" packages.yaml)
+    mapfile -t repositories < <(yq e ".repositories.fedora.copr[]" "${PACKAGES_YAML}")
     for repo in "${repositories[@]}"; do
         echo -e "\n${YELLOW}Adding COPR repository: ${BOLD}${repo}${NC}"
         sudo dnf copr enable -y "${repo}"
@@ -99,8 +109,9 @@ function select_desktop_interface() {
     select choice in "Yes" "No"; do
         case $choice in
             "Yes")
+                clone_repository
                 echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
-                mapfile -t options < <(yq e '.desktop_packages | keys | .[]' packages.yaml)
+                mapfile -t options < <(yq e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}")
                 select de in "${options[@]}"; do
                     if [[ -n "$de" ]]; then
                         eval "$__choice"="${de}"
@@ -143,15 +154,16 @@ function install_dependencies() {
 }
 
 # Function: install_packages
-# Description: Installs packages defined in the packages.yaml file.
+# Description: Installs packages defined in the "packages.yaml" file.
 function install_packages() {
     local distro
     
     distro="$(detect_distro)"
 
-    mapfile -t packages < <(yq e ".packages[]" packages.yaml)
+    mapfile -t packages < <(yq e ".packages[]" "${PACKAGES_YAML}")
     
-    sudo dnf -y update --setopt=protected_packages= --best --allowerasing
+    # TODO Create an update function for distro
+    #sudo dnf -y update --setopt=protected_packages= --best --allowerasing
     
     for package in "${packages[@]}"; do
         install_package "${package}" "${distro}"
@@ -167,11 +179,11 @@ function install_desktop_packages() {
     distro="${1}" 
     desktop_interface="${2}"
 
-    mapfile -t packages < <(yq e ".desktop_packages.${desktop_interface}[]" packages.yaml)
+    mapfile -t packages < <(yq e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}")
 
     for package in "${packages[@]}"; do 
         install_package "${package}" "${distro}" 
-     done 
+    done 
 }
 
 # Function: configure_distro_specific 
@@ -217,16 +229,16 @@ function main() {
 
      install_dependencies "${distro}" 
 
-     configure_distro_specific "${distro}" "${desktop_interface}"
+     #configure_distro_specific "${distro}" "${desktop_interface}"
 
      install_packages "${distro}"
 
-     install_desktop_packages "${distro}" "${desktop_interface}"
+     #install_desktop_packages "${distro}" "${desktop_interface}"
 
      echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 
-     for dir in "${desktop_interface}/"*; do 
-         stow -v -t "${HOME}" -d "${desktop_interface}" "$(basename "${dir}")"
+     for dir in "${BASEDIR}/${desktop_interface}/"*; do 
+         stow -vn -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
      done 
 
 }
