@@ -72,6 +72,8 @@ function install_package() {
     distro="${2}"
     package_name=$(get_package_name "${package}" "${distro}")
 
+    package_name="${package_name//\"/}"
+
     echo -e "\n${MAGENTA}Installing ${BOLD}${package_name}${NC}"
     case $distro in
         "arch")
@@ -251,7 +253,7 @@ function main() {
      echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 
      for dir in "${BASEDIR}/${desktop_interface}/"*; do 
-         stow -vn -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
+         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
      done 
 
 }

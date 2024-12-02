@@ -1,5 +1,5 @@
 packages:
-  - pinentry-tty
+  - pinentry
 
 desktop_packages:
   gnome:
@@ -8,17 +8,20 @@ desktop_packages:
     - bemenu
     - grim
     - j4-dmenu-desktop # Not in openSUSE repo, build from source
+    - kanshi
     - slurp
     - swayfx
     - swaylock-effects
     - SwayNotificationCenter
+    - thunar
+    - waybar
 
 exceptions:
   arch:
     - SwayNotificationCenter: swaync
   fedora:
+    - pinentry: pinentry-tty
   opensuse-tumbleweed:
-    - pinentry-tty: pinentry
 
 repositories:
   fedora:
