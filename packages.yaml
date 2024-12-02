@@ -13,6 +13,7 @@ desktop_packages:
     - slurp
     - swaybg
     - swayfx
+    - swayidle
     - swaylock-effects
     - SwayNotificationCenter
     - thunar
