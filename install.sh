@@ -204,20 +204,20 @@ function configure_distro_specific() {
      distro="${1}" 
      desktop_interface="${2}"
 
-     case "${distro}" in 
-         "arch") ;; 
-         "fedora") 
-             if [[ "${desktop_interface}" == "sway" ]]; then 
-                 add_copr_repo 
+     case "${desktop_interface}" in 
+         "gnome") ;; 
+         "hyprland") ;; 
+         "sway") 
+             echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
+             cargo install swaysome 
                  
-                 echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
-                 cargo install swaysome 
+             if [[ "${distro}" == "fedora" ]]; then 
+                 add_copr_repo 
                  
                  echo -e "\n${YELLOW}Swapping default package ${BOLD}sway${NC}${YELLOW} for ${BOLD}swayfx${NC}${YELLOW}...${NC}" 
                  sudo dnf -y swap --setopt=protected_packages= sway swayfx 
              fi 
              ;; 
-         "opensuse-tumbleweed") ;; 
          *) 
              echo -e "\n${RED}Unsupported distribution for repository installation: ${BOLD}${distro}${NC}" 
              ;; 
