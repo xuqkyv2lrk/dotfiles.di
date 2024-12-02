@@ -218,12 +218,18 @@ function configure_distro_specific() {
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
-     local distro
-     local desktop_interface
+     local distro=${1:-$(detect_distro)}
+     local desktop_interface=${2:-} 
 
-     distro=$(detect_distro) 
-
-     select_desktop_interface desktop_interface 
+     if [[ -z "${distro}" ]]; then
+        distro=$(detect_distro) 
+     fi
+    
+     if [[ -z "${desktop_interface}" ]]; then
+         select_desktop_interface desktop_interface 
+     else
+         clone_repository
+     fi
 
      echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
 
@@ -243,4 +249,4 @@ function main() {
 
 }
 
-main
+main "$@"
