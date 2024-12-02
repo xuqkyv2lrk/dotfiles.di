@@ -9,6 +9,7 @@ desktop_packages:
     - grim
     - j4-dmenu-desktop # Not in openSUSE repo, build from source
     - kanshi
+    - python3-i3ipc
     - slurp
     - swaybg
     - swayfx
@@ -16,10 +17,12 @@ desktop_packages:
     - SwayNotificationCenter
     - thunar
     - waybar
+    - xwayland
 
 exceptions:
   arch:
     - SwayNotificationCenter: swaync
+    - xwayland: xorg-xwayland
   fedora:
     - pinentry: pinentry-tty
   opensuse-tumbleweed:
