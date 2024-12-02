@@ -10,6 +10,7 @@ desktop_packages:
     - j4-dmenu-desktop # Not in openSUSE repo, build from source
     - kanshi
     - slurp
+    - swaybg
     - swayfx
     - swaylock-effects
     - SwayNotificationCenter
