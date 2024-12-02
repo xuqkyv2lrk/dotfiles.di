@@ -94,7 +94,7 @@ function install_package() {
 # Side effects: Adds the specified COPR repositories.
 function add_copr_repo() {
     local repositories
-    mapfile -t repositories < <(yq e ".repositories.fedora.copr[]" "${PACKAGES_YAML}")
+    mapfile -t repositories < <(yq -e ".repositories.fedora.copr[]" "${PACKAGES_YAML}")
     for repo in "${repositories[@]}"; do
         echo -e "\n${YELLOW}Adding COPR repository: ${BOLD}${repo}${NC}"
         sudo dnf copr enable -y "${repo}"
@@ -147,6 +147,7 @@ function install_dependencies() {
         if ! command -v "$dep" &> /dev/null; then
             if [[ "${dep}" == "rustc" ]]; then
                 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+                . "${HOME}/.cargo/env"
                 rustup default stable
             else
                 install_package "${dep}" "${distro}"
