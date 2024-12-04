@@ -199,6 +199,28 @@ function install_desktop_packages() {
     done 
 }
 
+add_repo_if_not_exists() {
+    local distro
+    local repo_name
+    local repo_url
+    
+    distro="${1}"
+    repo_name="${2}"
+    repo_url="${3}"
+    
+    case "${distro}" in
+        "opensuse-tumbleweed")
+            if ! zypper lr | grep -q "${repo_name}"; then
+                sudo zypper addrepo --refresh "${repo_url}" "${repo_name}"
+                sudo zypper refresh
+                echo "Repository ${repo_name} added."
+            else
+                echo "Repository ${repo_name} already exists."
+            fi
+            ;;
+    esac
+}
+
 # Function: configure_distro_specific 
 # Description: Performs distribution-specific configurations.
 function configure_distro_specific() {
@@ -226,8 +248,8 @@ function configure_distro_specific() {
             if [[ "${distro}" == "opensuse-tumbleweed" ]]; then
                 # Community repos to install swayfx and swaylock-effects
                 # Will create own repo for these package until they are in the official repo
-                sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:mantarimay:sway/standard/home:mantarimay:sway.repo
-                sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:smolsheep/openSUSE_Tumbleweed/home:smolsheep.repo
+                add_repo_if_not_exists "${distro}" "home_mantarimay_sway" "https://download.opensuse.org/repositories/home:mantarimay:sway/standard/home:mantarimay:sway.repo"
+                add_repo_if_not_exists "${distro}" "home_smolsheep" "https://download.opensuse.org/repositories/home:smolsheep/openSUSE_Tumbleweed/home:smolsheep.repo"
 
                 # j4-dmenu-desktop
                 if ! command -v "j4-dmenu-desktop" &> /dev/null; then
