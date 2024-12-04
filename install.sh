@@ -212,7 +212,7 @@ function configure_distro_specific() {
         "gnome") ;; 
         "hyprland") ;; 
         "sway") 
-            echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
+            echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
             cargo install swaysome 
                  
             if [[ "${distro}" == "fedora" ]]; then 
@@ -224,13 +224,21 @@ function configure_distro_specific() {
             fi 
 
             if [[ "${distro}" == "opensuse-tumbleweed" ]]; then
+                # Community repos to install swayfx and swaylock-effects
+                # Will create own repo for these package until they are in the official repo
+                sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:mantarimay:sway/standard/home:mantarimay:sway.repo
+                sudo zypper addrepo --refresh https://download.opensuse.org/repositories/home:smolsheep/openSUSE_Tumbleweed/home:smolsheep.repo
+
                 # j4-dmenu-desktop
-                git clone https://github.com/enkore/j4-dmenu-desktop.git /tmp/j4
-                cd /tmp/j4
-                meson setup build
-                cd build
-                meson compile
-                sudo meson install
+                if ! command -v "j4-dmenu-desktop" &> /dev/null; then
+                    echo -e "\n${MAGENTA}Installing ${BOLD}j4-dmenu-desktop${NC}" 
+                    git clone https://github.com/enkore/j4-dmenu-desktop.git /tmp/j4
+                    cd /tmp/j4
+                    meson setup build
+                    cd build
+                    meson compile
+                    sudo meson install
+                fi
             fi
             ;; 
         *) 
