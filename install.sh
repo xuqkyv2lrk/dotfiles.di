@@ -74,6 +74,10 @@ function install_package() {
 
     package_name="${package_name//\"/}"
 
+    if [[ "${package_name}" == "skip" ]]; then
+        return
+    fi
+
     echo -e "\n${MAGENTA}Installing ${BOLD}${package_name}${NC}"
     case $distro in
         "arch")

@@ -30,6 +30,7 @@ exceptions:
     - pinentry: pinentry-tty
     - xwayland: xorg-x11-server-Xwayland 
   opensuse-tumbleweed:
+    - j4-dmenu-desktop: skip
 
 repositories:
   fedora:
