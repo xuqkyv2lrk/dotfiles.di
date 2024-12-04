@@ -213,6 +213,9 @@ function configure_distro_specific() {
                  
              if [[ "${distro}" == "fedora" ]]; then 
                  add_copr_repo 
+
+                 echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
+                 sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
              fi 
              ;; 
          *) 
