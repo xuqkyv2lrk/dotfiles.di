@@ -213,9 +213,6 @@ function configure_distro_specific() {
                  
              if [[ "${distro}" == "fedora" ]]; then 
                  add_copr_repo 
-                 
-                 echo -e "\n${YELLOW}Swapping default package ${BOLD}sway${NC}${YELLOW} for ${BOLD}swayfx${NC}${YELLOW}...${NC}" 
-                 sudo dnf -y swap --setopt=protected_packages= sway swayfx 
              fi 
              ;; 
          *) 
