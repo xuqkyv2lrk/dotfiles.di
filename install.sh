@@ -145,12 +145,23 @@ function select_desktop_interface() {
 function install_dependencies() {
     local dependencies
     local distro
+
+    declare -A dependencies
     
-    dependencies=("git" "yq" "stow" "rustc" "gcc-c++" "cmake" "meson")
+    dependencies=(
+        ["git"]="git" 
+        ["yq"]="yq"
+        ["stow"]="stow" 
+        ["rustc"]="rustc" 
+        ["gcc-c++"]="g++"
+        ["cmake"]="cmake"
+        ["meson"]="meson"
+    )
+
     distro="$(detect_distro)"
 
-    for dep in "${dependencies[@]}"; do
-        if ! command -v "$dep" &> /dev/null; then
+    for dep in "${!dependencies[@]}"; do
+        if ! command -v "${dependencies[$dep]}" &> /dev/null; then
             if [[ "${dep}" == "rustc" ]]; then
                 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
                 . "${HOME}/.cargo/env"
@@ -213,9 +224,9 @@ add_repo_if_not_exists() {
             if ! zypper lr | grep -q "${repo_name}"; then
                 sudo zypper addrepo --refresh "${repo_url}" "${repo_name}"
                 sudo zypper refresh
-                echo "Repository ${repo_name} added."
+                echo -e "\nRepository ${repo_name} added."
             else
-                echo "Repository ${repo_name} already exists."
+                echo -e "\nRepository ${repo_name} already exists."
             fi
             ;;
     esac
