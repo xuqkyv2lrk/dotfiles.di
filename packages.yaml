@@ -8,7 +8,7 @@ desktop_packages:
     - bemenu
     - dmenu
     - grim
-    - j4-dmenu-desktop # Not in openSUSE repo, build from source
+    - j4-dmenu-desktop
     - kanshi
     - python3-i3ipc
     - slurp
@@ -23,6 +23,7 @@ desktop_packages:
 
 exceptions:
   arch:
+    - gcc-c++: gcc
     - SwayNotificationCenter: swaync
     - xwayland: xorg-xwayland
   fedora:

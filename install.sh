@@ -142,7 +142,7 @@ function install_dependencies() {
     local dependencies
     local distro
     
-    dependencies=("git" "yq" "stow" "rustc")
+    dependencies=("git" "yq" "stow" "rustc" "gcc-c++" "cmake" "meson")
     distro="$(detect_distro)"
 
     for dep in "${dependencies[@]}"; do
@@ -198,64 +198,74 @@ function install_desktop_packages() {
 # Function: configure_distro_specific 
 # Description: Performs distribution-specific configurations.
 function configure_distro_specific() {
-     local distro
-     local desktop_interface
+    local distro
+    local desktop_interface
 
-     distro="${1}" 
-     desktop_interface="${2}"
+    distro="${1}" 
+    desktop_interface="${2}"
 
-     case "${desktop_interface}" in 
-         "gnome") ;; 
-         "hyprland") ;; 
-         "sway") 
-             echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
-             cargo install swaysome 
+    case "${desktop_interface}" in 
+        "gnome") ;; 
+        "hyprland") ;; 
+        "sway") 
+            echo -e "\n${YELLOW}Installing ${BOLD}swaysome${NC}${YELLOW}...${NC}" 
+            cargo install swaysome 
                  
-             if [[ "${distro}" == "fedora" ]]; then 
-                 add_copr_repo 
+            if [[ "${distro}" == "fedora" ]]; then 
+                add_copr_repo 
+                
+                # swaylock-effects
+                echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
+                sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
+            fi 
 
-                 echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
-                 sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
-             fi 
-             ;; 
-         *) 
-             echo -e "\n${RED}Unsupported distribution for repository installation: ${BOLD}${distro}${NC}" 
-             ;; 
-     esac 
+            if [[ "${distro}" == "opensuse-tumbleweed" ]]; then
+                # j4-dmenu-desktop
+                git clone https://github.com/enkore/j4-dmenu-desktop.git /tmp/j4
+                cd /tmp/j4
+                meson setup build
+                cd build
+                meson compile
+                sudo meson install
+            fi
+            ;; 
+        *) 
+            echo -e "\n${RED}Unsupported distribution for repository installation: ${BOLD}${distro}${NC}" 
+            ;; 
+    esac 
 }
 
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
-     local distro=${1:-$(detect_distro)}
-     local desktop_interface=${2:-} 
+    local distro=${1:-$(detect_distro)}
+    local desktop_interface=${2:-} 
 
-     if [[ -z "${distro}" ]]; then
-        distro=$(detect_distro) 
-     fi
+    if [[ -z "${distro}" ]]; then
+       distro=$(detect_distro) 
+    fi
     
-     if [[ -z "${desktop_interface}" ]]; then
-         select_desktop_interface desktop_interface 
-     else
-         clone_repository
-     fi
+    if [[ -z "${desktop_interface}" ]]; then
+        select_desktop_interface desktop_interface 
+    else
+        clone_repository
+    fi
 
-     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
+    echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
 
-     install_dependencies "${distro}" 
+    install_dependencies "${distro}" 
 
-     configure_distro_specific "${distro}" "${desktop_interface}"
+    configure_distro_specific "${distro}" "${desktop_interface}"
 
-     install_packages "${distro}"
+    install_packages "${distro}"
 
-     install_desktop_packages "${distro}" "${desktop_interface}"
+    install_desktop_packages "${distro}" "${desktop_interface}"
 
-     echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
+    echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 
-     for dir in "${BASEDIR}/${desktop_interface}/"*; do 
-         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
-     done 
-
+    for dir in "${BASEDIR}/${desktop_interface}/"*; do 
+        stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
+    done 
 }
 
 main "$@"
