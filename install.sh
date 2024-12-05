@@ -48,7 +48,7 @@ function get_package_name() {
     distro="${2}"
     package_name="${package}"
 
-    exception=$(yq -e ".exceptions.${distro}.[] | select(has(\"${package}\")) | .\"${package}\"" "${PACKAGES_YAML}")
+    exception=$(yq -e ".exceptions.${distro}.[] | select(has(\"${package}\")) | .\"${package}\"" "${PACKAGES_YAML}" 2>/dev/null)
 
     if [[ -n "${exception}" && "${exception}" != "null" ]]; then
         package_name="${exception}"
@@ -100,7 +100,7 @@ function install_package() {
 # Side effects: Adds the specified COPR repositories.
 function add_copr_repo() {
     local repositories
-    mapfile -t repositories < <(yq -e ".repositories.fedora.copr[]" "${PACKAGES_YAML}")
+    mapfile -t repositories < <(yq -e ".repositories.fedora.copr[]" "${PACKAGES_YAML}" 2>/dev/null)
     for repo in "${repositories[@]}"; do
         echo -e "\n${YELLOW}Adding COPR repository: ${BOLD}${repo}${NC}"
         sudo dnf copr enable -y "${repo}"
@@ -119,7 +119,7 @@ function select_desktop_interface() {
             "Yes")
                 clone_repository
                 echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
-                mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}")
+                mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}" 2>/dev/null)
                 select de in "${options[@]}"; do
                     if [[ -n "$de" ]]; then
                         eval "$__choice"="${de}"
@@ -180,7 +180,7 @@ function install_packages() {
     
     distro="$(detect_distro)"
 
-    mapfile -t packages < <(yq -e ".packages[]" "${PACKAGES_YAML}")
+    mapfile -t packages < <(yq -e ".packages[]" "${PACKAGES_YAML}" 2>/dev/null)
     
     packages=("${packages[@]//\"/}")
 
@@ -201,7 +201,7 @@ function install_desktop_packages() {
     distro="${1}" 
     desktop_interface="${2}"
 
-    mapfile -t packages < <(yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}")
+    mapfile -t packages < <(yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}" 2>/dev/null)
     
     packages=("${packages[@]//\"/}")
 
@@ -246,7 +246,7 @@ function configure_distro_specific() {
         "hyprland") ;; 
         "sway") 
             echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
-            cargo install swaysome 
+            cargo install --locked --root "${HOME}" swaysome 
                  
             if [[ "${distro}" == "fedora" ]]; then 
                 add_copr_repo 
