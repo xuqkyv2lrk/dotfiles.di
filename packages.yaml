@@ -23,6 +23,7 @@ desktop_packages:
 
 exceptions:
   arch:
+    - bemenu: bemenu-wayland
     - gcc-c++: gcc
     - python3-i3ipc: python-i3ipc
     - SwayNotificationCenter: swaync
