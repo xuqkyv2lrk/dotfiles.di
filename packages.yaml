@@ -3,6 +3,9 @@ packages:
 
 desktop_packages:
   gnome:
+    - gnome
+    - gnome-tweaks
+    - extension-manager
   hyprland:
   sway:
     - bemenu

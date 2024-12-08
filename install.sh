@@ -308,8 +308,14 @@ function main() {
 
     echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 
-    for dir in "${BASEDIR}/${desktop_interface}/"*; do 
-        stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "$(basename "${dir}")"
+    for dir in "${BASEDIR}"/"${desktop_interface}"/*/; do 
+        dirname=$(basename "${dir}")
+
+        if [[ "${dirname}" == _* ]]; then
+            continue
+        fi
+
+        stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done 
 }
 
