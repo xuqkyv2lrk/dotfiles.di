@@ -232,9 +232,9 @@ add_repo_if_not_exists() {
     esac
 }
 
-# Function: configure_distro_specific 
-# Description: Performs distribution-specific configurations.
-function configure_distro_specific() {
+# Function: configure_pre_install_packages
+# Description: Performs distribution-specific configurations prior to installing packages.
+function configure_pre_install_packages() {
     local distro
     local desktop_interface
 
@@ -280,6 +280,59 @@ function configure_distro_specific() {
     esac 
 }
 
+# Function: configure_desktop_interface
+# Description: Performs desktop interface configurations post installation
+function configure_desktop_interface() {
+    local distro
+    local desktop_interface
+
+    distro="${1}" 
+    desktop_interface="${2}"
+
+    case "${desktop_interface}" in 
+        "gnome")
+            local settings_dir
+            local gnome_categories
+
+            settings_dir="${BASEDIR}/${desktop_interface}/_settings"
+            gnome_categories=(
+                "/org/gnome/desktop/interface/:interface.ini"
+                "/org/gnome/desktop/wm/:wm.ini"
+                "/org/gnome/nautilus/:nautilus.ini"
+                "/org/gnome/desktop/input-sources/:input-sources.ini"
+                "/org/gnome/settings-daemon/plugins/:plugins.ini"
+                "/org/gnome/shell/extensions/:extensions.ini"
+            )
+
+            for category in "${gnome_categories[@]}"; do
+                IFS=':' read -r dconf_path file <<< "${category}"
+                if [ -f "${settings_dir}/${file}" ]; then
+                    dconf load "${dconf_path}" < "${settings_dir}/${file}"
+                    echo -e "\n${YELLOW}Imported ${settings_dir}/${file} to ${dconf_path}${NC}"
+                else
+                    echo -e "\n${RED}Warning: ${file} not found in ${settings_dir}${NC}"
+                fi
+            done
+
+            for e in "${HOME}"/.local/share/gnome-shell/extensions/*; do
+                if [[ -d "${e}" ]]; then
+                    extension=$(basename "${e}")
+                    gnome-extensions enable "${extension}"
+                    echo -e "\n${BLUE}Enabled GNOME extension: ${BOLD}${extension}${NC}"
+                fi
+            done
+
+            sudo systemctl enable --now gdm
+            sudo systemctl set-default graphical.target
+            ;; 
+        "hyprland") ;; 
+        "sway") ;; 
+        *) 
+            echo -e "\n${RED}Unsupported desktop interface: ${BOLD}${desktop_interface}${NC}" 
+            ;; 
+    esac 
+}
+
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
@@ -300,7 +353,7 @@ function main() {
 
     install_dependencies "${distro}" 
 
-    configure_distro_specific "${distro}" "${desktop_interface}"
+    configure_pre_install_packages "${distro}" "${desktop_interface}"
 
     install_packages "${distro}"
 
@@ -317,6 +370,8 @@ function main() {
 
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done 
+
+    configure_desktop_interface "${distro}" "${desktop_interface}"
 }
 
 main "$@"
