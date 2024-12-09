@@ -232,9 +232,9 @@ add_repo_if_not_exists() {
     esac
 }
 
-# Function: configure_pre_install_packages
+# Function: configure_pre_install
 # Description: Performs distribution-specific configurations prior to installing packages.
-function configure_pre_install_packages() {
+function configure_pre_install() {
     local distro
     local desktop_interface
 
@@ -242,7 +242,10 @@ function configure_pre_install_packages() {
     desktop_interface="${2}"
 
     case "${desktop_interface}" in 
-        "gnome") ;; 
+        "gnome") 
+            echo -e "\n${BLUE}Creating directory: ${BOLD}${HOME}/.local/share/gnome-shell${NC}" 
+            mkdir -p "${HOME}/.local/share/gnome-shell"
+            ;; 
         "hyprland") ;; 
         "sway") 
             echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
@@ -356,7 +359,7 @@ function main() {
 
     install_dependencies "${distro}" 
 
-    configure_pre_install_packages "${distro}" "${desktop_interface}"
+    configure_pre_install "${distro}" "${desktop_interface}"
 
     install_packages "${distro}"
 
