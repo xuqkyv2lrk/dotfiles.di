@@ -119,7 +119,7 @@ function select_desktop_interface() {
             "Yes")
                 clone_repository
                 echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
-                mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}" 2>/dev/null)
+                mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}" 2>/dev/null | tr -d '"')
                 select de in "${options[@]}"; do
                     if [[ -n "$de" ]]; then
                         eval "$__choice"="${de}"
