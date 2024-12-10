@@ -325,8 +325,12 @@ function configure_desktop_interface() {
                 fi
             done
 
-            gsettings set org.gnome.desktop.background picture-uri "file:///${HOME}/wallpaper.png"
-            gsettings set org.gnome.desktop.background picture-uri-dark "file:///${HOME}/wallpaper.png"
+            # Set Wallpaper
+            gsettings set org.gnome.desktop.background picture-uri "file:///${HOME}/wallpaper_${distro}.png"
+            gsettings set org.gnome.desktop.background picture-uri-dark "file:///${HOME}/wallpaper${distro}.png"
+
+            # Set User Icon
+            gdbus call --system --dest "org.freedesktop.Accounts" --object-path "/org/freedesktop/Accounts/User$(id -u)" --method "org.freedesktop.Accounts.User.SetIconFile" "${HOME}/avatar.png"
 
             sudo systemctl set-default graphical.target
             sudo systemctl enable --now gdm
