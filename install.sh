@@ -292,6 +292,9 @@ function configure_desktop_interface() {
     distro="${1}" 
     desktop_interface="${2}"
 
+    # Enable clamshell when docked
+    sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
+
     case "${desktop_interface}" in 
         "gnome")
             local settings_dir
@@ -325,9 +328,17 @@ function configure_desktop_interface() {
                 fi
             done
 
+            # Set workspace switching to Super+number_key
+            for i in {1..9}; do gsettings set "org.gnome.shell.keybindings switch-to-application-${i}" "[]"; done
+            for i in {1..9}; do gsettings set "org.gnome.desktop.wm.keybindings switch-to-workspace-${i}" "['<Super>${i}']"; done
+            for i in {1..9}; do gsettings set "org.gnome.desktop.wm.keybindings move-to-workspace-${i}" "['<Super><Shift>${i}']"; done
+            
+            # Enable fractional scaling
+            gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+
             # Set Wallpaper
             gsettings set org.gnome.desktop.background picture-uri "file:///${HOME}/wallpaper_${distro}.png"
-            gsettings set org.gnome.desktop.background picture-uri-dark "file:///${HOME}/wallpaper${distro}.png"
+            gsettings set org.gnome.desktop.background picture-uri-dark "file:///${HOME}/wallpaper_${distro}.png"
 
             # Set User Icon
             gdbus call --system --dest "org.freedesktop.Accounts" --object-path "/org/freedesktop/Accounts/User$(id -u)" --method "org.freedesktop.Accounts.User.SetIconFile" "${HOME}/avatar.png"
