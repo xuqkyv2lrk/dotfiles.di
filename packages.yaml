@@ -4,6 +4,7 @@ packages:
 desktop_packages:
   gnome:
     - gnome
+    - gnome-themes-extra
     - gnome-tweaks
     - extension-manager
   hyprland:

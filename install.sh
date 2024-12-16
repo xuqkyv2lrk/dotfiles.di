@@ -343,6 +343,9 @@ function configure_desktop_interface() {
             # Set User Icon
             gdbus call --system --dest "org.freedesktop.Accounts" --object-path "/org/freedesktop/Accounts/User$(id -u)" --method "org.freedesktop.Accounts.User.SetIconFile" "${HOME}/avatar.png"
 
+            # Set GTK Theme
+            gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+
             sudo systemctl set-default graphical.target
             sudo systemctl enable --now gdm
             ;; 
