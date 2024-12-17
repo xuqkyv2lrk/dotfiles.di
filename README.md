@@ -17,6 +17,20 @@
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
+<img src="./_docs/gnome/logo.svg" width="36px" style="vertical-align: top; margin-right: 3px" /><br />
+GNOME</h3>
+<div style="margin-top: 0; font-size: 0.9em;">
+A modern, user-friendly desktop environment focused on simplicity&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/GNOME/gnome-shell">GitHub</a> · <a href="https://help.gnome.org/">Guide</a> ]
+</div>
+<br />
+<img src="./_docs/gnome/screenshot_one.png" alt="GNOME Screenshot One" width="350px" />
+<img src="./_docs/gnome/screenshot_two.png" alt="GNOME Screenshot Two" width="350px" />
+</div>
+
+<br />
+
+<div align="center">
+<h3 style="margin-bottom: 0;">
 <img src="./_docs/hyprland/logo.svg" width="28px" style="vertical-align: text-top; margin-right: 5px" /><br />
 Hyprland
 </h3>
@@ -24,9 +38,6 @@ Hyprland
 A blazing fast tiling Wayland compositor with cat-like reflexes&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/hyprwm/Hyprland">GitHub</a> · <a href="https://wiki.hyprland.org/">Wiki</a> ] 
 </div>
 <br />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Hyprland Screenshot" width="250px" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 2" width="250px" style="display: block; margin: 0 auto;" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 3" width="250px" style="display: block; margin: 0 auto;" />
 </div>
 
 <br />
@@ -39,22 +50,4 @@ Sway</h3>
 A tiling Wayland compositor and drop-in replacement for i3&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/swaywm/sway">GitHub</a> · <a href="https://github.com/swaywm/sway/wiki">Wiki</a> ]
 </div>
 <br />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Sway Screenshot" width="250px" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 2" width="250px" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 3" width="250px" />
-</div>
-
-<br />
-
-<div align="center">
-<h3 style="margin-bottom: 0;">
-<img src="./_docs/gnome/logo.svg" width="36px" style="vertical-align: top; margin-right: 3px" /><br />
-GNOME</h3>
-<div style="margin-top: 0; font-size: 0.9em;">
-A modern, user-friendly desktop environment focused on simplicity&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/GNOME/gnome-shell">GitHub</a> · <a href="https://help.gnome.org/">Guide</a> ]
-</div>
-<br />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="GNOME Screenshot" width="250px" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 2" width="250px" />
-<img src="https://placehold.co/600x400?text=Screenshot" alt="Screenshot 3" width="250px" />
 </div>
