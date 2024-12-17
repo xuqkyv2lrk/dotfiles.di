@@ -16,6 +16,9 @@ desktop_packages:
     - swww
     - waybar
     - wofi
+    - xdg-desktop-portal
+    - xdg-desktop-portal-hyprland
+    - xdg-desktop-portal-wlr
   sway:
     - bemenu
     - dmenu
