@@ -23,9 +23,9 @@ GNOME</h3>
 A modern, user-friendly desktop environment focused on simplicity&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/GNOME/gnome-shell">GitHub</a> · <a href="https://help.gnome.org/">Guide</a> ]
 </div>
 <br />
-<img src="./_docs/gnome/screenshot_one.png" alt="GNOME Screenshot One" width="350px" />
-<img src="./_docs/gnome/screenshot_two.png" alt="GNOME Screenshot Two" width="350px" />
-<img src="./_docs/gnome/screenshot_three.png" alt="GNOME Screenshot Two" width="350px" />
+<img src="./_docs/gnome/screenshot_one.png" alt="GNOME Screenshot One" width="260px" />
+<img src="./_docs/gnome/screenshot_two.png" alt="GNOME Screenshot Two" width="260px" />
+<img src="./_docs/gnome/screenshot_three-one.png" alt="GNOME Screenshot Two" width="260px" />
 </div>
 
 <br />
