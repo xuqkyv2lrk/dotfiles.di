@@ -269,6 +269,7 @@ function configure_pre_install() {
                 if [[ "${desktop_interface}" == "hyprland" ]]; then
                     if ! command -v "hyprpolkitagent" &> /dev/null; then
                         echo -e "\n${MAGENTA}Installing ${BOLD}hyprpolkit${NC}" 
+                        install_package "qt5-qtbase-devel"
                         git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
                         cd /tmp/polkit
                         mkdir build && cd build

@@ -10,6 +10,7 @@ desktop_packages:
   hyprland:
     - hyprland
     - hyprpolkitagent
+    - qt5
     - swaylock-effects
     - SwayNotificationCenter
     - swww
@@ -37,14 +38,17 @@ exceptions:
     - bemenu: bemenu-wayland
     - gcc-c++: gcc
     - python3-i3ipc: python-i3ipc
+    - qt5: qt5-base
     - SwayNotificationCenter: swaync
     - xwayland: xorg-xwayland
   fedora:
     - pinentry: pinentry-tty
+    - qt5: qt5-qtbase-devel
     - xwayland: xorg-x11-server-Xwayland 
   opensuse-tumbleweed:
     - j4-dmenu-desktop: skip
     - hyprpolkitagent: skip
+    - qt5: libqt5-qtbase-devel
 
 repositories:
   fedora:
