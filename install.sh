@@ -266,19 +266,6 @@ function configure_pre_install() {
                 add_repo_if_not_exists "${distro}" "home_mantarimay_sway" "https://download.opensuse.org/repositories/home:mantarimay:sway/standard/home:mantarimay:sway.repo"
                 add_repo_if_not_exists "${distro}" "home_smolsheep" "https://download.opensuse.org/repositories/home:smolsheep/openSUSE_Tumbleweed/home:smolsheep.repo"
                 
-                if [[ "${desktop_interface}" == "hyprland" ]]; then
-                    if ! command -v "hyprpolkitagent" &> /dev/null; then
-                        echo -e "\n${MAGENTA}Installing ${BOLD}hyprpolkit${NC}" 
-                        install_package "qt5-qtbase-devel"
-                        git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
-                        cd /tmp/polkit
-                        mkdir build && cd build
-                        cmake ..
-                        make
-                        sudo make install
-                    fi
-                fi
-
                 if [[ "${desktop_interface}" == "sway" ]]; then
                     # j4-dmenu-desktop
                     if ! command -v "j4-dmenu-desktop" &> /dev/null; then
@@ -366,7 +353,16 @@ function configure_desktop_interface() {
             sudo systemctl enable --now gdm
             ;; 
         "hyprland") 
-            sudo systemctl enable --now hyprpolkitagent.service
+            if ! command -v "hyprpolkitagent" &> /dev/null; then
+                git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
+                cd /tmp/polkit
+                mkdir build && cd build
+                cmake ..
+                make
+                sudo make install
+                
+                sudo systemctl enable --now hyprpolkitagent.service
+            fi
             ;; 
         "sway") ;; 
         *) 
