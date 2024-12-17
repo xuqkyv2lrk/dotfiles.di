@@ -222,7 +222,7 @@ add_repo_if_not_exists() {
     case "${distro}" in
         "opensuse-tumbleweed")
             if ! zypper lr | grep -q "${repo_name}"; then
-                sudo zypper addrepo --refresh "${repo_url}" "${repo_name}"
+                sudo zypper addrepo --refresh "${repo_url}"
                 sudo zypper refresh
                 echo -e "\nRepository ${repo_name} added."
             else
@@ -246,10 +246,11 @@ function configure_pre_install() {
             echo -e "\n${BLUE}Creating directory: ${BOLD}${HOME}/.local/share/gnome-shell${NC}" 
             mkdir -p "${HOME}/.local/share/gnome-shell"
             ;; 
-        "hyprland") ;; 
-        "sway") 
-            echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
-            cargo install --locked --root "${HOME}" swaysome 
+        "hyprland" | "sway") 
+            if [[ "${desktop_interface}" == "sway" ]]; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
+                cargo install --locked --root "${HOME}" swaysome 
+            fi
                  
             if [[ "${distro}" == "fedora" ]]; then 
                 add_copr_repo 
@@ -264,16 +265,30 @@ function configure_pre_install() {
                 # Will create own repo for these package until they are in the official repo
                 add_repo_if_not_exists "${distro}" "home_mantarimay_sway" "https://download.opensuse.org/repositories/home:mantarimay:sway/standard/home:mantarimay:sway.repo"
                 add_repo_if_not_exists "${distro}" "home_smolsheep" "https://download.opensuse.org/repositories/home:smolsheep/openSUSE_Tumbleweed/home:smolsheep.repo"
+                
+                if [[ "${desktop_interface}" == "hyprland" ]]; then
+                    if ! command -v "hyprpolkitagent" &> /dev/null; then
+                        echo -e "\n${MAGENTA}Installing ${BOLD}hyprpolkit${NC}" 
+                        git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
+                        cd /tmp/polkit
+                        mkdir build && build
+                        cmake ..
+                        make
+                        sudo make install
+                    fi
+                fi
 
-                # j4-dmenu-desktop
-                if ! command -v "j4-dmenu-desktop" &> /dev/null; then
-                    echo -e "\n${MAGENTA}Installing ${BOLD}j4-dmenu-desktop${NC}" 
-                    git clone https://github.com/enkore/j4-dmenu-desktop.git /tmp/j4
-                    cd /tmp/j4
-                    meson setup build
-                    cd build
-                    meson compile
-                    sudo meson install
+                if [[ "${desktop_interface}" == "sway" ]]; then
+                    # j4-dmenu-desktop
+                    if ! command -v "j4-dmenu-desktop" &> /dev/null; then
+                        echo -e "\n${MAGENTA}Installing ${BOLD}j4-dmenu-desktop${NC}" 
+                        git clone https://github.com/enkore/j4-dmenu-desktop.git /tmp/j4
+                        cd /tmp/j4
+                        meson setup build
+                        cd build
+                        meson compile
+                        sudo meson install
+                    fi
                 fi
             fi
             ;; 
@@ -349,7 +364,9 @@ function configure_desktop_interface() {
             sudo systemctl set-default graphical.target
             sudo systemctl enable --now gdm
             ;; 
-        "hyprland") ;; 
+        "hyprland") 
+            sudo systemctl enable --now hyprpolkitagent.service
+            ;; 
         "sway") ;; 
         *) 
             echo -e "\n${RED}Unsupported desktop interface: ${BOLD}${desktop_interface}${NC}" 

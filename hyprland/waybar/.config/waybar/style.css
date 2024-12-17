@@ -1,0 +1,48 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
+  font-weight: bold;
+  font-size: 14px;
+  min-height: 14px;
+}
+
+window#waybar {
+  color: rgb(205, 214, 244);
+  background: transparent;
+}
+
+tooltip {
+  background: rgb(30, 30, 46);
+  color: rgb(205, 214, 244);
+  border-radius: 7px;
+  border-width: 0px;
+}
+
+#workspaces {
+  margin-left: 8px;
+}
+#workspaces button {
+  color: rgb(69, 71, 90);
+  padding: 0 4px;
+  transition: color 100ms ease-in;
+}
+#workspaces button:nth-child(1) {
+  padding-left: 0;
+}
+#workspaces button.active {
+  color: rgb(205, 214, 244);
+}
+#workspaces button:hover {
+  color: rgb(205, 214, 244);
+  border: 0;
+  background: none;
+  box-shadow: inherit;
+  text-shadow: inherit;
+}
+
+#system {
+  margin-right: 10px;
+}
+#system #pulseaudio,
+#system #network {
+  padding: 0 20px;
+}

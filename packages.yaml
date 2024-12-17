@@ -8,6 +8,13 @@ desktop_packages:
     - gnome-tweaks
     - extension-manager
   hyprland:
+    - hyprland
+    - hyprpolkitagent
+    - swaylock-effects
+    - SwayNotificationCenter
+    - swww
+    - waybar
+    - wofi
   sway:
     - bemenu
     - dmenu
@@ -37,6 +44,7 @@ exceptions:
     - xwayland: xorg-x11-server-Xwayland 
   opensuse-tumbleweed:
     - j4-dmenu-desktop: skip
+    - hyprpolkitagent: skip
 
 repositories:
   fedora:

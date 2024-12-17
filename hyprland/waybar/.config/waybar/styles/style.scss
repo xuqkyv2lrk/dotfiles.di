@@ -1,0 +1,58 @@
+@use './colors.scss';
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
+    font-weight: bold;
+    font-size: 14px;
+    min-height: 14px;
+}
+
+window {
+    &#waybar {
+        color: colors.$text;
+        background: transparent;
+        //background: rgba(colors.$mantle, 0.75);
+    }
+}
+
+tooltip {
+    background: colors.$base;
+    color: colors.$text;
+    border-radius: 7px;
+    border-width: 0px;
+}
+
+#workspaces {
+    margin-left: 8px;
+    
+    button {
+        color: colors.$surface1;
+        padding: 0 4px;
+        transition: color 100ms ease-in;
+
+        &:nth-child(1) {
+            padding-left: 0;
+        }
+
+        &.active {
+            color: colors.$text;
+        }
+
+        &:hover {
+            color: colors.$text;
+            border: 0;
+            background: none;
+            box-shadow: inherit;
+            text-shadow: inherit;
+        }
+    }
+}
+
+#system {
+    margin-right: 10px;
+
+    #pulseaudio,
+    #network {
+        padding: 0 20px;
+    }
+}

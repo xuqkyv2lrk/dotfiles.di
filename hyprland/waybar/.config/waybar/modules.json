@@ -1,0 +1,74 @@
+{
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "default": "",
+            "empty": "•"
+        },
+        "all-outputs": false,
+        "active-only": false,
+        "on-click": "activate",
+        "persistent-workspaces": {
+            "eDP-1": [1,2,3,4,5],
+            "DP-2": [11,12,13,14,15]
+        }
+    },
+
+    "group/system": {
+        "orientation": "horizontal",
+        "modules": [
+            "network",
+            "backlight",
+            "pulseaudio",
+            "battery"
+        ]
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{icon} {volume}% {format_source}",
+        "format-bluetooth-muted": "  {icon} Muted {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-muted": " Muted",
+        "on-click": "pavucontrol",
+        "tooltip-format": "{icon} {desc}",
+        "format-icons": {
+            "headphone": ["", "", "", ""],
+            "hands-free": "",
+            "headset": "",
+            "default": ["", "", ""]
+        }
+    },
+
+    "backlight": {
+		"format": "{icon} {percent}%",
+		"format-icons": [""]
+	},
+
+    "network": {
+		"interval": 1,
+		"format-ethernet": " {ifname}",
+		"format-wifi": " <span>{essid}</span>",
+		"format-linked": " {essid} (No IP)",
+		"format-disconnected": " Disconnected",
+		"max-length": 28,
+		"tooltip": true,
+		"tooltip-format": "{ipaddr}/{cidr}",
+        "format-alt": " {signalStrength}%",
+        "on-click": "alacritty --class nmtui -e nmtui"
+	},
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰂄 {capacity}%",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    }
+}

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+function ewwReload() {
+    eww kill
+    eww --config ~/.config/eww/bar open bar
+}
+
+if grep open /proc/acpi/button/lid/LID/state; then
+    hyprctl keyword monitor "eDP-1, preferred, auto, 1.25"
+    hyprctl keyword monitor "eDP-2, preferred, auto, 1.5"
+    ewwReload
+else
+    if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
+        hyprctl keyword monitor "eDP-1, disable"
+        hyprctl keyword monitor "eDP-2, disable"
+        ewwReload
+    fi
+fi
+
+if [[ "$(hyprctl monitors)" =~ "DP-3" ]]; then
+    if [[ $1 == "open" ]]; then
+        hyprctl keyword monitor "eDP-2, preferred, auto, 1.5"
+        ewwReload
+    else
+        hyprctl keyword monitor "eDP-2, disable"
+        ewwReload
+    fi
+fi
