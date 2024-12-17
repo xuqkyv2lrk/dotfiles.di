@@ -271,7 +271,7 @@ function configure_pre_install() {
                         echo -e "\n${MAGENTA}Installing ${BOLD}hyprpolkit${NC}" 
                         git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
                         cd /tmp/polkit
-                        mkdir build && build
+                        mkdir build && cd build
                         cmake ..
                         make
                         sudo make install
