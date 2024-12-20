@@ -1,0 +1,10 @@
+profile default {
+    output eDP-1 scale 1.6 mode 2560x1440 position 0,0
+}
+
+# Dell "x" position is calculated by dividing the Dell width by the scale of eDP-1
+# This places it to the right of the laptop
+profile dual {
+    output "Dell Inc. DELL S2722DC D5T1HD3" scale 1 mode 2560x1440 position 1600,0
+    output eDP-1 enable scale 1.6 mode 2560x1440 position 0,445
+}

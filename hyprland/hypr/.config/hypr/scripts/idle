@@ -1,11 +1,10 @@
 #!/bin/sh
 
 swayidle -dw \
-    timeout 100 "brightnessctl set 40%-" \
-            resume "brightnessctl set +40%" \
-    timeout 150 "pgrep swaylock || swaylock" \
+    timeout 150 "lightctl decrease -s 150 30%" \
+            resume "lightctl increase -s 150 30%" \
+    timeout 200 "swaylock -f" \
     timeout 300 "hyprctl dispatch dpms off" \
 			resume "hyprctl dispatch dpms on" \
     timeout 600 "systemctl suspend" \
-            before-sleep "pgrep swaylock || swaylock"
-
+            before-sleep "swaylock -f" &

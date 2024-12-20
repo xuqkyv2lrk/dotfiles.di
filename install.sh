@@ -291,12 +291,33 @@ function configure_pre_install() {
 function configure_desktop_interface() {
     local distro
     local desktop_interface
+    local gpg_config_file
+    local pinentry_line
 
     distro="${1}" 
     desktop_interface="${2}"
 
+    gpg_config_file="${HOME}/.gnupg/gpg-agent.conf"
+    pinentry_line="pinentry-program /usr/bin/pinentry-tty"
+
     # Enable clamshell when docked
-    sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
+    if [[ -f "/etc/systemd/logind.conf" ]]; then
+        sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
+    else
+        echo -e "#HandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
+    fi
+    gpg-connect-agent reloadagent /bye > /dev/null 2>&1
+
+    # GPG to utilize pinentry-tty
+    if [[ -f "${gpg_config_file}" ]]; then
+        if grep -q "^pinentry-program" "${gpg_config_file}"; then
+            sed -i "s|^pinentry-program.*|${pinentry_line}|" "${gpg_config_file}"
+        else
+            echo "${pinentry_line}" >> "${gpg_config_file}"
+        fi
+    else
+        echo "${pinentry_line}" > "${gpg_config_file}"
+    fi
 
     case "${desktop_interface}" in 
         "gnome")
@@ -353,16 +374,37 @@ function configure_desktop_interface() {
             sudo systemctl enable --now gdm
             ;; 
         "hyprland") 
-            if ! command -v "hyprpolkitagent" &> /dev/null; then
-                git clone https://github.com/hyprwm/hyprpolkitagent /tmp/polkit
-                cd /tmp/polkit
-                mkdir build && cd build
-                cmake ..
-                make
-                sudo make install
-                
-                sudo systemctl enable --now hyprpolkitagent.service
+            sudo sed -i 's/^#HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
+            
+            if ! command -v "hyprland-monitor-attached" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}hyprland-monitor-attached${NC}" 
+                cargo install --root "${HOME}" hyprland-monitor-attached
             fi
+
+            if ! command -v "volumectl" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}volumectl{NC}" 
+                curl -L "https://github.com/vially/volumectl/releases/download/v0.1.0/volumectl" -o "${HOME}/bin/volumectl"
+                chmod +x "${HOME}/bin/volumectl"
+            fi
+
+            if ! command -v "lightctl" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}lightctl${NC}" 
+                export GOBIN="${HOME}/bin"
+                go install github.com/denysvitali/lightctl@latest
+            fi
+
+            if ! command -v "swww" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}" 
+                install_package lz4-devel fedora
+                git clone https://github.com/LGFae/swww.git /tmp/swww
+                cd /tmp/swww
+                cargo build --release
+                mv target/release/swww "${HOME}"/bin
+                mv target/release/swww-daemon "${HOME}"/bin
+            fi
+
+            gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+            gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;; 
         "sway") ;; 
         *) 
