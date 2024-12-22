@@ -301,14 +301,15 @@ function configure_desktop_interface() {
     pinentry_line="pinentry-program /usr/bin/pinentry-tty"
 
     # Enable clamshell when docked
+    echo -e "\n${BLUE}Configuring clamshell settings${NC}"
     if [[ -f "/etc/systemd/logind.conf" ]]; then
         sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
     else
         echo -e "#HandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
     fi
-    gpg-connect-agent reloadagent /bye > /dev/null 2>&1
 
     # GPG to utilize pinentry-tty
+    echo -e "\n${BLUE}Configuring gpg settings${NC}"
     if [[ -f "${gpg_config_file}" ]]; then
         if grep -q "^pinentry-program" "${gpg_config_file}"; then
             sed -i "s|^pinentry-program.*|${pinentry_line}|" "${gpg_config_file}"
@@ -318,6 +319,7 @@ function configure_desktop_interface() {
     else
         echo "${pinentry_line}" > "${gpg_config_file}"
     fi
+    gpg-connect-agent reloadagent /bye > /dev/null 2>&1
 
     case "${desktop_interface}" in 
         "gnome")
