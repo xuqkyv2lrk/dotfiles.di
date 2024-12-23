@@ -1,5 +1,8 @@
 packages:
   - pinentry
+  - pipewire
+  - pipewire-alsa 
+  - pipewire-pulseaudio 
 
 desktop_packages:
   gnome:
