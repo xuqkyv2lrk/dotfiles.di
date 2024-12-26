@@ -1,22 +1,22 @@
 {
-	"layer": "top",
-
+    "output": ["DP-1"],
+    "layer": "top",
     "position": "top",
 
 	"modules-left": [
 		"sway/workspaces",
-        	"mpd",
-        	"custom/spotify"
+        "mpd",
+        "custom/spotify"
 	],
 
 	"modules-right": [
-        	"idle_inhibitor",
-        	"network",
-        	"bluetooth",
+        "idle_inhibitor",
+        "network",
+        "bluetooth",
 		"pulseaudio",
 		"backlight",
 		"battery",
-        	"clock"
+        "clock"
 	],
 
     "idle_inhibitor": {
@@ -29,16 +29,24 @@
     },
 
 	"sway/workspaces": {
-		"format": "<span font-family='Font Awesome 5 Pro Solid'>{icon}</span>",
+        "format": "{icon}",
 		"format-icons": {
-	            "focused": "",
-	            "default": "•",
+	        "default": "",
+	        "persistent": "•",
+            "focused": "",
 		    "urgent": "",
-	        },
-		"disable-scroll": true,
-		"all-outputs": false,
-        	"current-only": false,
-        	"on-click": "activate",
+	    },
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        },
+        "disable-scroll": true,
+        "all-outputs": false,
+        "current-only": false,
+        "on-click": "activate",
 	},
 
     "mpd": {

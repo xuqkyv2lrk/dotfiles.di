@@ -26,10 +26,10 @@
 @define-color	crust		rgb(17, 17, 27);
 
 * {
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro", "Font Awesome 5 Brands";
     font-size: 12px;
     border: 0;
     border-radius: 0;
-    font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
     min-height: 0;
 }
 
@@ -54,12 +54,18 @@ window#waybar {
     transition: color 300ms ease-out, background 400ms ease-out;
 }
 
-#workspaces button.visible,
+#workspaces button.visible {
+    background: none;
+    color: @surface2;
+}
+
+#workspaces button.active,
 #workspaces button.focused {
-    background: linear-gradient(90deg, @lavender 10%, @mauve 100%);
-    color: @crust;
+    background: linear-gradient(90deg, @overlay0 20%, @mauve 100%);
+    color: @text;
     transition: background 400ms ease-in;
 }
+
 
 #workspaces button:first-child {
    margin-left: 5px;

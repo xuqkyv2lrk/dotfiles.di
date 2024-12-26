@@ -16,6 +16,7 @@ desktop_packages:
     - hyprland
     - kanshi
     - lxqt-policykit
+    - pavucontrol
     - swayidle
     - swaylock-effects
     - SwayNotificationCenter
@@ -31,6 +32,8 @@ desktop_packages:
     - grim
     - j4-dmenu-desktop
     - kanshi
+    - lxqt-policykit
+    - pavucontrol
     - python3-i3ipc
     - slurp
     - swaybg
