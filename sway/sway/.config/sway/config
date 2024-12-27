@@ -268,9 +268,8 @@ bindsym Ctrl+Alt+l exec swaylock
 #
 # Disable laptop screen when lid is closed
 #
-# TODO: Script it so it only disables screen when an external display is attached
-bindswitch --reload --locked lid:on output eDP-1 disable
-bindswitch --reload --locked lid:off output eDP-1 enable
+bindswitch --reload --locked lid:on exec ~/.config/sway/scripts/lid_handler.sh disable
+bindswitch --reload --locked lid:off exec ~/.config/sway/scripts/lid_handler.sh enable
 
 #
 # Notifications
@@ -281,7 +280,8 @@ exec swaync
 bindsym $mod+Shift+n exec swaync-client -t -sw
 
 for_window [title="File Operation Progress"] floating enable
-for_window [app_id="thunar"] floating enable 
+for_window [app_id="thunar"] floating enable, resize set 1000px 650px, move position center
+for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
 
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [app_id="ncspot"] inhibit_idle open

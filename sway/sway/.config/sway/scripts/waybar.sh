@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+LOCKFILE="/tmp/waybar_restart.lock"
+
+if [[ -e "${LOCKFILE}" ]]; then
+    exit 1
+fi
+
+touch "${LOCKFILE}"
+
 # Get the external monitor name, if any
 external_monitor="$(swaymsg -t get_outputs | jq -r '.[] | select(.active==true and .name!="eDP-1") | .name' | head -n1)"
 
@@ -13,7 +21,7 @@ sed -i "s/\"output\": \[\"[^\"]*\"\]/\"output\": [\"${output}\"]/" "${HOME}/.con
 
 # Restart Waybar
 killall waybar
-waybar -b "${output}" &
+waybar -b bar-0 &
 
 active_workspace=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused==true).name')
 
@@ -22,3 +30,5 @@ swaymsg "workspace 2 output DP-1 DP-2 HDMI-A-1 eDP-1"
 
 swaymsg workspace 6
 swaymsg workspace "${active_workspace}"
+
+rm "$LOCKFILE"
