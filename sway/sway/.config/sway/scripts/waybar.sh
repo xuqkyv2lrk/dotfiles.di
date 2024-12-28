@@ -31,4 +31,13 @@ swaymsg "workspace 2 output DP-1 DP-2 HDMI-A-1 eDP-1"
 swaymsg workspace 6
 swaymsg workspace "${active_workspace}"
 
+# When laptop is closed and an external monitor is connected
+# the laptop screen will become active, so this logic will turn it off
+# as this script is ran on the kanshi event
+if grep -q closed /proc/acpi/button/lid/LID*/state; then
+    if swaymsg -t get_outputs | jq '.[] | select(.name == "eDP-1") | .active'; then
+        swaymsg output eDP-1 disable
+    fi
+fi
+
 rm "$LOCKFILE"

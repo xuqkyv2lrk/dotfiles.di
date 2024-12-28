@@ -289,4 +289,4 @@ for_window [app_id="ncspot"] inhibit_idle open
 include "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf"
 
 exec_always "${XDG_CONFIG_HOME}/sway/scripts/autotiling"
-exec_always "${XDG_CONFIG_HOME}/sway/scripts/lid.sh"
+exec_always "${XDG_CONFIG_HOME}/sway/scripts/lid_state.sh"
