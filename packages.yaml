@@ -36,6 +36,7 @@ desktop_packages:
     - pavucontrol
     - python3-i3ipc
     - slurp
+    - swappy
     - swaybg
     - swayfx
     - swayidle
