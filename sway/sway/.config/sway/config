@@ -144,17 +144,17 @@ input "type:pointer" {
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t catppuccin -m 'Do you want to exit sway?' -B 'Yes' 'swaymsg exit'
 
-#
+# TODO Only show the notification is the image is actually copied/saved in swappy
 # Screenshots
 #
 # Full screen screenshot with swappy
-bindsym Shift+Print exec grim - | swappy -f - -o /tmp/screenshot.png && notify-send -i /tmp/screenshot.png "Screenshot" "Full screen captured" && rm /tmp/screenshot.png
+bindsym Shift+Print exec grim - | swappy -f - -o /tmp/screenshot.png; if [ $? -eq 0 ] && [ -f /tmp/screenshot.png ]; then notify-send -i /tmp/screenshot.png "Screenshot" "Full screen captured"; rm /tmp/screenshot.png; fi
 
 # Select area screenshot with swappy
-bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && notify-send -i /tmp/screenshot.png "Screenshot" "Area selection captured" && rm /tmp/screenshot.png
+bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Area selection captured" && rm /tmp/screenshot.png
 
 # Active window screenshot with swappy
-bindsym Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
+bindsym Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
 
 #
 # Moving around:
@@ -294,8 +294,9 @@ bindsym $mod+Shift+n exec swaync-client -t -sw
 
 for_window [title="File Operation Progress"] floating enable
 for_window [app_id="thunar"] floating enable, resize set 1000px 650px, move position center
-for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
 for_window [app_id="imv"] floating enable, resize set 1280px 720px, move position center
+for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
+for_window [class="Bitwarden"] floating enable, resize set 1500px 1050px, move position center
 
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [app_id="ncspot"] inhibit_idle open
