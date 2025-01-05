@@ -304,8 +304,10 @@ function configure_desktop_interface() {
     echo -e "\n${BLUE}Configuring clamshell settings${NC}"
     if [[ -f "/etc/systemd/logind.conf" ]]; then
         sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
+        sudo sed -i 's/^#HandleLidSwitch=.*/HandleLidSwitch=suspend/' /etc/systemd/logind.conf
+        sudo sed -i 's/^#HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspend/' /etc/systemd/logind.conf
     else
-        echo -e "#HandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
+        echo -e "HandleLidSwitchExternalPower=suspend\nHandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
     fi
 
     # GPG to utilize pinentry-tty
@@ -408,7 +410,10 @@ function configure_desktop_interface() {
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;; 
-        "sway") ;; 
+        "sway") 
+            gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+            gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+            ;; 
         *) 
             echo -e "\n${RED}Unsupported desktop interface: ${BOLD}${desktop_interface}${NC}" 
             ;; 

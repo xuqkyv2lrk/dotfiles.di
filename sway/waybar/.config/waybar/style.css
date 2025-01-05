@@ -66,6 +66,10 @@ window#waybar {
     transition: background 400ms ease-in;
 }
 
+#workspaces button.urgent {
+    color: @red;
+}
+
 
 #workspaces button:first-child {
    margin-left: 5px;

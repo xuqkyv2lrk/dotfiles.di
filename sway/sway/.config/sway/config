@@ -154,7 +154,7 @@ bindsym Shift+Print exec grim - | swappy -f - -o /tmp/screenshot.png; if [ $? -e
 bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Area selection captured" && rm /tmp/screenshot.png
 
 # Active window screenshot with swappy
-bindsym Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
+bindsym Ctrl+Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
 
 #
 # Moving around:
@@ -194,15 +194,25 @@ bindsym Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. |
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+1 move container to workspace number 1, workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2, workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3, workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4, workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5, workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6, workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7, workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8, workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9, workspace number 9
+
+    bindsym $mod+Shift+Ctrl+1 move container to workspace number 1
+    bindsym $mod+Shift+Ctrl+2 move container to workspace number 2
+    bindsym $mod+Shift+Ctrl+3 move container to workspace number 3
+    bindsym $mod+Shift+Ctrl+4 move container to workspace number 4
+    bindsym $mod+Shift+Ctrl+5 move container to workspace number 5
+    bindsym $mod+Shift+Ctrl+6 move container to workspace number 6
+    bindsym $mod+Shift+Ctrl+7 move container to workspace number 7
+    bindsym $mod+Shift+Ctrl+8 move container to workspace number 8
+    bindsym $mod+Shift+Ctrl+9 move container to workspace number 9
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 #
@@ -295,11 +305,15 @@ bindsym $mod+Shift+n exec swaync-client -t -sw
 for_window [title="File Operation Progress"] floating enable
 for_window [app_id="thunar"] floating enable, resize set 1000px 650px, move position center
 for_window [app_id="imv"] floating enable, resize set 1280px 720px, move position center
+for_window [app_id="mpv"] floating enable, resize set 1280px 720px, move position center
 for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
 for_window [class="Bitwarden"] floating enable, resize set 1500px 1050px, move position center
 
+for_window [app_id="tv.plex.Plex"] fullscreen enable
+
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [app_id="ncspot"] inhibit_idle open
+for_window [app_id="tv.plex.Plex"] inhibit_idle fullscreen
 
 include "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf"
 
