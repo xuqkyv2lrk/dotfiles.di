@@ -32,6 +32,32 @@ function detect_distro() {
     fi
 }
 
+# Function: detect_hardware
+# Description: Detects the hardware model of the current system
+# Returns: The system model identifier (e.g., "ThinkPad T480s", "ROG") or "unknown" if not detected
+function detect_hardware() {
+    if ! command -v dmidecode &> /dev/null; then
+        echo "unknown"
+        return
+    fi
+
+    local system_version
+    local system_product
+
+    system_version=$(sudo dmidecode -s system-version)
+    system_product=$(sudo dmidecode -s system-product-name)
+
+    if [[ "${system_version}" == "ThinkPad T480s" ]]; then
+        echo "ThinkPad T480s"
+    elif [[ "${system_product}" == *"ROG"* ]]; then
+        echo "ROG"
+    elif [[ "${system_product}" == "XPS 13 9350" ]]; then
+        echo "XPS 13 9350"
+    else
+        echo "unknown"
+    fi
+}
+
 # Function: get_package_name
 # Description: Retrieves the package name for the defined distro, considering any exceptions defined in "packages.yaml".
 # Parameters:
@@ -420,11 +446,39 @@ function configure_desktop_interface() {
     esac 
 }
 
+# Function: configure_hardware
+# Description: Performs post system setup dependant on hardware
+function configure_hardware() {
+    local hardware
+    local hardware_lowercase
+
+    hardware=$(detect_hardware)
+    hardware_lowercase=$(echo "${hardware}" | tr '[:upper:] ' '[:lower:]_')
+
+    case "${hardware}" in
+        "ROG") ;;
+        "ThinkPad T480s") ;;
+        "XPS 13 9350")
+            local bluetooth_firmware
+
+            bluetooth_firmware="BCM4350C5_003.006.007.0095.1703.hcd"
+
+            echo -e "\n${YELLOW}Post system configuration for ${BOLD}${hardware}${NC}"
+
+            echo -e "\n${BLUE}Configuring bluetooth driver...${NC}"
+            if [ ! -d "/lib/firmware/brcm/" ]; then
+                sudo mkdir -p /lib/firmware/brcm/
+            fi
+            sudo cp -f "./system_components/${hardware_lowercase}/bluetooth/${bluetooth_firmware}" "/lib/firmware/brcm/${bluetooth_firmware}"
+            ;;
+    esac
+}
+
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
     local distro=${1:-$(detect_distro)}
-    local desktop_interface=${2:-} 
+    local desktop_interface=${2:-}
 
     if [[ -z "${distro}" ]]; then
        distro=$(detect_distro) 
@@ -459,6 +513,8 @@ function main() {
     done 
 
     configure_desktop_interface "${distro}" "${desktop_interface}"
+
+    configure_hardware
 }
 
 main "$@"

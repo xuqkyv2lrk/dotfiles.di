@@ -51,7 +51,7 @@ default_border pixel 3
 # Color definition
 #
 
-set $c1 #f38ba8
+set $c1 #a6e3a1
 set $c2 #cba6f7
 set $c3 #cba6f7
 set $c4 #11111b
