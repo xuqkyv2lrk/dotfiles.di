@@ -29,6 +29,7 @@ desktop_packages:
   sway:
     - bemenu
     - dmenu
+    - gnome-themes-extra
     - grim
     - j4-dmenu-desktop
     - kanshi
