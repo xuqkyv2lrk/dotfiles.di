@@ -28,6 +28,7 @@ desktop_packages:
     - xdg-desktop-portal-wlr
   sway:
     - bemenu
+    - brightnessctl
     - dmenu
     - gnome-themes-extra
     - grim
