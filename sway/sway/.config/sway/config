@@ -131,7 +131,7 @@ input "type:pointer" {
     # Start your launcher
     bindsym $mod+d exec $menu
 
-    bindsym $mod+p exec "${XDG_CONFIG_HOME}/sway/scripts/powwer_menu.sh"
+    bindsym $mod+p exec "${XDG_CONFIG_HOME}/sway/scripts/power_menu.sh"
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
