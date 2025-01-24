@@ -93,7 +93,7 @@ set $menu j4-dmenu-desktop --display-binary --dmenu='BEMENU_BACKEND=wayland beme
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg
-output * bg "${XDG_CONFIG_HOME}/sway/wallpaper.png" fill
+output * bg "${XDG_CONFIG_HOME}/sway/wallpapers/marine_tunnel.jpg" fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 output * adaptive_sync on
@@ -300,6 +300,9 @@ bindswitch --reload --locked lid:off exec ~/.config/sway/scripts/lid_handler.sh 
 # Notifications
 #
 exec swaync
+
+bindgesture swipe:left workspace prev
+bindgesture swipe:right workspace next
 
 # Toggle control center
 bindsym $mod+Shift+n exec swaync-client -t -sw
