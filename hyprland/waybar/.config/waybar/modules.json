@@ -7,12 +7,16 @@
             "empty": "•"
         },
         "all-outputs": false,
+        "current-only": false,
         "active-only": false,
         "on-click": "activate",
         "persistent-workspaces": {
-            "eDP-1": [1,2,3,4,5],
-            "DP-2": [11,12,13,14,15]
-        }
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        },
     },
 
     "group/system": {
