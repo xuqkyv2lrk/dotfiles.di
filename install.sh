@@ -425,7 +425,7 @@ function configure_desktop_interface() {
 
             if ! command -v "swww" &> /dev/null; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}" 
-                install_package lz4-devel fedora
+                install_package lz4-devel "${distro}"
                 git clone https://github.com/LGFae/swww.git /tmp/swww
                 cd /tmp/swww
                 cargo build --release

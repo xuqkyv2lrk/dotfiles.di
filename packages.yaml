@@ -14,16 +14,19 @@ desktop_packages:
   hyprland:
     - acpi
     - gnome-themes-extra
+    - grim
+    - hypridle
     - hyprland
-    - kanshi
+    - hyprlock
     - lxqt-policykit
     - pavucontrol
-    - swayidle
-    - swaylock-effects
+    - rofi-wayland
+    - slurp
+    - socat
     - SwayNotificationCenter
     - thunar
     - waybar
-    - wofi
+    - wlogout
     - xdg-desktop-portal
     - xdg-desktop-portal-hyprland
     - xdg-desktop-portal-wlr
