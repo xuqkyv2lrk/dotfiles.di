@@ -2,7 +2,8 @@
     "group/spaces": {
         "orientation": "horizontal",
         "modules": [
-            "hyprland/workspaces"
+            "hyprland/workspaces",
+            "tray",
         ]
     },
 
@@ -22,7 +23,6 @@
             "pulseaudio",
             "pulseaudio#microphone",
             "backlight",
-            "tray",
             "battery",
             "custom/power"
         ]
