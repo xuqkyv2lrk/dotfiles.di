@@ -31,8 +31,8 @@ hyprctl keyword workspace 2,monitor:DP-2
 hyprctl keyword workspace 2,monitor:HDMI-A-1
 hyprctl keyword workspace 2,monitor:eDP-1
 
-hyprctl dispatch workspace 1
 hyprctl dispatch workspace 6
+hyprctl dispatch workspace 1
 hyprctl dispatch workspace "${active_workspace}"
 
 rm "${LOCKFILE}"
