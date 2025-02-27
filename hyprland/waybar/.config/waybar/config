@@ -2,25 +2,23 @@
     "output": ["DP-1"],
     "layer": "top",
     "position": "top",
-    "mod": "dock",
-    "height": 30,
+    "mode": "dock",
+    "height": 0,
     "exclusive": true,
     "passthrough": false,
-    "gtk-layer-shell": false,
+    "gtk-layer-shell": true,
 
     "include": ["~/.config/waybar/modules.json"],
 
-	"modules-left": [
-        "hyprland/workspaces",
+    "modules-left": [
+        "group/spaces"
     ],
 
-	"modules-center": [
-        "clock"
+    "modules-center": [
+        "group/nexus"
     ],
 
     "modules-right": [
-        "group/misc",
-        "group/devices",
         "group/system"
     ]
 }

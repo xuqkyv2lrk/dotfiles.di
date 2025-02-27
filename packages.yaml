@@ -13,12 +13,15 @@ desktop_packages:
     - extension-manager
   hyprland:
     - acpi
+    - bluetui
     - gnome-themes-extra
     - grim
     - hypridle
     - hyprland
     - hyprlock
+    - kclock
     - lxqt-policykit
+    - pamixer
     - pavucontrol
     - rofi-wayland
     - slurp
