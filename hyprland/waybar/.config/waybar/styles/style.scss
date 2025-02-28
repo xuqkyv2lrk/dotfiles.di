@@ -49,7 +49,7 @@ $modules: window, clock, battery, pulseaudio, bluetooth, custom-music, network, 
 
 @each $module in $modules {
     ##{$module} {
-        background: rgba(colors.$crust, 0.6);
+        background: rgba(colors.$base, 0.85);
         color: colors.$subtext1;
         padding: 0 10px;
         margin: 0;

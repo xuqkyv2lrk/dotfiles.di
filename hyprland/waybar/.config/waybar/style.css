@@ -39,7 +39,7 @@ tooltip {
 }
 
 #window {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -47,7 +47,7 @@ tooltip {
 }
 
 #clock {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -55,7 +55,7 @@ tooltip {
 }
 
 #battery {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -63,7 +63,7 @@ tooltip {
 }
 
 #pulseaudio {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -71,7 +71,7 @@ tooltip {
 }
 
 #bluetooth {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -79,7 +79,7 @@ tooltip {
 }
 
 #custom-music {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -87,7 +87,7 @@ tooltip {
 }
 
 #network {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -95,7 +95,7 @@ tooltip {
 }
 
 #cpu {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -103,7 +103,7 @@ tooltip {
 }
 
 #memory {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -111,7 +111,7 @@ tooltip {
 }
 
 #custom-power {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -119,7 +119,7 @@ tooltip {
 }
 
 #custom-notification {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -127,7 +127,7 @@ tooltip {
 }
 
 #workspaces {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -135,7 +135,7 @@ tooltip {
 }
 
 #tray {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
@@ -143,7 +143,7 @@ tooltip {
 }
 
 #backlight {
-  background: rgba(17, 17, 27, 0.6);
+  background: rgba(30, 30, 46, 0.85);
   color: rgb(186, 194, 222);
   padding: 0 10px;
   margin: 0;
