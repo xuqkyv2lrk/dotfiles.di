@@ -282,8 +282,10 @@ function configure_pre_install() {
                 add_copr_repo 
                 
                 # swaylock-effects
-                echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
-                sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
+                if [[ "${desktop_interface}" == "sway" ]]; then
+                    echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
+                    sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
+                fi
             fi 
 
             if [[ "${distro}" == "opensuse-tumbleweed" ]]; then
@@ -406,11 +408,6 @@ function configure_desktop_interface() {
         "hyprland") 
             sudo sed -i 's/^#HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
             
-            if ! command -v "hyprland-monitor-attached" &> /dev/null; then
-                echo -e "\n${MAGENTA}Installing ${BOLD}hyprland-monitor-attached${NC}" 
-                cargo install --root "${HOME}" hyprland-monitor-attached
-            fi
-
             if ! command -v "volumectl" &> /dev/null; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}volumectl{NC}" 
                 curl -L "https://github.com/vially/volumectl/releases/download/v0.1.0/volumectl" -o "${HOME}/bin/volumectl"
@@ -431,6 +428,11 @@ function configure_desktop_interface() {
                 cargo build --release
                 mv target/release/swww "${HOME}"/bin
                 mv target/release/swww-daemon "${HOME}"/bin
+            fi
+
+            if ! command -v "bluetui" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}bluetui${NC}"
+                cargo install --locked --root "${HOME}" bluetui
             fi
 
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark

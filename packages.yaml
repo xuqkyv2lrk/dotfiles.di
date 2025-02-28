@@ -13,7 +13,7 @@ desktop_packages:
     - extension-manager
   hyprland:
     - acpi
-    - bluetui
+    - dbus
     - gnome-themes-extra
     - grim
     - hypridle
@@ -23,6 +23,7 @@ desktop_packages:
     - lxqt-policykit
     - pamixer
     - pavucontrol
+    - pkg-config
     - rofi-wayland
     - slurp
     - socat
@@ -62,9 +63,11 @@ exceptions:
     - SwayNotificationCenter: swaync
     - xwayland: xorg-xwayland
   fedora:
+    - dbus: dbus-devel
     - pinentry: pinentry-tty
     - xwayland: xorg-x11-server-Xwayland 
   opensuse-tumbleweed:
+    - dbus: dbus-1-devel
     - j4-dmenu-desktop: skip
 
 repositories:
