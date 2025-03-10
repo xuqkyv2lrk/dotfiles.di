@@ -24,6 +24,7 @@ desktop_packages:
     - pamixer
     - pavucontrol
     - pkg-config
+    - polkit
     - rofi-wayland
     - slurp
     - socat
@@ -44,6 +45,7 @@ desktop_packages:
     - kanshi
     - lxqt-policykit
     - pavucontrol
+    - polkit
     - python3-i3ipc
     - slurp
     - swappy
