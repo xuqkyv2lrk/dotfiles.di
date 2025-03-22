@@ -1,58 +1,122 @@
 @use './colors.scss';
 
 * {
+    border: none;
+    border-radius: 0;
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
     font-weight: bold;
     font-size: 14px;
-    min-height: 14px;
+    min-height: 0;
 }
 
 window {
     &#waybar {
         color: colors.$text;
         background: transparent;
-        //background: rgba(colors.$mantle, 0.75);
     }
 }
 
 tooltip {
-    background: colors.$base;
-    color: colors.$text;
-    border-radius: 7px;
-    border-width: 0px;
+    background: rgba(colors.$base, 0.8);
+    color: colors.$subtext0;
+    border-radius: 10px;
+    border-width: 0;
+}
+
+#workspaces button {
+    color: colors.$surface1;
+    padding: 0 4px;
+    transition: color 100ms ease-in;
+    
+    &:nth-child(1) {
+        padding-left: 0;
+    }
+    
+    &.active {
+        color: colors.$text;
+    }
+    
+    &:hover {
+        color: colors.$text;
+        border: 0;
+        background: none;
+        box-shadow: inherit;
+        text-shadow: inherit;
+    }
+}
+
+$modules: window, clock, battery, pulseaudio, bluetooth, custom-music, network, cpu, memory, custom-power, custom-notification, workspaces, tray, backlight;
+
+@each $module in $modules {
+    ##{$module} {
+        background: rgba(colors.$base, 0.85);
+        color: colors.$subtext1;
+        padding: 0 10px;
+        margin: 0;
+        margin-top: 5px;
+    }
+}
+
+#window {
+    border-radius: 10px;
+    margin-left: 60px;
+    margin-right: 5px;
 }
 
 #workspaces {
-    margin-left: 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+    padding: 0 5px;
+}
+
+#clock {
+    border-radius: 10px 10px 10px 10px;
+    margin-left: 5px;
+    border-right: 0;
+}
+
+#custom-music {
+    border-radius: 10px;
+}
+
+#cpu {
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+#network {
+    border-radius: 10px 0px 0px 10px;
+}
+
+#pulseaudio {
+    border-left: 0;
+    border-right: 0;
     
-    button {
-        color: colors.$surface1;
-        padding: 0 4px;
-        transition: color 100ms ease-in;
-
-        &:nth-child(1) {
-            padding-left: 0;
-        }
-
-        &.active {
-            color: colors.$text;
-        }
-
-        &:hover {
-            color: colors.$text;
-            border: 0;
-            background: none;
-            box-shadow: inherit;
-            text-shadow: inherit;
-        }
+    &.microphone {
+        border-radius: 0px 10px 10px 0px;
+        margin-right: 5px;
     }
 }
 
-#system {
+#backlight {
+    border-radius: 10px 0px 0px 10px;
+}
+
+#tray {
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+#battery {
+    border-radius: 0px 10px 10px 0px;
     margin-right: 10px;
-
-    #pulseaudio,
-    #network {
-        padding: 0 20px;
-    }
 }
+
+#custom-power {
+    color: colors.$maroon;
+    border-radius: 10px;
+    margin-right: 10px;
+    padding-left: 9px;
+    padding-right: 13px;
+}
+

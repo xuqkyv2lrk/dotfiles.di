@@ -1,4 +1,33 @@
 {
+    "group/spaces": {
+        "orientation": "horizontal",
+        "modules": [
+            "hyprland/workspaces",
+            "tray",
+        ]
+    },
+
+    "group/nexus": {
+        "orientation": "horizontal",
+        "modules": [
+            "clock"
+        ]
+    },
+
+    "group/system": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "network",
+            "bluetooth",
+            "pulseaudio",
+            "pulseaudio#microphone",
+            "backlight",
+            "battery",
+            "custom/power"
+        ]
+    },
+
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
@@ -7,33 +36,111 @@
             "empty": "•"
         },
         "all-outputs": false,
+        "current-only": false,
         "active-only": false,
         "on-click": "activate",
         "persistent-workspaces": {
-            "eDP-1": [1,2,3,4,5],
-            "DP-2": [11,12,13,14,15]
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        },
+    },
+
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%a, %b %d, %Y}",
+        "interval": 60,
+        "rotate": 0,
+        "on-click-right": "kclock",
+        "tooltip-format": "{calendar}",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
+            "on-click-right": "mode",
+            "format": {
+                "months": "<span><b>{}</b></span>",
+                "days": "<span>{}</span>",
+                "weekdays": "<span><b>{}</b></span>",
+                "today": "<span color='#cba6f7'><b>{}</b></span>"
+            }
         }
     },
 
-    "group/system": {
-        "orientation": "horizontal",
-        "modules": [
-            "network",
-            "backlight",
-            "pulseaudio",
-            "battery"
-        ]
+    "custom/music": {
+        "format": " {}",
+        "escape": true,
+        "interval": 5,
+        "tooltip": false,
+        "exec": "playerctl metadata --format='{{ title }}'",
+        "on-click": "playerctl play-pause",
+        "max-length": 20
+    },
+
+
+    "cava": {
+        "framerate": 30,
+        "autosens": 1,
+        "sensitivity": 100,
+        "bars": 14,
+        "lower_cutoff_freq": 50,
+        "higher_cutoff_freq": 10000,
+        "method": "pipewire",
+        "source": "auto",
+        "stereo": true,
+        "reverse": false,
+        "bar_delimiter": 0,
+        "monstercat": false,
+        "waves": false,
+        "noise_reduction": 0.77,
+        "input_delay": 2,
+        "format-icons" : ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" ],
+        "actions": {
+            "on-click-right": "mode"
+        }
+    },
+
+    "cpu": {
+        "interval": 1,
+        "on-click": "foot --app-id monitor btop",
+        "format": "󰍛 {usage}%"
+    },
+
+    "network": {
+        "interval": 1,
+        "format-wifi": "  {essid}",
+        "format-ethernet": "󰈀 {bandwidthTotalBytes}",
+        "format-linked": " {ifname} (No IP)",
+        "format-disconnected": "󰖪 ",
+        "tooltip-format-disconnected": "Disconnected",
+        "tooltip": true,
+        "tooltip-format": "Network: <b>{essid}</b>\nSignal strength: <b>{signaldBm}dBm ({signalStrength}%)</b>\nFrequency: <b>{frequency}MHz</b>\nInterface: <b>{ifname}</b>\nIP: <b>{ipaddr}/{cidr}</b>\nGateway: <b>{gwaddr}</b>\nNetmask: <b>{netmask}</b>",
+        "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span>",
+        "on-click-right": "foot --app-id nmtui nmtui"
+    },
+
+    "bluetooth": {
+        "format": "<span text-transform='capitalize'> {status}</span>",
+        "format-connected": "<span foreground='#89b4fa'> {device_alias}</span>",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{device_battery_percentage}% Battery Left",
+        "on-click": "rfkill toggle bluetooth",
+        "on-click-right": "foot --app-id bluetui bluetui"
     },
 
     "pulseaudio": {
         "format": "{icon} {volume}%",
+        "tooltip": true,
         "format-bluetooth": "{icon} {volume}% {format_source}",
         "format-bluetooth-muted": "  {icon} Muted {format_source}",
-        "format-source": "{volume}% ",
-        "format-source-muted": "",
         "format-muted": " Muted",
-        "on-click": "pavucontrol",
-        "tooltip-format": "{icon} {desc}",
+        "on-click": "pamixer -t",
+        "on-scroll-up": "pamixer -i 1",
+        "on-scroll-down": "pamixer -d 1",
+        "on-click-right": "pavucontrol",
+        "scroll-step": 5,
         "format-icons": {
             "headphone": ["", "", "", ""],
             "hands-free": "",
@@ -42,26 +149,33 @@
         }
     },
 
-    "backlight": {
-		"format": "{icon} {percent}%",
-		"format-icons": [""]
-	},
+    "pulseaudio#microphone": {
+        "format": "{format_source}",
+        "format-source": " {volume}%",
+        "format-source-muted": "  Muted",
+        "on-click": "pamixer --default-source -t",
+        "on-click-right": "pavucontrol",
+        "on-scroll-up": "pamixer --default-source -i 5",
+        "on-scroll-down": "pamixer --default-source -d 5",
+        "scroll-step": 5
+    },
 
-    "network": {
-		"interval": 1,
-		"format-ethernet": " {ifname}",
-		"format-wifi": " <span>{essid}</span>",
-		"format-linked": " {essid} (No IP)",
-		"format-disconnected": " Disconnected",
-		"max-length": 28,
-		"tooltip": true,
-		"tooltip-format": "{ipaddr}/{cidr}",
-        "format-alt": " {signalStrength}%",
-        "on-click": "alacritty --class nmtui -e nmtui"
-	},
+    "backlight": {
+        "tooltip": false,
+        "format": "{icon} {percent}%",
+        "format-icons": [""],
+        "format-disabled": "", // an empty format will hide the module
+    },
+
+    "tray": {
+        "icons-size": 13,
+        "spacing": 10
+    },
 
     "battery": {
+        "max-length": 28,
         "states": {
+            "good": 95,
             "warning": 30,
             "critical": 20
         },
@@ -69,6 +183,13 @@
         "format-charging": "󰂄 {capacity}%",
         "format-plugged": "󰂄 {capacity}%",
         "format-alt": "{time} {icon}",
-        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "format-disabled": "", // an empty format will hide the module
+    },
+
+    "custom/power": {
+        "tooltip": false,
+        "format" : "",
+        "on-click": "wlogout"
     }
 }

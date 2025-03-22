@@ -32,6 +32,32 @@ function detect_distro() {
     fi
 }
 
+# Function: detect_hardware
+# Description: Detects the hardware model of the current system
+# Returns: The system model identifier (e.g., "ThinkPad T480s", "ROG") or "unknown" if not detected
+function detect_hardware() {
+    if ! command -v dmidecode &> /dev/null; then
+        echo "unknown"
+        return
+    fi
+
+    local system_version
+    local system_product
+
+    system_version=$(sudo dmidecode -s system-version)
+    system_product=$(sudo dmidecode -s system-product-name)
+
+    if [[ "${system_version}" == "ThinkPad T480s" ]]; then
+        echo "ThinkPad T480s"
+    elif [[ "${system_product}" == *"ROG"* ]]; then
+        echo "ROG"
+    elif [[ "${system_product}" == "XPS 13 9350" ]]; then
+        echo "XPS 13 9350"
+    else
+        echo "unknown"
+    fi
+}
+
 # Function: get_package_name
 # Description: Retrieves the package name for the defined distro, considering any exceptions defined in "packages.yaml".
 # Parameters:
@@ -256,8 +282,10 @@ function configure_pre_install() {
                 add_copr_repo 
                 
                 # swaylock-effects
-                echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
-                sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
+                if [[ "${desktop_interface}" == "sway" ]]; then
+                    echo -e "\n${YELLOW}Swapping package ${BOLD}swaylock${NC}${YELLOW} for ${BOLD}swaylock-effects${NC}${YELLOW}...${NC}"
+                    sudo dnf -y swap --setopt=protected_packages= swaylock swaylock-effects
+                fi
             fi 
 
             if [[ "${distro}" == "opensuse-tumbleweed" ]]; then
@@ -301,14 +329,17 @@ function configure_desktop_interface() {
     pinentry_line="pinentry-program /usr/bin/pinentry-tty"
 
     # Enable clamshell when docked
+    echo -e "\n${BLUE}Configuring clamshell settings${NC}"
     if [[ -f "/etc/systemd/logind.conf" ]]; then
         sudo sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
+        sudo sed -i 's/^#HandleLidSwitch=.*/HandleLidSwitch=suspend/' /etc/systemd/logind.conf
+        sudo sed -i 's/^#HandleLidSwitchExternalPower=.*/HandleLidSwitchExternalPower=suspend/' /etc/systemd/logind.conf
     else
-        echo -e "#HandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
+        echo -e "HandleLidSwitchExternalPower=suspend\nHandleLidSwitch=suspend\nHandleLidSwitchDocked=ignore" | sudo tee -a /etc/systemd/logind.conf > /dev/null
     fi
-    gpg-connect-agent reloadagent /bye > /dev/null 2>&1
 
     # GPG to utilize pinentry-tty
+    echo -e "\n${BLUE}Configuring gpg settings${NC}"
     if [[ -f "${gpg_config_file}" ]]; then
         if grep -q "^pinentry-program" "${gpg_config_file}"; then
             sed -i "s|^pinentry-program.*|${pinentry_line}|" "${gpg_config_file}"
@@ -318,6 +349,7 @@ function configure_desktop_interface() {
     else
         echo "${pinentry_line}" > "${gpg_config_file}"
     fi
+    gpg-connect-agent reloadagent /bye > /dev/null 2>&1
 
     case "${desktop_interface}" in 
         "gnome")
@@ -376,11 +408,6 @@ function configure_desktop_interface() {
         "hyprland") 
             sudo sed -i 's/^#HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
             
-            if ! command -v "hyprland-monitor-attached" &> /dev/null; then
-                echo -e "\n${MAGENTA}Installing ${BOLD}hyprland-monitor-attached${NC}" 
-                cargo install --root "${HOME}" hyprland-monitor-attached
-            fi
-
             if ! command -v "volumectl" &> /dev/null; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}volumectl{NC}" 
                 curl -L "https://github.com/vially/volumectl/releases/download/v0.1.0/volumectl" -o "${HOME}/bin/volumectl"
@@ -395,7 +422,7 @@ function configure_desktop_interface() {
 
             if ! command -v "swww" &> /dev/null; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}" 
-                install_package lz4-devel fedora
+                install_package lz4-devel "${distro}"
                 git clone https://github.com/LGFae/swww.git /tmp/swww
                 cd /tmp/swww
                 cargo build --release
@@ -403,21 +430,59 @@ function configure_desktop_interface() {
                 mv target/release/swww-daemon "${HOME}"/bin
             fi
 
+            if ! command -v "bluetui" &> /dev/null; then
+                echo -e "\n${MAGENTA}Installing ${BOLD}bluetui${NC}"
+                cargo install --locked --root "${HOME}" bluetui
+            fi
+
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;; 
-        "sway") ;; 
+        "sway") 
+            gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+            gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+            ;; 
         *) 
             echo -e "\n${RED}Unsupported desktop interface: ${BOLD}${desktop_interface}${NC}" 
             ;; 
     esac 
 }
 
+# Function: configure_hardware
+# Description: Performs post system setup dependant on hardware
+function configure_hardware() {
+    local hardware
+    local hardware_lowercase
+
+    hardware=$(detect_hardware)
+    hardware_lowercase=$(echo "${hardware}" | tr '[:upper:] ' '[:lower:]_')
+
+    case "${hardware}" in
+        "ROG") ;;
+        "ThinkPad T480s") ;;
+        "XPS 13 9350")
+            local bluetooth_firmware_file
+            local bluetooth_firmware
+            
+            bluetooth_firmware_file="BCM4350C5_003.006.007.0095.1703.hcd"
+            bluetooth_firmware="BCM4350C5-0a5c-6412.hcd"
+
+            echo -e "\n${YELLOW}Post system configuration for ${BOLD}${hardware}${NC}"
+
+            echo -e "${BLUE}Configuring bluetooth driver${NC}"
+            if [ ! -d "/lib/firmware/brcm/" ]; then
+                sudo mkdir -p /lib/firmware/brcm/
+            fi
+            sudo cp -f "${BASEDIR}/system_components/${hardware_lowercase}/bluetooth/${bluetooth_firmware_file}" "/lib/firmware/brcm/${bluetooth_firmware}"
+            ;;
+    esac
+}
+
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
     local distro=${1:-$(detect_distro)}
-    local desktop_interface=${2:-} 
+    local desktop_interface=${2:-}
 
     if [[ -z "${distro}" ]]; then
        distro=$(detect_distro) 
@@ -452,6 +517,8 @@ function main() {
     done 
 
     configure_desktop_interface "${distro}" "${desktop_interface}"
+
+    configure_hardware
 }
 
 main "$@"

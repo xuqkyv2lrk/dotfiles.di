@@ -1,4 +1,3 @@
-exec_always "${XDG_CONFIG_HOME}/sway/scripts/autotiling"
 exec_always kanshi
 
 # Logo key. Use Mod1 for Alt.
@@ -52,7 +51,7 @@ default_border pixel 3
 # Color definition
 #
 
-set $c1 #f38ba8
+set $c1 #a6e3a1
 set $c2 #cba6f7
 set $c3 #cba6f7
 set $c4 #11111b
@@ -94,10 +93,24 @@ set $menu j4-dmenu-desktop --display-binary --dmenu='BEMENU_BACKEND=wayland beme
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg
-output * bg "${XDG_CONFIG_HOME}/sway/wallpaper.png" fill
+output * bg "${XDG_CONFIG_HOME}/sway/wallpapers/marine_tunnel.jpg" fill
 
 # You can get the names of your outputs by running: swaymsg -t get_outputs
-output eDP-1 scale 1.75
+output * adaptive_sync on
+output DP-1 scale 1 scale_filter linear
+output DP-2 scale 1 scale_filter linear
+output HDMI-A-1 scale 1  scale_filter linear
+
+# Set workspace assignments
+workspace 1 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 2 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 3 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 4 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 5 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 6 output eDP-1 DP-1 DP-2 HDMI-A-1
+workspace 7 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 8 output DP-1 DP-2 HDMI-A-1 eDP-1
+workspace 9 output DP-1 DP-2 HDMI-A-1 eDP-1
 
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
@@ -118,6 +131,8 @@ input "type:pointer" {
     # Start your launcher
     bindsym $mod+d exec $menu
 
+    bindsym $mod+p exec "${XDG_CONFIG_HOME}/sway/scripts/power_menu.sh"
+
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
@@ -129,7 +144,20 @@ input "type:pointer" {
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec swaynag -t catppuccin -m 'Do you want to exit sway?' -B 'Yes' 'swaymsg exit'
+
+# TODO Only show the notification is the image is actually copied/saved in swappy
+# Screenshots
+#
+# Full screen screenshot with swappy
+bindsym Shift+Print exec grim - | swappy -f - -o /tmp/screenshot.png; if [ $? -eq 0 ] && [ -f /tmp/screenshot.png ]; then notify-send -i /tmp/screenshot.png "Screenshot" "Full screen captured"; rm /tmp/screenshot.png; fi
+
+# Select area screenshot with swappy
+bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Area selection captured" && rm /tmp/screenshot.png
+
+# Active window screenshot with swappy
+bindsym Ctrl+Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
+
 #
 # Moving around:
 #
@@ -168,15 +196,25 @@ input "type:pointer" {
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+1 move container to workspace number 1, workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2, workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3, workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4, workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5, workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6, workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7, workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8, workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9, workspace number 9
+
+    bindsym $mod+Shift+Ctrl+1 move container to workspace number 1
+    bindsym $mod+Shift+Ctrl+2 move container to workspace number 2
+    bindsym $mod+Shift+Ctrl+3 move container to workspace number 3
+    bindsym $mod+Shift+Ctrl+4 move container to workspace number 4
+    bindsym $mod+Shift+Ctrl+5 move container to workspace number 5
+    bindsym $mod+Shift+Ctrl+6 move container to workspace number 6
+    bindsym $mod+Shift+Ctrl+7 move container to workspace number 7
+    bindsym $mod+Shift+Ctrl+8 move container to workspace number 8
+    bindsym $mod+Shift+Ctrl+9 move container to workspace number 9
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 #
@@ -253,17 +291,36 @@ bindsym $mod+e exec thunar
 bindsym Ctrl+Alt+l exec swaylock
 
 #
+# Disable laptop screen when lid is closed
+#
+bindswitch --reload --locked lid:on exec ~/.config/sway/scripts/lid_handler.sh disable
+bindswitch --reload --locked lid:off exec ~/.config/sway/scripts/lid_handler.sh enable
+
+#
 # Notifications
 #
 exec swaync
+
+bindgesture swipe:left workspace prev
+bindgesture swipe:right workspace next
 
 # Toggle control center
 bindsym $mod+Shift+n exec swaync-client -t -sw
 
 for_window [title="File Operation Progress"] floating enable
-for_window [app_id="thunar"] floating enable 
+for_window [app_id="thunar"] floating enable, resize set 1000px 650px, move position center
+for_window [app_id="imv"] floating enable, resize set 1280px 720px, move position center
+for_window [app_id="mpv"] floating enable, resize set 1280px 720px, move position center
+for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
+for_window [class="Bitwarden"] floating enable, resize set 1500px 1050px, move position center
+
+for_window [app_id="tv.plex.Plex"] fullscreen enable
 
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [app_id="ncspot"] inhibit_idle open
+for_window [app_id="tv.plex.Plex"] inhibit_idle fullscreen
 
 include "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf"
+
+exec_always "${XDG_CONFIG_HOME}/sway/scripts/autotiling"
+exec_always "${XDG_CONFIG_HOME}/sway/scripts/lid_state.sh"

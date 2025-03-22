@@ -1,0 +1,13 @@
+font=JetBrainsMono Nerd Font 12
+
+[catppuccin]
+edge=top
+layer=overlay
+background=11111bF2
+text=#cdd6f4
+border=#cba6f7F2
+border-bottom=#181825F2
+button-border-size=10
+button-background=#cba6f7F2
+message-padding=10
+button-gap=5

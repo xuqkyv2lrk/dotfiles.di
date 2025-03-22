@@ -1,5 +1,9 @@
 packages:
+  - imv
   - pinentry
+  - pipewire
+  - pipewire-alsa 
+  - pipewire-pulseaudio 
 
 desktop_packages:
   gnome:
@@ -9,27 +13,42 @@ desktop_packages:
     - extension-manager
   hyprland:
     - acpi
+    - dbus
     - gnome-themes-extra
+    - grim
+    - hypridle
     - hyprland
-    - kanshi
+    - hyprlock
+    - kclock
     - lxqt-policykit
-    - swayidle
-    - swaylock-effects
+    - pamixer
+    - pavucontrol
+    - pkg-config
+    - polkit
+    - rofi-wayland
+    - slurp
+    - socat
     - SwayNotificationCenter
     - thunar
     - waybar
-    - wofi
+    - wlogout
     - xdg-desktop-portal
     - xdg-desktop-portal-hyprland
     - xdg-desktop-portal-wlr
   sway:
     - bemenu
+    - brightnessctl
     - dmenu
+    - gnome-themes-extra
     - grim
     - j4-dmenu-desktop
     - kanshi
+    - lxqt-policykit
+    - pavucontrol
+    - polkit
     - python3-i3ipc
     - slurp
+    - swappy
     - swaybg
     - swayfx
     - swayidle
@@ -46,9 +65,11 @@ exceptions:
     - SwayNotificationCenter: swaync
     - xwayland: xorg-xwayland
   fedora:
+    - dbus: dbus-devel
     - pinentry: pinentry-tty
     - xwayland: xorg-x11-server-Xwayland 
   opensuse-tumbleweed:
+    - dbus: dbus-1-devel
     - j4-dmenu-desktop: skip
 
 repositories:
