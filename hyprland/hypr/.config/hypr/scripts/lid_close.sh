@@ -8,7 +8,6 @@ internalMonitor=$(hyprctl monitors -j | jq -r '.[] | select(.name | startswith("
 # Exit if no internal monitor is found
 if [[ -z "${internalMonitor}" ]]; then
     echo "No internal monitor found!"
-    rm "${LOCKFILE}"
     exit 1
 fi
 
