@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 
 monitorCount=$(hyprctl monitors | grep -c "Monitor")
-internalMonitor="eDP-1"
+
+# Find the internal monitor name (assumes it starts with "eDP")
+internalMonitor=$(hyprctl monitors -j | jq -r '.[] | select(.name | startswith("eDP")) | .name')
+
+# Exit if no internal monitor is found
+if [[ -z "${internalMonitor}" ]]; then
+    echo "No internal monitor found!"
+    rm "${LOCKFILE}"
+    exit 1
+fi
 
 # Check if more than one monitor is active
 if [ "${monitorCount}" -gt 1 ]; then
