@@ -19,7 +19,7 @@ fi
 # Get the external monitor name, if any
 external_monitor=$(hyprctl monitors -j | jq -r ".[] | select(.name != \"${internal_monitor}\") | .name" | head -n1)
 
-# Set output to external monitor if found, otherwise use eDP-1
+# Set output to external monitor if found, otherwise use internal monitor
 output="${external_monitor:-$internal_monitor}"
 
 # Update Waybar config
@@ -31,18 +31,18 @@ waybar -b bar-0 &
 
 active_workspace=$(hyprctl activewindow -j | jq -r '.workspace.name')
 
-hyprctl keyword workspace 6,monitor:"${internal_monitor}"
-hyprctl keyword workspace 6,monitor:DP-1
-hyprctl keyword workspace 6,monitor:DP-2
-hyprctl keyword workspace 6,monitor:HDMI-A-1
+# Move workspaces to external monitor except workspace 6
+workspaces=$(hyprctl workspaces -j | jq -r '.[] | .name')
+for workspace in ${workspaces}; do
+    if [[ "$workspace" != "6" ]]; then
+        hyprctl dispatch moveworkspacetomonitor "$workspace" "$external_monitor"
+    fi
+done
 
-hyprctl keyword workspace 2,monitor:DP-1
-hyprctl keyword workspace 2,monitor:DP-2
-hyprctl keyword workspace 2,monitor:HDMI-A-1
-hyprctl keyword workspace 2,monitor:"${internal_monitor}"
+# Ensure workspace 6 stays on the internal monitor
+hyprctl dispatch moveworkspacetomonitor 6 "$internal_monitor"
 
-hyprctl dispatch workspace 6
-hyprctl dispatch workspace 1
+# Dispatch to the active workspace
 hyprctl dispatch workspace "${active_workspace}"
 
 rm "${LOCKFILE}"

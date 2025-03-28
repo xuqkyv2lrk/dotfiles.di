@@ -11,6 +11,18 @@ if [[ -z "${internalMonitor}" ]]; then
     exit 1
 fi
 
+if [ -n "${XDG_CACHE_HOME}" ]; then
+    cacheDir="${XDG_CACHE_HOME}"
+else
+    cacheDir="${HOME}/.cache"
+fi
+
+# Create the cache directory if it doesn't exist
+mkdir -p "${cacheDir}"
+
+# Cache the internal monitor name
+echo "${internalMonitor}" > "${cacheDir}/internal_monitor"
+
 # Check if more than one monitor is active
 if [ "${monitorCount}" -gt 1 ]; then
     # Multiple monitors active, just disable the laptop screen
