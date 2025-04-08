@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 hotplug_event() {
-    swww img "${XDG_CONFIG_HOME}/hypr/wallpapers/alley.png" --transition-type=fade --transition-duration=0.7
     "${XDG_CONFIG_HOME}/hypr/scripts/waybar.sh"
 }
 

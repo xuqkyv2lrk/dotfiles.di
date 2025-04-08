@@ -19,6 +19,7 @@ desktop_packages:
     - hypridle
     - hyprland
     - hyprlock
+    - hyprpaper
     - kclock
     - lxqt-policykit
     - pamixer
