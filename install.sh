@@ -420,16 +420,6 @@ function configure_desktop_interface() {
                 go install github.com/denysvitali/lightctl@latest
             fi
 
-            if ! command -v "swww" &> /dev/null; then
-                echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}" 
-                install_package lz4-devel "${distro}"
-                git clone https://github.com/LGFae/swww.git /tmp/swww
-                cd /tmp/swww
-                cargo build --release
-                mv target/release/swww "${HOME}"/bin
-                mv target/release/swww-daemon "${HOME}"/bin
-            fi
-
             if ! command -v "bluetui" &> /dev/null; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}bluetui${NC}"
                 cargo install --locked --root "${HOME}" bluetui
