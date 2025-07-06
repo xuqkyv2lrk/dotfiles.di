@@ -272,7 +272,7 @@ function configure_pre_install() {
             echo -e "\n${BLUE}Creating directory: ${BOLD}${HOME}/.local/share/gnome-shell${NC}" 
             mkdir -p "${HOME}/.local/share/gnome-shell"
             ;; 
-        "hyprland" | "sway") 
+        "hyprland" | "niri" | "sway") 
             if [[ "${desktop_interface}" == "sway" ]]; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}" 
                 cargo install --locked --root "${HOME}" swaysome 
@@ -428,6 +428,12 @@ function configure_desktop_interface() {
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;; 
+        "niri") 
+            gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+            gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+
+            systemctl --user enable --now idle.service
+            ;; 
         "sway") 
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
@@ -508,35 +514,45 @@ function configure_nvidia_for_niri() {
         updated_modules=$(echo "${updated_modules}" | xargs)
         if [[ "${updated_modules}" != "${current_modules}" ]]; then
             sudo sed -i "s|^MODULES=.*|MODULES=(${updated_modules})|" "${mkinitcpio_conf}"
-            echo -e "${GREEN}Updated MODULES in ${mkinitcpio_conf}: (${updated_modules})${NC}"
+            echo -e "\n${GREEN}Updated MODULES in ${mkinitcpio_conf}: (${updated_modules})${NC}"
             sudo mkinitcpio -P
         else
-            echo -e "${GREEN}NVIDIA modules already present in mkinitcpio.conf.${NC}"
+            echo -e "\n${GREEN}NVIDIA modules already present in mkinitcpio.conf.${NC}"
         fi
     fi
-
+    
     # systemd-boot: update all non-fallback entries
     if [[ -d /boot/loader/entries ]]; then
+        local updated_any=0
         for entry in /boot/loader/entries/*.conf; do
             if [[ "${entry}" == *fallback* ]]; then
                 continue
             fi
             if ! grep -q "nvidia-drm.modeset=1" "${entry}" || ! grep -q "nvidia-drm.fbdev=1" "${entry}"; then
-                sudo sed -i '/^options / s/$/ nvidia-drm.modeset=1 nvidia-drm.fbdev=1/' "${entry}"
+                sudo sed -i '/^options / s/$/ quiet loglevel=3 rd.udev.log_level=3 nvidia-drm.modeset=1 nvidia-drm.fbdev=1/' "${entry}"
+                echo -e "\n${GREEN}Appended boot flags to ${entry}${NC}"
+                updated_any=1
             fi
         done
+        if [[ "${updated_any}" -eq 0 ]]; then
+            echo -e "\n${GREEN}Nvidia boot flags already present in all systemd-boot entries.${NC}"
+        fi
     # GRUB: update /etc/default/grub
     elif [[ -f /etc/default/grub ]]; then
         if ! grep -q "nvidia-drm.modeset=1" /etc/default/grub || ! grep -q "nvidia-drm.fbdev=1" /etc/default/grub; then
             sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nvidia-drm.modeset=1 nvidia-drm.fbdev=1 /' /etc/default/grub
+            echo -e "\n${GREEN}Appended boot flags to /etc/default/grub${NC}"
             sudo grub-mkconfig -o /boot/grub/grub.cfg
+            echo -e "\n${GREEN}Regenerated GRUB config at /boot/grub/grub.cfg${NC}"
+        else
+            echo -e "\n${GREEN}Nvidia boot flags already present in /etc/default/grub.${NC}"
         fi
     fi
 
     # Modprobe config for all
-    echo "options nvidia-drm modeset=1 fbdev=1" | sudo tee /etc/modprobe.d/nvidia-drm.conf
+    echo "options nvidia-drm modeset=1 fbdev=1" | sudo tee /etc/modprobe.d/nvidia-drm.conf  > /dev/null
 
-    echo -e "${GREEN}Nvidia kernel modesetting and fbdev configured. Please reboot to apply changes.${NC}"
+    echo -e "\n${GREEN}Nvidia kernel modesetting and fbdev configured. Please reboot to apply changes.${NC}"
 }
 
 # Function: main 

@@ -51,7 +51,7 @@ output "HDMI-A-1" {
 
 //spawn-at-startup "ags run"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-spawn-at-startup "mako"
+spawn-at-startup "swaync"
 spawn-at-startup "swww-daemon"
 spawn-at-startup "swww" "img" "./wallpapers/cosmos_uw.jpg"
 spawn-at-startup "xwayland-satellite"

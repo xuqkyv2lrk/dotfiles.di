@@ -45,12 +45,12 @@ desktop_packages:
     - hypridle
     - hyprlock
     - libastal-meta
-    - mako
     - nautilus
     - niri
     - polkit
     - polkit-gnome
     - swaylock-effects
+    - SwayNotificationCenter
     - swww
     - xdg-desktop-portal-gnome
     - xdg-desktop-portal-gtk
