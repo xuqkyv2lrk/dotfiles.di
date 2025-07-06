@@ -1,0 +1,12 @@
+[Unit]
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+
+[Service]
+ExecStart=/usr/bin/hypridle -c /home/chdxn/.config/hypr/hypridle.conf
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target

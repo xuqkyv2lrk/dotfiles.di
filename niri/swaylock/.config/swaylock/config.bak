@@ -1,0 +1,59 @@
+# ****
+# swaylock-effects
+# ****
+#screenshots
+#clock
+#timestr=%H:%M
+#datestr=day %j of '%y
+#fade-in=0.25
+#effect-blur=30x2
+#effect-scale=0.1
+
+
+show-failed-attempts
+daemonize
+
+font=FantasqueSansM Nerd Font Mono
+#font-size=40
+
+ignore-empty-password
+
+#indicator
+indicator-radius=170
+indicator-thickness=15
+indicator-caps-lock
+
+color=1e1e2e
+
+key-hl-color=b4befe
+
+separator-color=00000000
+
+inside-color=1e1e2e
+inside-clear-color=1e1e2e
+inside-caps-lock-color=1e1e2e
+inside-ver-color=1e1e2e
+inside-wrong-color=1e1e2e
+
+ring-color=74c7ec
+ring-clear-color=eba0ac
+ring-caps-lock-color=f2cdcd
+ring-ver-color=a6e3a1
+ring-wrong-color=f38ba8
+
+line-color=00000000
+line-clear-color=00000000
+line-caps-lock-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+
+text-color=cdd6f4
+text-clear-color=cdd6f4
+text-ver-color=cdd6f4
+text-wrong-color=cdd6f4
+
+bs-hl-color=b4befe
+caps-lock-key-hl-color=b4befe
+caps-lock-bs-hl-color=b4befe
+disable-caps-lock-text
+text-caps-lock-color=b4befe

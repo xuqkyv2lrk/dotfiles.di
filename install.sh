@@ -468,6 +468,77 @@ function configure_hardware() {
     esac
 }
 
+# Function: configure_nvidia_for_niri
+# Description: If Niri is selected and an Nvidia GPU is present, update kernel parameters for GRUB or systemd-boot (ignoring fallback entries).
+
+function configure_nvidia_for_niri() {
+    local desktop_interface="${1}"
+
+    # Only proceed if Niri is selected
+    if [[ "${desktop_interface}" != "niri" ]]; then
+        return
+    fi
+
+    # Detect Nvidia GPU
+    if ! lspci | grep -i 'vga.*nvidia' &>/dev/null; then
+        return
+    fi
+
+    echo -e "\n${YELLOW}Nvidia GPU detected. Configuring kernel parameters for Niri...${NC}"
+
+    # Install nvidia-dkms if not already installed
+    local distro
+    distro="$(detect_distro)"
+    install_package "nvidia-dkms" "${distro}"
+
+    # Ensure NVIDIA modules are in mkinitcpio.conf
+    local mkinitcpio_conf="/etc/mkinitcpio.conf"
+    local required_modules="nvidia nvidia_modeset nvidia_uvm nvidia_drm"
+    if [[ -f "${mkinitcpio_conf}" ]]; then
+        # Read current MODULES line
+        local current_modules
+        current_modules=$(grep "^MODULES=" "${mkinitcpio_conf}" | sed 's/^MODULES=//' | tr -d '()')
+        local updated_modules="${current_modules}"
+        for mod in ${required_modules}; do
+            if ! grep -qw "${mod}" <<< "${current_modules}"; then
+                updated_modules="${updated_modules} ${mod}"
+            fi
+        done
+        # Remove extra spaces and update the file if needed
+        updated_modules=$(echo "${updated_modules}" | xargs)
+        if [[ "${updated_modules}" != "${current_modules}" ]]; then
+            sudo sed -i "s|^MODULES=.*|MODULES=(${updated_modules})|" "${mkinitcpio_conf}"
+            echo -e "${GREEN}Updated MODULES in ${mkinitcpio_conf}: (${updated_modules})${NC}"
+            sudo mkinitcpio -P
+        else
+            echo -e "${GREEN}NVIDIA modules already present in mkinitcpio.conf.${NC}"
+        fi
+    fi
+
+    # systemd-boot: update all non-fallback entries
+    if [[ -d /boot/loader/entries ]]; then
+        for entry in /boot/loader/entries/*.conf; do
+            if [[ "${entry}" == *fallback* ]]; then
+                continue
+            fi
+            if ! grep -q "nvidia-drm.modeset=1" "${entry}" || ! grep -q "nvidia-drm.fbdev=1" "${entry}"; then
+                sudo sed -i '/^options / s/$/ nvidia-drm.modeset=1 nvidia-drm.fbdev=1/' "${entry}"
+            fi
+        done
+    # GRUB: update /etc/default/grub
+    elif [[ -f /etc/default/grub ]]; then
+        if ! grep -q "nvidia-drm.modeset=1" /etc/default/grub || ! grep -q "nvidia-drm.fbdev=1" /etc/default/grub; then
+            sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nvidia-drm.modeset=1 nvidia-drm.fbdev=1 /' /etc/default/grub
+            sudo grub-mkconfig -o /boot/grub/grub.cfg
+        fi
+    fi
+
+    # Modprobe config for all
+    echo "options nvidia-drm modeset=1 fbdev=1" | sudo tee /etc/modprobe.d/nvidia-drm.conf
+
+    echo -e "${GREEN}Nvidia kernel modesetting and fbdev configured. Please reboot to apply changes.${NC}"
+}
+
 # Function: main 
 # Description: Main function that orchestrates the installation process. 
 function main() { 
@@ -493,6 +564,8 @@ function main() {
     install_packages "${distro}"
 
     install_desktop_packages "${distro}" "${desktop_interface}"
+
+    configure_nvidia_for_niri "${desktop_interface}"
 
     echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
 

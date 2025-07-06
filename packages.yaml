@@ -37,6 +37,23 @@ desktop_packages:
     - xdg-desktop-portal-gtk
     - xdg-desktop-portal-hyprland
     - xdg-desktop-portal-wlr
+  niri:
+    - aylurs-gtk-shell-git
+    - dart-sass
+    - fuzzel
+    - gnome-keyring
+    - hypridle
+    - hyprlock
+    - libastal-meta
+    - mako
+    - nautilus
+    - niri
+    - polkit
+    - polkit-gnome
+    - swaylock-effects
+    - swww
+    - xdg-desktop-portal-gnome
+    - xdg-desktop-portal-gtk
   sway:
     - bemenu
     - brightnessctl
