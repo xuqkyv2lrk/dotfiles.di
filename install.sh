@@ -314,6 +314,54 @@ function configure_pre_install() {
     esac 
 }
 
+# Function: install_colloid_catppuccin
+# Description: Installs Colloid GTK and icon themes with all Catppuccin color variants, sets GNOME theme preferences, and cleans up. Ensures /tmp is cleaned up on failure or re-run. Uses consistent color output for install.sh output.
+function install_colloid_catppuccin() {
+    local GTK_REPO="https://github.com/vinceliuice/Colloid-gtk-theme.git"
+    local ICON_REPO="https://github.com/vinceliuice/Colloid-icon-theme.git"
+    local GTK_DIR="/tmp/Colloid-gtk-theme"
+    local ICON_DIR="/tmp/Colloid-icon-theme"
+
+    rm -rf "${GTK_DIR}" "${ICON_DIR}"
+    trap 'rm -rf "${GTK_DIR}" "${ICON_DIR}"' EXIT
+
+    git clone --depth=1 "${GTK_REPO}" "${GTK_DIR}" >/dev/null 2>&1
+    git clone --depth=1 "${ICON_REPO}" "${ICON_DIR}" >/dev/null 2>&1
+
+    cd "${GTK_DIR}" || exit
+    ./install.sh --tweaks catppuccin -t all -s standard compact -c dark -l fixed | while IFS= read -r line; do
+        if [[ "$line" == *"Installing"* ]]; then
+            echo -e "${GREEN}${line}${NC}"
+        elif [[ "$line" == *"ERROR"* ]]; then
+            echo -e "${RED}${line}${NC}"
+        elif [[ "$line" == *"Cloning"* ]]; then
+            echo -e "${BLUE}${line}${NC}"
+        else
+            echo -e "${NC}${line}${NC}"
+        fi
+    done
+
+    cd "${ICON_DIR}" || exit
+    ./install.sh -s catppuccin -t all | while IFS= read -r line; do
+        if [[ "$line" == *"Installing"* ]]; then
+            echo -e "${GREEN}${line}${NC}"
+        elif [[ "$line" == *"ERROR"* ]]; then
+            echo -e "${RED}${line}${NC}"
+        elif [[ "$line" == *"Cloning"* ]]; then
+            echo -e "${BLUE}${line}${NC}"
+        else
+            echo -e "${NC}${line}${NC}"
+        fi
+    done
+
+    gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Purple-Dark-Compact-Catppuccin"
+    gsettings set org.gnome.desktop.interface icon-theme "Colloid-Purple-Catppuccin-Dark"
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+
+    rm -rf "${GTK_DIR}" "${ICON_DIR}"
+    trap - EXIT
+}
+
 # Function: configure_desktop_interface
 # Description: Performs desktop interface configurations post installation
 function configure_desktop_interface() {
@@ -429,8 +477,7 @@ function configure_desktop_interface() {
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;; 
         "niri") 
-            gsettings set org.gnome.desktop.interface color-scheme prefer-dark
-            gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
+            install_colloid_catppuccin
 
             systemctl --user enable --now idle.service
             ;; 
@@ -476,7 +523,6 @@ function configure_hardware() {
 
 # Function: configure_nvidia_for_niri
 # Description: If Niri is selected and an Nvidia GPU is present, update kernel parameters for GRUB or systemd-boot (ignoring fallback entries).
-
 function configure_nvidia_for_niri() {
     local desktop_interface="${1}"
 

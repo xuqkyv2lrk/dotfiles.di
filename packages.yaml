@@ -42,6 +42,8 @@ desktop_packages:
     - dart-sass
     - fuzzel
     - gnome-keyring
+    - gnome-themes-standard 
+    - gtk-engine-murrine
     - hypridle
     - hyprlock
     - libastal-meta
@@ -49,6 +51,7 @@ desktop_packages:
     - niri
     - polkit
     - polkit-gnome
+    - sassc
     - swaylock-effects
     - SwayNotificationCenter
     - swww
