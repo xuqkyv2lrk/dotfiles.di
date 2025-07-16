@@ -563,9 +563,14 @@ function configure_nvidia_for_niri() {
 # Parameters:
 #   $1 - (Optional) The distribution ID (e.g., "arch", "ubuntu"). If not provided, auto-detected.
 #   $2 - (Optional) The desktop interface (e.g., "gnome", "hyprland"). If not provided, user is prompted.
+#   $3 - (Optional) PaperWM option ("true" or "false"). If not provided, defaults to "false".
 function main() {
     local distro=${1:-$(detect_distro)}
     local desktop_interface=${2:-}
+    local paperwm_option=${3:-"false"}
+
+    # Set the global variable based on the parameter
+    use_paperwm="${paperwm_option}"
 
     if [[ "${distro}" == "legacy" ]]; then
         echo -e "\n${YELLOW}This distribution is no longer supported. Please use the ${BOLD}legacy-distros${NC}${YELLOW} branch for best-effort support. No further updates will be provided for ${BOLD}${distro}${NC}${YELLOW}.${NC}"
@@ -584,6 +589,10 @@ function main() {
         select_desktop_interface desktop_interface
     else
         clone_repository
+        # If desktop_interface is provided but paperwm_option wasn't set and it's gnome, keep the current use_paperwm value
+        if [[ "${desktop_interface}" == "gnome" && "${paperwm_option}" == "false" && -z "${3}" ]]; then
+            use_paperwm="false"
+        fi
     fi
 
     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
