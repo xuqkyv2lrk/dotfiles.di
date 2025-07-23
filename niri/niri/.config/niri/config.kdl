@@ -126,9 +126,11 @@ layout {
     default-column-width { proportion 0.33333; }
 
     tab-indicator {
+        active-color "#a6e3a1"
+        inactive-color "#6c7086"
         width 3
-        gap 8
-        length total-proportion=0.5
+        gap 4
+        length total-proportion=0.6
         position "left"
         place-within-column
     }
