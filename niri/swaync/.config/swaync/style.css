@@ -21,11 +21,11 @@ slider {
 }
 
 .floating-notifications.background .notification-row .notification-background {
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #313244;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px #b4befe; /* Lavender as border */
   border-radius: 12.6px;
-  margin: 20px;
-  background-color: #1e1e2e;
-  color: #cdd6f4;
+  margin: 8px 8px 2px 0;
+  background-color: rgba(49, 50, 68, 0.7); /* Surface0 with alpha */
+  color: #f5e0dc; /* Rosewater or pastel-y text */
   padding: 0;
 }
 
@@ -34,8 +34,24 @@ slider {
   border-radius: 12.6px;
 }
 
+.floating-notifications.background .notification-row .notification-background .notification img {
+  border-radius: 8px;
+  margin: 7px;
+}
+
+/* Critical notifications */
 .floating-notifications.background .notification-row .notification-background .notification.critical {
-  box-shadow: inset 0 0 7px 0 #f38ba8;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #f38ba8;
+}
+
+/* Normal notifications */
+.floating-notifications.background .notification-row .notification-background .notification.normal {
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #b4befe;
+}
+
+/* Low notifications */
+.floating-notifications.background .notification-row .notification-background .notification.low {
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #a6e3a1;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification .notification-content {
