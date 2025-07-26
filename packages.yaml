@@ -37,6 +37,7 @@ desktop_packages:
     - xdg-desktop-portal-wlr
   niri:
     - aylurs-gtk-shell
+    - brightnessctl
     - dart-sass
     - fuzzel
     - gnome-keyring
@@ -79,7 +80,7 @@ desktop_packages:
 
 exceptions:
   arch: 
-    - pipewire: pipewire pipewire-alsa pipewire-pulseaudio 
+    - pipewire: pipewire pipewire-alsa pipewire-pulseaudio pamixer
   ubuntu:
     - extension-manager: gnome-shell-extension-manager
     - gnome: skip

@@ -239,14 +239,14 @@ binds {
     Mod+Ctrl+9 { move-window-to-workspace 9; }
 
     // Media controls
-    XF86AudioRaiseVolume { spawn "volumectl" "up"; }
-    XF86AudioLowerVolume { spawn "volumectl" "down"; }
-    XF86AudioMute { spawn "volumectl" "toggle-mute"; }
-    XF86AudioMicMute { spawn "volumectl" "-m" "toggle-mute"; }
-
+    XF86AudioRaiseVolume { spawn "pamixer" "--increase" "5"; }
+    XF86AudioLowerVolume { spawn "pamixer" "--decrease" "5"; }
+    XF86AudioMute { spawn "pamixer" "--toggle-mute"; }
+    XF86AudioMicMute { spawn "pamixer" "--default-source" "--toggle-mute"; }
+    
     // Brightness controls
-    XF86MonBrightnessUp { spawn "lightctl" "increase" "-s" "150" "10%"; }
-    XF86MonBrightnessDown { spawn "lightctl" "decrease" "-s" "100" "10%"; }
+    XF86MonBrightnessUp { spawn "brightnessctl" "set" "+10%"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
 }
 
 
