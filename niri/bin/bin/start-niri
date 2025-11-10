@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Start Niri compositor
+exec niri-session

@@ -1,0 +1,314 @@
+// ============================================================================
+// Niri Configuration for Samsung Odyssey G95NC System with NVIDIA GPU
+// ============================================================================
+//
+// NOTE: This configuration is optimized for a Samsung Odyssey G95NC
+// (57" super-ultrawide, 7680x2160@120Hz).
+// Niri is chosen for its scrollable-tiling layout, which makes managing
+// windows on an ultrawide practical.
+//
+// Some settings (scaling, gaps, explicit mode) are required for this monitor,
+// but the disabling of variable-refresh-rate (VRR) is specifically due to
+// known flickering issues with NVIDIA GPUs on Wayland compositors,
+// not the monitor itself.
+//
+// This configuration is highly customized for this particular system,
+// but it can be updated or adapted to fit other hardware and use cases.
+//
+// See https://www.displayninja.com/samsung-s57cg95-review/ for monitor specs.
+// ============================================================================
+
+
+// ****
+// System Identity & Environment
+// ****
+
+prefer-no-csd
+
+environment {
+    DISPLAY ":0"
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+// ****
+// Display & Output
+// ****
+
+output "HDMI-A-1" {
+    mode "7680x2160@119.997"
+    scale 1.5
+    // variable-refresh-rate // Disabled due to flickering caused by NVIDIA GPU
+}
+
+
+// ****
+// Startup & Session Management
+// ****
+
+//spawn-at-startup "ags run"
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "swaync"
+spawn-at-startup "swww-daemon"
+spawn-at-startup "swww" "img" "./wallpapers/cosmos_uw.jpg"
+spawn-at-startup "xwayland-satellite"
+
+// ****
+// Debugging & Diagnostics
+// ****
+
+debug {
+    render-drm-device "/dev/dri/card0"
+}
+
+
+// ****
+// Input Devices
+// ****
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        repeat-delay 600
+        repeat-rate 25
+    }
+    touchpad {
+        natural-scroll
+    }
+}
+
+
+// ****
+// Window Layout & Appearance
+// ****
+
+layout {
+    gaps 6
+    struts {
+        left 2
+        right 2
+        top 2
+        bottom 2
+    }
+
+    // Border Settings
+    border {
+        width 2
+        active-color "#cba6f7ff"
+        inactive-color "#585b70"
+        urgent-color "#f38ba8"
+    }
+
+    focus-ring {
+        off
+    }
+
+    // Shadow Settings
+    shadow {
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#1a1a1aee"
+    }
+
+    // Column Settings
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.33333; }
+
+    tab-indicator {
+        active-color "#a6e3a1"
+        inactive-color "#6c7086"
+        width 3
+        gap 4
+        length total-proportion=0.6
+        position "left"
+        place-within-column
+    }
+}
+
+
+// ****
+// Animations & Effects
+// ****
+
+animations {
+    workspace-switch {
+        spring damping-ratio=0.9 stiffness=1000 epsilon=0.0001
+    }
+    window-open {
+        duration-ms 150
+        curve "ease-out-expo" // Matches Hyprland's ease-out-expo
+    }
+    window-close {
+        duration-ms 150
+        curve "ease-out-quad" // Matches Hyprland's ease-out-quad
+    }
+    window-movement {
+        spring damping-ratio=0.9 stiffness=800 epsilon=0.0001
+    }
+    horizontal-view-movement {
+        spring damping-ratio=0.9 stiffness=800 epsilon=0.0001
+    }
+    overview-open-close {
+        spring damping-ratio=0.9 stiffness=800 epsilon=0.0001
+    }
+}
+
+
+// ****
+// Key Bindings: Application Launch & System
+// ****
+
+binds {
+    Mod+Return { spawn "foot"; }
+    Mod+E { spawn "nautilus"; }
+    Mod+D { spawn "fuzzel"; }
+    Mod+O { spawn "firefox"; }
+    Mod+L { spawn "hyprlock"; }
+    Mod+W { toggle-column-tabbed-display; }
+    Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+V { toggle-window-floating; }
+    Mod+Shift+N { spawn "swaync-client" "-t" "-sw"; }
+    Mod+M { quit; }
+    Mod+Q { close-window; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+R { switch-preset-column-width; }
+
+    // Focus movement
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up { focus-window-up; }
+    Mod+Down { focus-window-down; }
+
+    // Column swapping
+    Mod+Shift+Left { move-column-left-or-to-monitor-left; }
+    Mod+Shift+Right { move-column-right-or-to-monitor-right; }
+    Mod+Alt+Left { move-column-left; }
+    Mod+Alt+Right { move-column-right; }
+    Mod+Shift+Up { move-column-to-workspace-up; }
+    Mod+Shift+Down { move-column-to-workspace-down; }
+
+    // Window movement
+    Mod+Ctrl+Left { consume-or-expel-window-left; }
+    Mod+Ctrl+Right { consume-or-expel-window-right; }
+    Mod+Ctrl+Up { move-window-up; }
+    Mod+Ctrl+Down { move-window-down; }
+
+    Mod+Page_Up { focus-workspace-up; }
+    Mod+Page_Down { focus-workspace-down; }
+
+    // Workspace navigation
+    Mod+0 { toggle-overview; }
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Ctrl+1 { move-window-to-workspace 1; }
+    Mod+Ctrl+2 { move-window-to-workspace 2; }
+    Mod+Ctrl+3 { move-window-to-workspace 3; }
+    Mod+Ctrl+4 { move-window-to-workspace 4; }
+    Mod+Ctrl+5 { move-window-to-workspace 5; }
+    Mod+Ctrl+6 { move-window-to-workspace 6; }
+    Mod+Ctrl+7 { move-window-to-workspace 7; }
+    Mod+Ctrl+8 { move-window-to-workspace 8; }
+    Mod+Ctrl+9 { move-window-to-workspace 9; }
+
+    // Media controls
+    XF86AudioRaiseVolume { spawn "pamixer" "--increase" "5"; }
+    XF86AudioLowerVolume { spawn "pamixer" "--decrease" "5"; }
+    XF86AudioMute { spawn "pamixer" "--toggle-mute"; }
+    XF86AudioMicMute { spawn "pamixer" "--default-source" "--toggle-mute"; }
+    
+    // Brightness controls
+    XF86MonBrightnessUp { spawn "brightnessctl" "set" "+10%"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+}
+
+
+// ****
+// Window Rules & Floating Exceptions
+// ****
+
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+}
+
+// Block out password managers from screencasts.
+// Block out password managers from screencasts.
+window-rule {
+    match app-id=r#"^1Password$"#
+    match app-id=r#"^Bitwarden$"#
+
+    block-out-from "screencast"
+}
+
+window-rule {
+    match app-id="1Password"
+    open-floating true
+}
+
+window-rule {
+    match app-id="Bitwarden"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^org\.gnome\.Nautilus$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id="monitor"
+    open-floating true
+}
+
+window-rule {
+    match app-id="org.pulseaudio.pavucontrol"
+    open-floating true
+}
+
+window-rule {
+    match app-id="nmtui"
+    open-floating true
+}
+
+window-rule {
+    match app-id="bluetui"
+    open-floating true
+}
+
+window-rule {
+    match app-id="lxqt-policykit-agent"
+    open-floating true
+}
+
+window-rule {
+    match app-id="rog-control-center"
+    open-floating true
+}

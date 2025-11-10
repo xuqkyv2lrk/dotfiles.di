@@ -2,8 +2,6 @@ packages:
   - imv
   - pinentry
   - pipewire
-  - pipewire-alsa 
-  - pipewire-pulseaudio 
 
 desktop_packages:
   gnome:
@@ -29,7 +27,7 @@ desktop_packages:
     - rofi-wayland
     - slurp
     - socat
-    - SwayNotificationCenter
+    - swaync
     - thunar
     - waybar
     - wlogout
@@ -37,8 +35,28 @@ desktop_packages:
     - xdg-desktop-portal-gtk
     - xdg-desktop-portal-hyprland
     - xdg-desktop-portal-wlr
+  niri:
+    - aylurs-gtk-shell
+    - brightnessctl
+    - dart-sass
+    - fuzzel
+    - gnome-keyring
+    - gnome-themes-extra
+    - gtk-engine-murrine
+    - hypridle
+    - libastal-meta
+    - nautilus
+    - niri
+    - polkit
+    - polkit-gnome
+    - sassc
+    - swaylock-effects
+    - swaync
+    - swww
+    - xdg-desktop-portal-gnome
+    - xdg-desktop-portal-gtk
   sway:
-    - bemenu
+    - bemenu-wayland
     - brightnessctl
     - dmenu
     - gnome-themes-extra
@@ -48,36 +66,25 @@ desktop_packages:
     - lxqt-policykit
     - pavucontrol
     - polkit
-    - python3-i3ipc
+    - python-i3ipc
     - slurp
     - swappy
     - swaybg
     - swayfx
     - swayidle
     - swaylock-effects
-    - SwayNotificationCenter
+    - swaync
     - thunar
     - waybar
-    - xwayland
+    - xorg-xwayland
 
 exceptions:
-  arch:
-    - bemenu: bemenu-wayland
-    - python3-i3ipc: python-i3ipc
-    - SwayNotificationCenter: swaync
-    - xwayland: xorg-xwayland
-  fedora:
-    - dbus: dbus-devel
+  arch: 
+    - pipewire: pipewire pipewire-alsa pipewire-pulseaudio pamixer
+  ubuntu:
+    - extension-manager: gnome-shell-extension-manager
+    - gnome: skip
     - pinentry: pinentry-tty
-    - xwayland: xorg-x11-server-Xwayland 
-  opensuse-tumbleweed:
-    - dbus: dbus-1-devel
-    - j4-dmenu-desktop: skip
+    - pipewire: skip
 
 repositories:
-  fedora:
-    copr:
-      - "erikreider/SwayNotificationCenter"
-      - "mochaa/swayfx"
-      - "trs-sod/swaylock-effects"
-
