@@ -1,0 +1,20 @@
+[flavor]
+use = "catppuccin-mocha"
+
+# Override status bar text to match foot background
+[status]
+progress_label = { fg = "#1e1e2e", bold = true }
+perm_type = { fg = "#1e1e2e" }
+perm_read = { fg = "#1e1e2e" }
+perm_write = { fg = "#1e1e2e" }
+perm_exec = { fg = "#1e1e2e" }
+perm_sep = { fg = "#1e1e2e" }
+
+# Mode sections
+[mode]
+normal_main = { fg = "#1e1e2e", bg = "#89b4fa", bold = true }
+normal_alt = { fg = "#1e1e2e", bg = "#cba6f7" }  # Size/percent: dark text on mauve
+select_main = { fg = "#1e1e2e", bg = "#94e2d5", bold = true }
+select_alt = { fg = "#1e1e2e", bg = "#cba6f7" }  # Size/percent: dark text on mauve
+unset_main = { fg = "#1e1e2e", bg = "#f2cdcd", bold = true }
+unset_alt = { fg = "#1e1e2e", bg = "#cba6f7" }  # Size/percent: dark text on mauve

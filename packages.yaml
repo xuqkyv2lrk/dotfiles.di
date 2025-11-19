@@ -51,6 +51,7 @@ desktop_packages:
     - papirus-icon-theme 
     - polkit
     - polkit-gnome
+    - pwvucontrol
     - sassc
     - swaylock-effects
     - swaync
