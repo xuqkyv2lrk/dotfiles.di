@@ -272,16 +272,6 @@ window-rule {
 }
 
 window-rule {
-    match app-id="1Password"
-    open-floating true
-}
-
-window-rule {
-    match app-id="Bitwarden"
-    open-floating true
-}
-
-window-rule {
     match app-id=r#"^org\.gnome\.Nautilus$"#
     open-floating true
 }
@@ -289,16 +279,14 @@ window-rule {
 window-rule {
     match app-id="monitor"
     open-floating true
+    default-column-width { fixed 1000; }
 }
 
 window-rule {
-    match app-id="org.pulseaudio.pavucontrol"
+    match app-id="^com\\.saivert\\.pwvucontrol$"
     open-floating true
-}
-
-window-rule {
-    match app-id="nmtui"
-    open-floating true
+    opacity 0.95
+    default-column-width { fixed 800; }
 }
 
 window-rule {
@@ -309,31 +297,4 @@ window-rule {
 window-rule {
     match app-id="lxqt-policykit-agent"
     open-floating true
-}
-
-window-rule {
-    match app-id="rog-control-center"
-    open-floating true
-}
-
-window-rule {
-    match app-id="^fuzzel$"
-
-    // Blur behind fuzzel
-    opacity 0.95
-
-    // Optional: add shadow
-    block-out-from "screencast"
-}
-
-window-rule {
-    match app-id="^fuzzel-network$"
-
-    // Position at top-right, below waybar
-    open-on-output "your-output-name"  // optional
-    default-column-width { proportion 0.3; }
-
-    // Or use absolute positioning if niri supports it
-    geometry-corner-radius 12
-    opacity 0.95
 }
