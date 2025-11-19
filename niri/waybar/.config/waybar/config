@@ -1,0 +1,59 @@
+{
+    "layer": "top",
+    "position": "top",
+    "include": ["~/.config/waybar/modules.json"],
+    
+    "group/spaces": {
+        "orientation": "horizontal",
+        "modules": [
+            "niri/workspaces",
+            "mpris",
+            "cava"
+        ]
+    },
+    
+    "group/hardware": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "memory",
+            "temperature",
+            "disk"
+        ]
+    },
+    
+    "group/audio": {
+        "orientation": "horizontal",
+        "modules": [
+            "pulseaudio"
+        ]
+    },
+    
+    "group/connectivity": {
+        "orientation": "horizontal",
+        "modules": [
+            "bluetooth",
+            "network"
+        ]
+    },
+    
+    "group/system": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/notification",
+            "idle_inhibitor"
+        ]
+    },
+    
+    "group/power": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/lock",
+            "custom/power"
+        ]
+    },
+    
+    "modules-left": ["group/spaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["group/hardware", "group/audio", "group/connectivity", "group/system", "group/power"]
+}

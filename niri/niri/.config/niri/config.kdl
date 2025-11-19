@@ -39,7 +39,7 @@ hotkey-overlay {
 // ****
 
 output "HDMI-A-1" {
-    mode "7680x2160@119.997"
+    mode "7680x2160@59.987"
     scale 1.5
     // variable-refresh-rate // Disabled due to flickering caused by NVIDIA GPU
 }
@@ -51,9 +51,11 @@ output "HDMI-A-1" {
 
 //spawn-at-startup "ags run"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "/usr/lib/xdg-desktop-portal-gtk"
 spawn-at-startup "swaync"
 spawn-at-startup "swww-daemon"
 spawn-at-startup "swww" "img" "./wallpapers/cosmos_uw.jpg"
+spawn-at-startup "waybar"
 spawn-at-startup "xwayland-satellite"
 
 // ****
@@ -174,7 +176,7 @@ binds {
     Mod+E { spawn "nautilus"; }
     Mod+D { spawn "fuzzel"; }
     Mod+O { spawn "firefox"; }
-    Mod+L { spawn "hyprlock"; }
+    Mod+L { spawn "swaylock"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
     Mod+Shift+F { fullscreen-window; }
@@ -184,6 +186,7 @@ binds {
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+R { switch-preset-column-width; }
+    Mod+Shift+B { spawn "sh" "-c" "pkill waybar && waybar &"; }
 
     // Focus movement
     Mod+Left { focus-column-left; }
@@ -311,4 +314,26 @@ window-rule {
 window-rule {
     match app-id="rog-control-center"
     open-floating true
+}
+
+window-rule {
+    match app-id="^fuzzel$"
+
+    // Blur behind fuzzel
+    opacity 0.95
+
+    // Optional: add shadow
+    block-out-from "screencast"
+}
+
+window-rule {
+    match app-id="^fuzzel-network$"
+
+    // Position at top-right, below waybar
+    open-on-output "your-output-name"  // optional
+    default-column-width { proportion 0.3; }
+
+    // Or use absolute positioning if niri supports it
+    geometry-corner-radius 12
+    opacity 0.95
 }

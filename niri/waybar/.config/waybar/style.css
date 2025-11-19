@@ -1,0 +1,177 @@
+@import 'mocha.css';
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font", "Font Awesome 5 Pro Solid", "Font Awesome 5 Brands";
+  font-weight: bold;
+  font-size: 14px;
+  min-height: 0;
+}
+
+window#waybar {
+  color: @text;
+  background: transparent;
+}
+
+tooltip {
+  background: @blur_background8;
+  color: @subtext0;
+  border-radius: 10px;
+  border-width: 0;
+}
+
+/* Workspaces */
+#workspaces {
+  background: @blur_background8;
+  color: @subtext1;
+  padding: 2px 4px;
+  margin: 0;
+  margin-top: 8px;
+  border-radius: 10px;
+  margin-left: 10px;
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.5);
+}
+
+#workspaces button {
+  color: @surface1;
+  padding: 0;
+  margin: 0;
+  min-width: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+#workspaces button:nth-child(1) {
+  margin-left: 0;
+}
+
+#workspaces button:last-child {
+  margin-right: 2px;
+}
+
+#workspaces button.active {
+  color: @text;
+}
+
+#workspaces button:hover {
+  color: @text;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-shadow: inherit;
+}
+
+/* All modules - common styling */
+#window,
+#clock,
+#battery,
+#pulseaudio,
+#bluetooth,
+#custom-music,
+#network,
+#cpu,
+#memory,
+#temperature,
+#disk,
+#custom-power,
+#custom-lock,
+#custom-notification,
+#idle_inhibitor,
+#tray,
+#backlight,
+#language {
+  background: @blur_background8;
+  color: @subtext1;
+  padding: 0 10px;
+  margin: 0;
+  margin-top: 8px;
+}
+
+/* Left side - spaces group */
+#mpris {
+  background: transparent;
+  margin-left: 0;
+  margin-top: 8px;
+  margin-right: 0px;
+  opacity: 0.6;
+}
+
+#cava {
+  background: transparent;
+  margin-top: 8px;
+  margin-right: 0;
+  padding: 0 10px 0 10px;
+  opacity: 1;
+}
+
+/* Center - clock */
+#clock {
+  border-radius: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/* Right side - hardware group */
+#cpu {
+  border-radius: 10px 0px 0px 10px;
+  margin-right: 0;
+}
+
+#memory {
+  border-left: 0;
+  border-right: 0;
+  margin-right: 0;
+}
+
+#temperature {
+  border-left: 0;
+  border-right: 0;
+  margin-right: 0;
+}
+
+#disk {
+  border-radius: 0px 10px 10px 0px;
+  margin-right: 5px;
+}
+
+/* Right side - audio group */
+#pulseaudio {
+  border-radius: 10px;
+  margin-right: 5px;
+}
+
+/* Right side - connectivity group */
+#bluetooth {
+  border-radius: 10px 0px 0px 10px;
+  margin-right: 0;
+}
+
+#network {
+  border-radius: 0px 10px 10px 0px;
+  margin-right: 5px;
+}
+
+/* Right side - system group */
+#custom-notification {
+  border-radius: 10px 0px 0px 10px;
+  margin-right: 0;
+}
+
+#idle_inhibitor {
+  border-radius: 0px 10px 10px 0px;
+  margin-right: 5px;
+  padding: 0 16px 0 10px;
+}
+
+/* Right side - power group */
+#custom-lock {
+  border-radius: 10px 0px 0px 10px;
+  margin-right: 0;
+}
+
+#custom-power {
+  color: @maroon;
+  border-radius: 0px 10px 10px 0px;
+  margin-right: 10px;
+  padding-left: 9px;
+}

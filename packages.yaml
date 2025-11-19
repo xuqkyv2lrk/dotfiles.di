@@ -36,25 +36,29 @@ desktop_packages:
     - xdg-desktop-portal-hyprland
     - xdg-desktop-portal-wlr
   niri:
-    - aylurs-gtk-shell
-    - brightnessctl
+    - bluetui
     - dart-sass
     - fuzzel
     - gnome-keyring
     - gnome-themes-extra
     - gtk-engine-murrine
     - hypridle
-    - libastal-meta
     - nautilus
     - niri
+    - nvidia-open-dkms 
+    - nvidia-utils
+    - papirus-folders-catppuccin-git
+    - papirus-icon-theme 
     - polkit
     - polkit-gnome
     - sassc
     - swaylock-effects
     - swaync
     - swww
-    - xdg-desktop-portal-gnome
+    - waybar
     - xdg-desktop-portal-gtk
+    - xwayland-satellite
+    - yazi
   sway:
     - bemenu-wayland
     - brightnessctl
