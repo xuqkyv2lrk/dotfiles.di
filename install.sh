@@ -363,10 +363,19 @@ function configure_desktop_interface() {
                 fi
             done
 
+            echo -e "\n${BLUE}Reloading GNOME Shell extensions...${NC}"
+            if command -v gdbus &> /dev/null && [[ -n "${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+                gdbus call --session --dest org.gnome.Shell \
+                    --object-path /org/gnome/Shell \
+                    --method org.gnome.Shell.Extensions.ReloadExtensions 2>/dev/null || \
+                    echo -e "${YELLOW}Could not reload extensions via D-Bus (may need manual GNOME Shell restart)${NC}"
+            fi
+
             for e in "${HOME}"/.local/share/gnome-shell/extensions/*; do
                 if [[ -d "${e}" ]]; then
                     extension=$(basename "${e}")
-                    gnome-extensions enable "${extension}"
+                    gnome-extensions enable "${extension}" 2>/dev/null || \
+                        echo -e "${YELLOW}Could not enable ${extension} (will be available after logout)${NC}"
                     echo -e "\n${BLUE}Enabled GNOME extension: ${BOLD}${extension}${NC}"
                 fi
             done
@@ -401,9 +410,21 @@ function configure_desktop_interface() {
             echo -e "${GREEN}Enabled fractional scaling${NC}"
 
             echo -e "\n${BLUE}${BOLD}Setting wallpaper...${NC}"
-            gsettings set org.gnome.desktop.background picture-uri "file:///${HOME}/wallpaper_${distro}.png"
-            gsettings set org.gnome.desktop.background picture-uri-dark "file:///${HOME}/wallpaper_${distro}.png"
-            echo -e "${GREEN}Set wallpaper to wallpaper_${distro}.png${NC}"
+            local wallpaper_file
+            if [[ "${distro}" == "ubuntu" && -f "${HOME}/wallpaper_ubuntu.jpg" ]]; then
+                wallpaper_file="${HOME}/wallpaper_ubuntu.jpg"
+            elif [[ -f "${HOME}/wallpaper_${distro}.png" ]]; then
+                wallpaper_file="${HOME}/wallpaper_${distro}.png"
+            else
+                echo -e "${YELLOW}Warning: Wallpaper file not found, skipping${NC}"
+                wallpaper_file=""
+            fi
+
+            if [[ -n "${wallpaper_file}" ]]; then
+                gsettings set org.gnome.desktop.background picture-uri "file://${wallpaper_file}"
+                gsettings set org.gnome.desktop.background picture-uri-dark "file://${wallpaper_file}"
+                echo -e "${GREEN}Set wallpaper to ${wallpaper_file}${NC}"
+            fi
 
             echo -e "\n${BLUE}${BOLD}Setting user icon...${NC}"
             gdbus call --system --dest "org.freedesktop.Accounts" \
@@ -422,6 +443,15 @@ function configure_desktop_interface() {
                 sudo systemctl set-default graphical.target
                 sudo systemctl enable --now gdm
             fi
+
+            echo -e "\n${GREEN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+            echo -e "${YELLOW}${BOLD}IMPORTANT:${NC} ${YELLOW}Please log out and log back in for all changes to take effect.${NC}"
+            echo -e "${YELLOW}This includes:${NC}"
+            echo -e "  ${BLUE}•${NC} GNOME Shell extensions"
+            echo -e "  ${BLUE}•${NC} Keyboard shortcuts"
+            echo -e "  ${BLUE}•${NC} Wallpaper and theme settings"
+            echo -e "  ${BLUE}•${NC} dconf/gsettings changes"
+            echo -e "${GREEN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
             ;;
         "hyprland")
             if [[ "$(detect_distro)" == "ubuntu" ]]; then
@@ -606,6 +636,11 @@ function main() {
     for dir in "${BASEDIR}/${desktop_interface}"/*/; do
         dirname=$(basename "${dir}")
         if [[ "${dirname}" == _* ]]; then
+            continue
+        fi
+        if [[ "${dirname}" == "additional" ]]; then
+            echo -e "\n${BLUE}Copying additional files to HOME...${NC}"
+            cp -v "${BASEDIR}/${desktop_interface}/additional/"* "${HOME}/"
             continue
         fi
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
