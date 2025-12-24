@@ -521,6 +521,31 @@ function configure_desktop_interface() {
                 sudo systemctl enable --now gdm
             fi
 
+            echo -e "\n${BLUE}${BOLD}Setting Wayland as default session...${NC}"
+            local gdm_config="/etc/gdm3/custom.conf"
+            if [[ "${distro}" == "arch" ]]; then
+                gdm_config="/etc/gdm/custom.conf"
+            fi
+
+            if [[ -f "${gdm_config}" ]]; then
+                sudo sed -i 's/^#WaylandEnable=false/WaylandEnable=true/' "${gdm_config}"
+                sudo sed -i 's/^WaylandEnable=false/WaylandEnable=true/' "${gdm_config}"
+                echo -e "${GREEN}Enabled Wayland in GDM${NC}"
+            fi
+
+            local user_session_file="/var/lib/AccountsService/users/$(whoami)"
+            if [[ -f "${user_session_file}" ]]; then
+                if sudo grep -q "^XSession=" "${user_session_file}"; then
+                    sudo sed -i 's/^XSession=.*/XSession=gnome/' "${user_session_file}"
+                else
+                    echo "XSession=gnome" | sudo tee -a "${user_session_file}" > /dev/null
+                fi
+                if sudo grep -q "^Session=" "${user_session_file}"; then
+                    sudo sed -i 's/^Session=.*/Session=/' "${user_session_file}"
+                fi
+                echo -e "${GREEN}Set Wayland as default session for user${NC}"
+            fi
+
             echo -e "\n${GREEN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
             echo -e "${YELLOW}${BOLD}IMPORTANT:${NC} ${YELLOW}Please log out and log back in for all changes to take effect.${NC}"
             echo -e "${YELLOW}This includes:${NC}"
