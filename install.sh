@@ -304,6 +304,57 @@ function install_paperwm() {
     echo -e "\n${GREEN}PaperWM installed and enabled.${NC}"
 }
 
+# Function: detect_hidpi_screen
+# Description: Detects if the system has a HiDPI screen and recommends scaling
+# Returns: Recommended scale factor (100, 125, 150, 175, 200) or empty if detection fails
+function detect_hidpi_screen() {
+    if ! command -v xrandr &>/dev/null; then
+        echo ""
+        return
+    fi
+
+    local output
+    output=$(xrandr --current 2>/dev/null | grep " connected primary" | head -1)
+    if [[ -z "${output}" ]]; then
+        output=$(xrandr --current 2>/dev/null | grep " connected" | head -1)
+    fi
+
+    if [[ -z "${output}" ]]; then
+        echo ""
+        return
+    fi
+
+    local resolution
+    local physical_width
+    resolution=$(echo "${output}" | grep -oP '\d+x\d+' | head -1)
+    physical_width=$(echo "${output}" | grep -oP '\d+mm x \d+mm' | head -1 | cut -d'x' -f1 | grep -oP '\d+')
+
+    if [[ -z "${resolution}" ]] || [[ -z "${physical_width}" ]]; then
+        echo ""
+        return
+    fi
+
+    local width_px
+    width_px=$(echo "${resolution}" | cut -d'x' -f1)
+    local width_mm="${physical_width}"
+    local width_inches
+    width_inches=$(echo "scale=2; ${width_mm} / 25.4" | bc)
+    local dpi
+    dpi=$(echo "scale=0; ${width_px} / ${width_inches}" | bc)
+
+    if [[ ${dpi} -ge 180 ]]; then
+        echo "200"
+    elif [[ ${dpi} -ge 160 ]]; then
+        echo "175"
+    elif [[ ${dpi} -ge 140 ]]; then
+        echo "150"
+    elif [[ ${dpi} -ge 110 ]]; then
+        echo "125"
+    else
+        echo "100"
+    fi
+}
+
 # Function: configure_desktop_interface
 # Description: Performs desktop interface configurations post installation.
 function configure_desktop_interface() {
@@ -311,8 +362,10 @@ function configure_desktop_interface() {
     local desktop_interface
     local gpg_config_file
     local pinentry_line
+    local scale_factor
     distro="${1}"
     desktop_interface="${2}"
+    scale_factor="${3:-auto}"
     gpg_config_file="${HOME}/.gnupg/gpg-agent.conf"
     pinentry_line="pinentry-program /usr/bin/pinentry-tty"
 
@@ -405,9 +458,33 @@ function configure_desktop_interface() {
                 echo -e "${GREEN}Disabled desktop icons and dock${NC}"
             fi
 
-            echo -e "\n${BLUE}${BOLD}Enabling fractional scaling...${NC}"
+            echo -e "\n${BLUE}${BOLD}Configuring display scaling...${NC}"
             gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
-            echo -e "${GREEN}Enabled fractional scaling${NC}"
+
+            local target_scale
+            if [[ "${scale_factor}" == "auto" ]]; then
+                local detected_scale
+                detected_scale=$(detect_hidpi_screen)
+                if [[ -n "${detected_scale}" && "${detected_scale}" != "100" ]]; then
+                    target_scale="${detected_scale}"
+                    echo -e "${YELLOW}Detected HiDPI screen, recommending ${target_scale}% scaling${NC}"
+                else
+                    target_scale="100"
+                    echo -e "${YELLOW}Standard DPI detected, using 100% scaling${NC}"
+                fi
+            else
+                target_scale="${scale_factor}"
+                echo -e "${YELLOW}Using specified scaling: ${target_scale}%${NC}"
+            fi
+
+            if [[ "${target_scale}" != "100" ]]; then
+                local scale_value
+                scale_value=$(echo "scale=2; ${target_scale} / 100" | bc)
+                gsettings set org.gnome.desktop.interface text-scaling-factor "${scale_value}"
+                echo -e "${GREEN}Set scaling to ${target_scale}% (${scale_value})${NC}"
+            else
+                echo -e "${GREEN}Using default 100% scaling${NC}"
+            fi
 
             echo -e "\n${BLUE}${BOLD}Setting wallpaper...${NC}"
             local wallpaper_file
@@ -594,10 +671,12 @@ function configure_nvidia_for_niri() {
 #   $1 - (Optional) The distribution ID (e.g., "arch", "ubuntu"). If not provided, auto-detected.
 #   $2 - (Optional) The desktop interface (e.g., "gnome", "hyprland"). If not provided, user is prompted.
 #   $3 - (Optional) PaperWM option ("true" or "false"). If not provided, defaults to "false".
+#   $4 - (Optional) Display scaling factor ("auto", "100", "125", "150", "175", "200"). Defaults to "auto".
 function main() {
     local distro=${1:-$(detect_distro)}
     local desktop_interface=${2:-}
     local paperwm_option=${3:-"false"}
+    local scale_factor=${4:-"auto"}
 
     # Set the global variable based on the parameter
     use_paperwm="${paperwm_option}"
@@ -641,7 +720,7 @@ function main() {
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done
 
-    configure_desktop_interface "${distro}" "${desktop_interface}"
+    configure_desktop_interface "${distro}" "${desktop_interface}" "${scale_factor}"
 
     # If PaperWM was selected, install and enable it after all GNOME configuration
     if [[ "${desktop_interface}" == "gnome" && "${use_paperwm}" == "true" ]]; then
