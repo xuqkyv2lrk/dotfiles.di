@@ -638,11 +638,6 @@ function main() {
         if [[ "${dirname}" == _* ]]; then
             continue
         fi
-        if [[ "${dirname}" == "additional" ]]; then
-            echo -e "\n${BLUE}Copying additional files to HOME...${NC}"
-            cp -v "${BASEDIR}/${desktop_interface}/additional/"* "${HOME}/"
-            continue
-        fi
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done
 
