@@ -21,10 +21,12 @@ desktop_packages:
     - kclock
     - lxqt-policykit
     - pamixer
+    - papirus-folders-catppuccin-git
+    - papirus-icon-theme 
     - pavucontrol
     - pkg-config
     - polkit
-    - rofi-wayland
+    - rofi
     - slurp
     - socat
     - swaync
