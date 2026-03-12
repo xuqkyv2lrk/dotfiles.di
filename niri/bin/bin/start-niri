@@ -4,4 +4,34 @@ export KWIN_DRM_NO_AMS=1
 export GBM_BACKEND=nvidia-drm
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 
-exec niri-session
+# Make sure there's no already running session.
+if systemctl --user -q is-active niri.service; then
+    echo 'A niri session is already running.'
+    exit 1
+fi
+
+# Reset failed state of all user units.
+systemctl --user reset-failed
+
+# Import the login manager environment with explicit variable names.
+# (systemd 256+ deprecated import-environment without arguments)
+systemctl --user import-environment \
+    PATH HOME USER LOGNAME SHELL \
+    XDG_RUNTIME_DIR XDG_SESSION_ID XDG_SEAT XDG_VTNR XDG_SESSION_TYPE \
+    DBUS_SESSION_BUS_ADDRESS \
+    LANG LANGUAGE \
+    GBM_BACKEND __GLX_VENDOR_LIBRARY_NAME KWIN_DRM_NO_AMS \
+    SSH_AUTH_SOCK 2>/dev/null || true
+
+# Sync to D-Bus activation environment as well.
+dbus-update-activation-environment --all
+
+# Start niri and wait for it to terminate.
+systemctl --user --wait start niri.service
+
+# Force stop of graphical-session.target.
+systemctl --user start --job-mode=replace-irreversibly niri-shutdown.target
+
+# Unset environment that we've set.
+systemctl --user unset-environment \
+    WAYLAND_DISPLAY DISPLAY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP NIRI_SOCKET

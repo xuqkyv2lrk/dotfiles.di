@@ -47,7 +47,9 @@ desktop_packages:
     - hypridle
     - nautilus
     - niri
-    - nvidia-open-dkms 
+    - libva-nvidia-driver
+    - libva-utils
+    - nvidia-open-dkms
     - nvidia-utils
     - papirus-folders-catppuccin-git
     - papirus-icon-theme 
