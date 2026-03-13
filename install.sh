@@ -199,6 +199,46 @@ function install_dependencies() {
     done
 }
 
+# Function: install_local_pkgbuilds
+# Description: Builds and installs local PKGBUILDs from pkgbuilds/ whose name
+#              matches a package in the active DE's package list. Arch-only.
+function install_local_pkgbuilds() {
+    local distro="${1}"
+    local desktop_interface="${2}"
+    local pkgbuilds_dir="${BASEDIR}/pkgbuilds"
+
+    [[ "${distro}" != "arch" ]] && return 0
+    [[ -d "${pkgbuilds_dir}" ]] || return 0
+
+    # Collect the full package list: common + DE-specific
+    mapfile -t active_packages < <(
+        yq -e ".packages[]" "${PACKAGES_YAML}" 2>/dev/null
+        yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}" 2>/dev/null
+    )
+
+    for pkgbuild_dir in "${pkgbuilds_dir}"/*/; do
+        local pkg_name
+        pkg_name=$(basename "${pkgbuild_dir}")
+
+        # Only build if this package is in the active package list
+        local match="false"
+        for pkg in "${active_packages[@]}"; do
+            if [[ "${pkg//\"/}" == "${pkg_name}" ]]; then
+                match="true"
+                break
+            fi
+        done
+        [[ "${match}" == "false" ]] && continue
+
+        if pacman -Qi "${pkg_name}" &>/dev/null; then
+            echo -e "\n${YELLOW}Local package ${BOLD}${pkg_name}${NC}${YELLOW} already installed, skipping${NC}"
+        else
+            echo -e "\n${MAGENTA}Building local PKGBUILD: ${BOLD}${pkg_name}${NC}"
+            (cd "${pkgbuild_dir}" && makepkg -si --noconfirm)
+        fi
+    done
+}
+
 # Function: install_packages
 # Description: Installs packages defined in the "packages.yaml" file.
 function install_packages() {
@@ -731,6 +771,7 @@ function main() {
 
     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
     install_dependencies "${distro}"
+    install_local_pkgbuilds "${distro}" "${desktop_interface}"
     configure_pre_install "${distro}" "${desktop_interface}"
     install_packages "${distro}"
     install_desktop_packages "${distro}" "${desktop_interface}"

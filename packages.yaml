@@ -60,7 +60,7 @@ desktop_packages:
     - swaylock-effects
     - swaync
     - swww
-    - waybar
+    - waybar-cava
     - xdg-desktop-portal-gtk
     - xwayland-satellite
     - yazi
