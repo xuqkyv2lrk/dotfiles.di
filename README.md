@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./_docs/ui-circular.png" alt="dotfiles.di" width="250px" /> <br />
 <h1 style="margin-top: 0px;">dotfiles.di</h1>
-<p>A personalized installation framework for configuring modern Wayland desktop interfaces across multiple Linux distributions.</p>
+<p>A personalized installation framework for configuring modern Wayland desktop interfaces on Arch Linux and Ubuntu.</p>
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![GitLab](https://img.shields.io/badge/GitLab-Main-orange.svg?logo=gitlab)](https://gitlab.com/wd2nf8gqct/dotfiles.di)
@@ -9,9 +9,19 @@
 [![Codeberg Mirror](https://img.shields.io/badge/Codeberg-Mirror-2185D0.svg?logo=codeberg)](https://codeberg.org/iw8knmaDD5/dotfiles.di)
 
 [![Arch Linux](https://img.shields.io/badge/Arch%20Linux-1793D1?logo=arch-linux&logoColor=fff&style=flat)](https://archlinux.org)
-[![Fedora](https://img.shields.io/badge/Fedora-294172?style=flat&logo=fedora&logoColor=white)](https://getfedora.org)
-[![openSUSE Tumbleweed](https://img.shields.io/badge/openSUSE-Tumbleweed-%2364B345?style=flat&logo=openSUSE&logoColor=white)](https://get.opensuse.org/tumbleweed/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white)](https://ubuntu.com)
 </div>
+
+## Supported Distributions
+
+| Distribution | Support | Notes |
+|---|---|---|
+| Arch Linux | Yes | Primary target; uses yay for AUR |
+| Ubuntu | Yes | Supported via apt |
+| Fedora | Legacy branch | No longer maintained |
+| openSUSE | Legacy branch | No longer maintained |
+
+Fedora and openSUSE configurations are preserved in the [`legacy-distros`](https://gitlab.com/wd2nf8gqct/dotfiles.di/-/tree/legacy-distros) branch.
 
 <br />
 
