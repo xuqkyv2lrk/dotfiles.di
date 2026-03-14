@@ -39,11 +39,13 @@ desktop_packages:
     - xdg-desktop-portal-wlr
   niri:
     - bluetui
+    - cliphist
     - dart-sass
     - fuzzel
     - grim
     - slurp
     - swappy
+    - wlsunset
     - gnome-keyring
     - gnome-themes-extra
     - gtk-engine-murrine

@@ -52,10 +52,13 @@ output "HDMI-A-1" {
 //spawn-at-startup "ags run"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "/usr/lib/xdg-desktop-portal-gtk"
+spawn-at-startup "hypridle"
 spawn-at-startup "swaync"
 spawn-at-startup "swww-daemon"
 spawn-at-startup "swww" "img" "./wallpapers/cosmos_uw.jpg"
 spawn-at-startup "waybar"
+spawn-at-startup "wlsunset" "-l" "40.7" "-L" "-74.0"
+spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store"
 spawn-at-startup "xwayland-satellite"
 
 // ****
@@ -188,6 +191,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+R { switch-preset-column-width; }
     Mod+Shift+B { spawn "sh" "-c" "pkill waybar && waybar &"; }
+    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
 
     // Focus movement
     Mod+Left { focus-column-left; }
