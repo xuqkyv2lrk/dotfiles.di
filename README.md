@@ -12,16 +12,6 @@
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white)](https://ubuntu.com)
 </div>
 
-## Supported Distributions
-
-| Distribution | Support | Notes |
-|---|---|---|
-| Arch Linux | Yes | Primary target; uses yay for AUR |
-| Ubuntu | Yes | Supported via apt |
-| Fedora | Legacy branch | No longer maintained |
-| openSUSE | Legacy branch | No longer maintained |
-
-Fedora and openSUSE configurations are preserved in the [`legacy-distros`](https://gitlab.com/wd2nf8gqct/dotfiles.di/-/tree/legacy-distros) branch.
 
 <br />
 
