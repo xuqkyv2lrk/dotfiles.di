@@ -52,3 +52,15 @@ A tiling Wayland compositor and drop-in replacement for i3&nbsp;&nbsp;&nbsp;[ <a
 </div>
 <br />
 </div>
+
+<br />
+
+<div align="center">
+<h3 style="margin-bottom: 0;">
+<img src="./_docs/niri/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
+Niri</h3>
+<div style="margin-top: 0; font-size: 0.9em;">
+A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/YaLTeR/niri">GitHub</a> · <a href="https://github.com/YaLTeR/niri/wiki">Wiki</a> ]
+</div>
+<br />
+</div>
