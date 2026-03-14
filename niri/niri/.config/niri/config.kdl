@@ -251,6 +251,11 @@ binds {
     // Brightness controls
     XF86MonBrightnessUp { spawn "brightnessctl" "set" "+10%"; }
     XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+
+    // Screenshots
+    Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
+    Shift+Print { spawn "sh" "-c" "grim - | swappy -f -"; }
+    Ctrl+Alt+Print { screenshot-window; }
 }
 
 

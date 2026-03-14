@@ -41,6 +41,9 @@ desktop_packages:
     - bluetui
     - dart-sass
     - fuzzel
+    - grim
+    - slurp
+    - swappy
     - gnome-keyring
     - gnome-themes-extra
     - gtk-engine-murrine
