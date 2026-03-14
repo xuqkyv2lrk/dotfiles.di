@@ -88,9 +88,9 @@ tooltip {
 }
 
 /* Left side - spaces group */
-#mpris {
+#custom-mpris {
   background: transparent;
-  margin-left: 0;
+  margin-left: 16px;
   margin-top: 8px;
   margin-right: 0px;
   opacity: 0.6;

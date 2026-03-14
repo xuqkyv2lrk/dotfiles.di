@@ -299,3 +299,10 @@ window-rule {
     match app-id="lxqt-policykit-agent"
     open-floating true
 }
+
+window-rule {
+    match app-id="Plexamp"
+    open-floating true
+    default-column-width { fixed 275; }
+    default-window-height { fixed 655; }
+}

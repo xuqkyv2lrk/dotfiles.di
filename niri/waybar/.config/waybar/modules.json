@@ -38,24 +38,14 @@
         ]
     },
     
-    "mpris": {
-        "format": "{player_icon} {artist} // {title}",
-        "format-paused": "{status_icon} {artist} // {title}",
-        "player-icons": {
-            "default": "♫",
-            "spotify": "",
-            "firefox": "",
-            "chrome": "",
-            "chromium": ""
-        },
-        "status-icons": {
-            "playing": "",
-            "paused": ""
-        },
+    "custom/mpris": {
+        "exec": "~/.config/waybar/scripts/mpris-format.sh",
+        "return-type": "json",
+        "interval": 1,
         "on-click": "playerctl play-pause",
         "on-click-right": "playerctl next",
         "on-click-middle": "playerctl previous",
-        "tooltip-format": "{player} ({status})\n{title} - {artist}\n\nLeft: Play/Pause\nRight: Next\nMiddle: Previous"
+        "tooltip": false
     },
     
     "clock": {

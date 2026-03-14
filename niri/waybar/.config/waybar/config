@@ -7,7 +7,7 @@
         "orientation": "horizontal",
         "modules": [
             "niri/workspaces",
-            "mpris",
+            "custom/mpris",
             "cava"
         ]
     },
