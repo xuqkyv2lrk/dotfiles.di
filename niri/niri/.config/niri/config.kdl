@@ -57,7 +57,7 @@ spawn-at-startup "swaync"
 spawn-at-startup "swww-daemon"
 spawn-at-startup "swww" "img" "./wallpapers/cosmos_uw.jpg"
 spawn-at-startup "waybar"
-spawn-at-startup "wlsunset" "-l" "40.7" "-L" "-74.0"
+spawn-at-startup "wlsunset" "-l" "40.7" "-L" "-74.0" "-t" "5000"
 spawn-at-startup "sh" "-c" "wl-paste --type text --watch cliphist store"
 spawn-at-startup "xwayland-satellite"
 
