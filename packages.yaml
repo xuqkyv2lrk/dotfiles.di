@@ -52,6 +52,7 @@ desktop_packages:
     - hypridle
     - nautilus
     - niri
+    - nwg-bar
     - libva-nvidia-driver
     - libva-utils
     - nvidia-open-dkms
