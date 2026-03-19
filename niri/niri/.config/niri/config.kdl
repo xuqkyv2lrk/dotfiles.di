@@ -257,8 +257,8 @@ binds {
     XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
 
     // Screenshots
-    Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
-    Shift+Print { spawn "sh" "-c" "grim - | swappy -f -"; }
+    Print { spawn "sh" "-c" "pgrep -x slurp >/dev/null || grim -g \"$(slurp)\" - | swappy -f -"; }
+    Shift+Print { spawn "sh" "-c" "pgrep -x swappy >/dev/null || grim - | swappy -f -"; }
     Ctrl+Alt+Print { screenshot-window; }
 }
 

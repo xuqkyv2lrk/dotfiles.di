@@ -186,7 +186,7 @@
     
     "custom/power": {
         "tooltip": false,
-        "on-click": "nwg-bar -f &",
+        "on-click": "pgrep -x nwg-bar || nwg-bar -f &",
         "format": "⏻ "
     },
     
