@@ -21,7 +21,7 @@ use_paperwm="false"
 function clone_repository() {
     if [[ ! -d "${BASEDIR}" ]]; then
         echo -e "\n${BLUE}Cloning ${BOLD}${MAGENTA}dotfiles.di${NC}${BLUE} to ${BOLD}${MAGENTA}${BASEDIR}${NC}${BLUE}...${GREEN}"
-        git clone -j 5 "https://gitlab.com/wd2nf8gqct/dotfiles.di.git" "${BASEDIR}"
+        git clone -j 5 --recurse-submodules "https://gitlab.com/wd2nf8gqct/dotfiles.di.git" "${BASEDIR}"
     fi
 }
 
