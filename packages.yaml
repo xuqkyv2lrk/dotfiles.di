@@ -93,6 +93,14 @@ desktop_packages:
     - waybar
     - xorg-xwayland
 
+  quickshell:
+    - cava
+    - cliphist
+    - ddcutil
+    - imagemagick
+    - noctalia-qs
+    - wlr-randr
+
 exceptions:
   arch: 
     - pipewire: pipewire pipewire-alsa pipewire-pulseaudio pamixer

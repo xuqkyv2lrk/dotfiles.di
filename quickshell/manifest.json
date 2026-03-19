@@ -1,0 +1,13 @@
+{
+  "replaces": [
+    "fuzzel",
+    "nwg-bar",
+    "rofi",
+    "swaylock",
+    "swaylock-effects",
+    "swaync",
+    "waybar",
+    "waybar-cava",
+    "wlogout"
+  ]
+}

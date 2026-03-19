@@ -16,6 +16,9 @@ PACKAGES_YAML="${BASEDIR}/packages.yaml"
 # Global variable to track PaperWM selection
 use_paperwm="false"
 
+# Global variable to track Quickshell selection
+use_quickshell="false"
+
 # Function: clone_repository
 # Description: Clones the dotfiles repository if it doesn't exist.
 function clone_repository() {
@@ -153,6 +156,25 @@ function select_desktop_interface() {
                     select de in "${options[@]}"; do
                         if [[ -n "$de" ]]; then
                             eval "$__choice"="$de"
+                            if [[ "${de}" != "gnome" ]]; then
+                                echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
+                                echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
+                                select qs_choice in "Yes" "No"; do
+                                    case "${qs_choice}" in
+                                        "Yes")
+                                            use_quickshell="true"
+                                            return
+                                            ;;
+                                        "No")
+                                            use_quickshell="false"
+                                            return
+                                            ;;
+                                        *)
+                                            echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                                            ;;
+                                    esac
+                                done
+                            fi
                             return
                         else
                             echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
@@ -260,9 +282,36 @@ function install_desktop_packages() {
     desktop_interface="${2}"
     mapfile -t packages < <(yq -e ".desktop_packages.${desktop_interface}[]" "${PACKAGES_YAML}" 2>/dev/null)
     packages=("${packages[@]//\"/}")
+
+    # Load quickshell manifest replaces list for filtering
+    local qs_replaces=()
+    if [[ "${use_quickshell}" == "true" ]]; then
+        mapfile -t qs_replaces < <(yq -e ".replaces[]" "${BASEDIR}/quickshell/manifest.json" 2>/dev/null)
+    fi
+
     for package in "${packages[@]}"; do
+        # Skip packages that quickshell replaces
+        if [[ "${use_quickshell}" == "true" ]]; then
+            local skip="false"
+            for replaced in "${qs_replaces[@]}"; do
+                if [[ "${package}" == "${replaced}" ]]; then
+                    skip="true"
+                    break
+                fi
+            done
+            [[ "${skip}" == "true" ]] && continue
+        fi
         install_package "${package}" "${distro}"
     done
+
+    # Install quickshell-specific packages
+    if [[ "${use_quickshell}" == "true" ]]; then
+        mapfile -t qs_packages < <(yq -e ".desktop_packages.quickshell[]" "${PACKAGES_YAML}" 2>/dev/null)
+        qs_packages=("${qs_packages[@]//\"/}")
+        for package in "${qs_packages[@]}"; do
+            install_package "${package}" "${distro}"
+        done
+    fi
 }
 
 # Function: configure_pre_install
@@ -778,13 +827,37 @@ function main() {
     configure_nvidia_for_niri "${desktop_interface}"
 
     echo -e "\n${YELLOW}Stowing ${BOLD}${desktop_interface}${NC}${YELLOW} dotfile configurations...${NC}${GREEN}"
+
+    # Load quickshell manifest replaces list for stow filtering
+    local qs_replaces=()
+    if [[ "${use_quickshell}" == "true" ]]; then
+        mapfile -t qs_replaces < <(yq -e ".replaces[]" "${BASEDIR}/quickshell/manifest.json" 2>/dev/null)
+    fi
+
     for dir in "${BASEDIR}/${desktop_interface}"/*/; do
         dirname=$(basename "${dir}")
         if [[ "${dirname}" == _* ]]; then
             continue
         fi
+        # Skip stow packages that quickshell replaces
+        if [[ "${use_quickshell}" == "true" ]]; then
+            local skip="false"
+            for replaced in "${qs_replaces[@]}"; do
+                if [[ "${dirname}" == "${replaced}" ]]; then
+                    skip="true"
+                    break
+                fi
+            done
+            [[ "${skip}" == "true" ]] && continue
+        fi
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done
+
+    # Stow quickshell config if selected
+    if [[ "${use_quickshell}" == "true" && -d "${BASEDIR}/quickshell/quickshell" ]]; then
+        echo -e "\n${YELLOW}Stowing ${BOLD}quickshell${NC}${YELLOW} configurations...${NC}${GREEN}"
+        stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
+    fi
 
     configure_desktop_interface "${distro}" "${desktop_interface}" "${scale_factor}"
 
