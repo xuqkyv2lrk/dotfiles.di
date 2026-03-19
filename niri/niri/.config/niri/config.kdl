@@ -170,7 +170,8 @@ binds {
     Mod+E { spawn "nautilus"; }
     Mod+D { spawn "~/.config/niri/scripts/launcher.sh"; }
     Mod+O { spawn "firefox"; }
-    Mod+L { spawn "swaylock"; }
+    Mod+L { spawn "~/.config/niri/scripts/lock.sh"; }
+    Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
     Mod+Shift+F { fullscreen-window; }
