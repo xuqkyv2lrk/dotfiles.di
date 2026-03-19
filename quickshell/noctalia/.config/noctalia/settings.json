@@ -17,8 +17,7 @@
         "iconMode": "tabler",
         "ignoreMouseInput": false,
         "overviewLayer": false,
-        "pinnedApps": [
-        ],
+        "pinnedApps": [],
         "position": "center",
         "screenshotAnnotationTool": "",
         "showCategories": true,
@@ -28,8 +27,7 @@
         "viewMode": "list"
     },
     "audio": {
-        "mprisBlacklist": [
-        ],
+        "mprisBlacklist": [],
         "preferredPlayer": "",
         "spectrumFrameRate": 30,
         "visualizerType": "linear",
@@ -45,8 +43,8 @@
         "barType": "simple",
         "capsuleColorKey": "none",
         "capsuleOpacity": 1,
-        "contentPadding": 0,
-        "density": "compact",
+        "contentPadding": 8,
+        "density": "normal",
         "displayMode": "always_visible",
         "enableExclusionZoneInset": false,
         "floating": false,
@@ -59,8 +57,7 @@
         "middleClickAction": "none",
         "middleClickCommand": "",
         "middleClickFollowMouse": false,
-        "monitors": [
-        ],
+        "monitors": [],
         "mouseWheelAction": "none",
         "mouseWheelWrap": true,
         "outerCorners": false,
@@ -69,8 +66,7 @@
         "rightClickAction": "controlCenter",
         "rightClickCommand": "",
         "rightClickFollowMouse": true,
-        "screenOverrides": [
-        ],
+        "screenOverrides": [],
         "showCapsule": true,
         "showOnWorkspaceSwitch": true,
         "showOutline": false,
@@ -81,10 +77,10 @@
                 {
                     "clockColor": "none",
                     "customFont": "",
-                    "formatHorizontal": "HH:mm ddd, MMM dd",
+                    "formatHorizontal": "ddd, MMM dd // HH:mm",
                     "formatVertical": "HH mm - dd MM",
                     "id": "Clock",
-                    "tooltipFormat": "HH:mm ddd, MMM dd",
+                    "tooltipFormat": "ddd, MMM dd // HH:mm",
                     "useCustomFont": false
                 }
             ],
@@ -135,7 +131,7 @@
                 {
                     "compactMode": false,
                     "hideMode": "hidden",
-                    "hideWhenIdle": false,
+                    "hideWhenIdle": true,
                     "id": "MediaMini",
                     "maxWidth": 145,
                     "panelShowAlbumArt": true,
@@ -143,23 +139,21 @@
                     "showAlbumArt": true,
                     "showArtistFirst": true,
                     "showProgressRing": true,
-                    "showVisualizer": false,
+                    "showVisualizer": true,
                     "textColor": "none",
                     "useFixedWidth": false,
-                    "visualizerType": "linear"
+                    "visualizerType": "ring"
                 }
             ],
             "right": [
                 {
-                    "blacklist": [
-                    ],
+                    "blacklist": [],
                     "chevronColor": "none",
                     "colorizeIcons": false,
                     "drawerEnabled": true,
                     "hidePassive": false,
                     "id": "Tray",
-                    "pinned": [
-                    ]
+                    "pinned": []
                 },
                 {
                     "hideWhenZero": false,
@@ -200,13 +194,15 @@
                     "icon": "noctalia",
                     "id": "ControlCenter",
                     "useDistroLogo": false
+                },
+                {
+                    "id": "SessionMenu"
                 }
             ]
         }
     },
     "brightness": {
-        "backlightDeviceMappings": [
-        ],
+        "backlightDeviceMappings": [],
         "brightnessStep": 5,
         "enableDdcSupport": false,
         "enforceMinimum": true
@@ -301,8 +297,7 @@
         "enabled": false,
         "gridSnap": false,
         "gridSnapScale": false,
-        "monitorWidgets": [
-        ],
+        "monitorWidgets": [],
         "overviewEnabled": true
     },
     "dock": {
@@ -326,11 +321,9 @@
         "launcherIconColor": "none",
         "launcherPosition": "end",
         "launcherUseDistroLogo": false,
-        "monitors": [
-        ],
+        "monitors": [],
         "onlySameOutput": true,
-        "pinnedApps": [
-        ],
+        "pinnedApps": [],
         "pinnedStatic": false,
         "position": "bottom",
         "showDockIndicator": false,
@@ -385,8 +378,7 @@
         "lockScreenAnimations": false,
         "lockScreenBlur": 0,
         "lockScreenCountdownDuration": 10000,
-        "lockScreenMonitors": [
-        ],
+        "lockScreenMonitors": [],
         "lockScreenTint": 0,
         "passwordChars": false,
         "radiusRatio": 1,
@@ -433,12 +425,12 @@
         "firstDayOfWeek": -1,
         "hideWeatherCityName": false,
         "hideWeatherTimezone": false,
-        "name": "Tokyo",
+        "name": "South Riding, VA",
         "showCalendarEvents": true,
         "showCalendarWeather": true,
         "showWeekNumberInCalendar": false,
         "use12hourFormat": false,
-        "useFahrenheit": false,
+        "useFahrenheit": true,
         "weatherEnabled": true,
         "weatherShowEffects": true
     },
@@ -479,8 +471,7 @@
         "enabled": true,
         "location": "top_right",
         "lowUrgencyDuration": 3,
-        "monitors": [
-        ],
+        "monitors": [],
         "normalUrgencyDuration": 8,
         "overlayLayer": true,
         "respectExpireTimeout": false,
@@ -509,8 +500,7 @@
             2
         ],
         "location": "top_right",
-        "monitors": [
-        ],
+        "monitors": [],
         "overlayLayer": true
     },
     "plugins": {
@@ -588,8 +578,7 @@
         "warningColor": ""
     },
     "templates": {
-        "activeTemplates": [
-        ],
+        "activeTemplates": [],
         "enableUserTheming": false
     },
     "ui": {
@@ -611,8 +600,7 @@
         "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
-        "favorites": [
-        ],
+        "favorites": [],
         "fillColor": "#000000",
         "fillMode": "crop",
         "hideWallpaperFilenames": false,
