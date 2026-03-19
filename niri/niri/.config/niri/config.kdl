@@ -168,20 +168,20 @@ animations {
 binds {
     Mod+Return { spawn "foot"; }
     Mod+E { spawn "nautilus"; }
-    Mod+D { spawn "fuzzel"; }
+    Mod+D { spawn "~/.config/niri/scripts/launcher.sh"; }
     Mod+O { spawn "firefox"; }
     Mod+L { spawn "swaylock"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
-    Mod+Shift+N { spawn "swaync-client" "-t" "-sw"; }
+    Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+R { switch-preset-column-width; }
-    Mod+Shift+B { spawn "sh" "-c" "pkill waybar && waybar &"; }
-    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
+    Mod+Shift+B { spawn "~/.config/niri/scripts/dock_toggle.sh"; }
+    Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
 
     // Focus movement
     Mod+Left { focus-column-left; }
