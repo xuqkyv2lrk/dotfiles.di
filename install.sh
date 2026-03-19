@@ -935,10 +935,11 @@ function main() {
         stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done
 
-    # Stow quickshell config if selected
-    if [[ "${use_quickshell}" == "true" && -d "${BASEDIR}/quickshell/quickshell" ]]; then
+    # Stow quickshell configs if selected
+    if [[ "${use_quickshell}" == "true" ]]; then
         echo -e "\n${YELLOW}Stowing ${BOLD}quickshell${NC}${YELLOW} configurations...${NC}${GREEN}"
-        stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
+        [[ -d "${BASEDIR}/quickshell/quickshell" ]] && stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
+        [[ -d "${BASEDIR}/quickshell/noctalia" ]] && stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" noctalia
     fi
 
     # Generate autostart script for Wayland compositors
