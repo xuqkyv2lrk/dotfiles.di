@@ -83,7 +83,7 @@ input {
 // ****
 
 layout {
-    gaps 6
+    gaps 4
     struts {
         left 2
         right 2

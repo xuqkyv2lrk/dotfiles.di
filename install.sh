@@ -390,7 +390,7 @@ SWAYIDLE
         echo ''
         echo '# Shell'
         if [[ "${use_quickshell}" == "true" ]]; then
-            echo "quickshell -p ${BASEDIR}/quickshell/noctalia-shell &"
+            echo "qs -p ${BASEDIR}/quickshell/noctalia-shell &"
         else
             case "${compositor}" in
                 "hypr")
