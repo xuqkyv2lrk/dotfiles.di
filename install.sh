@@ -338,6 +338,86 @@ function configure_pre_install() {
     esac
 }
 
+# Function: generate_autostart
+# Description: Generates a compositor-specific autostart.sh with either
+#              quickshell or default shell tools based on use_quickshell.
+function generate_autostart() {
+    local compositor="${1}"
+    local config_dir="${HOME}/.config/${compositor}"
+    local script="${config_dir}/autostart.sh"
+
+    mkdir -p "${config_dir}"
+
+    {
+        echo '#!/usr/bin/env bash'
+        echo 'set -euo pipefail'
+        echo ''
+
+        echo '# Compositor-specific'
+        case "${compositor}" in
+            "hypr")
+                echo '/usr/bin/lxqt-policykit-agent &'
+                echo "${HOME}/.config/hypr/scripts/xdg_portal_hyprland.sh &"
+                echo 'hypridle &'
+                echo "${HOME}/.config/hypr/scripts/monitor_hotplug.sh &"
+                ;;
+            "niri")
+                echo '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &'
+                echo '/usr/lib/xdg-desktop-portal-gtk &'
+                echo 'hypridle &'
+                echo 'xwayland-satellite &'
+                ;;
+            "sway")
+                echo 'lxqt-policykit-agent &'
+                echo '/usr/bin/xdg-user-dirs-update &'
+                echo '/usr/libexec/sway-systemd/wait-sni-ready && systemctl --user start sway-xdg-autostart.target'
+                cat << 'SWAYIDLE'
+swayidle -w \
+    timeout 30 'original=$(brightnessctl g); brightnessctl set $(( original / 2 )); echo $original > /tmp/original_brightness' \
+        resume 'brightnessctl set $(cat /tmp/original_brightness); rm /tmp/original_brightness' \
+    timeout 300 'swaylock -f' \
+    timeout 360 'swaymsg "output * power off"' \
+        resume 'swaymsg "output * power on"' \
+    timeout 60 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power off"' \
+        resume 'pgrep -xu "$USER" swaylock >/dev/null && swaymsg "output * power on"' \
+    before-sleep 'swaylock -f' \
+    lock 'swaylock -f' \
+    unlock 'pkill -xu "$USER" -SIGUSR1 swaylock' &
+SWAYIDLE
+                ;;
+        esac
+
+        echo ''
+        echo '# Shell'
+        if [[ "${use_quickshell}" == "true" ]]; then
+            echo "quickshell -p ${BASEDIR}/quickshell/noctalia-shell &"
+        else
+            case "${compositor}" in
+                "hypr")
+                    echo "${HOME}/.config/hypr/scripts/waybar.sh &"
+                    echo "swaync &"
+                    echo 'wlsunset -l 40.7 -L -74.0 -t 5000 &'
+                    echo 'wl-paste --type text --watch cliphist store &'
+                    ;;
+                "niri")
+                    echo 'swww-daemon &'
+                    echo 'waybar &'
+                    echo 'swaync &'
+                    echo 'wlsunset -l 40.7 -L -74.0 -t 5000 &'
+                    echo 'wl-paste --type text --watch cliphist store &'
+                    ;;
+                "sway")
+                    echo 'waybar &'
+                    echo 'swaync &'
+                    ;;
+            esac
+        fi
+    } > "${script}"
+
+    chmod +x "${script}"
+    echo -e "\n${GREEN}Generated autostart script: ${script}${NC}"
+}
+
 # Function: install_colloid_catppuccin
 # Description: Installs Colloid GTK and icon themes with all Catppuccin color variants, sets GNOME theme preferences, and cleans up.
 function install_colloid_catppuccin() {
@@ -857,6 +937,16 @@ function main() {
     if [[ "${use_quickshell}" == "true" && -d "${BASEDIR}/quickshell/quickshell" ]]; then
         echo -e "\n${YELLOW}Stowing ${BOLD}quickshell${NC}${YELLOW} configurations...${NC}${GREEN}"
         stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
+    fi
+
+    # Generate autostart script for Wayland compositors
+    if [[ "${desktop_interface}" != "gnome" ]]; then
+        local compositor_config_dir
+        case "${desktop_interface}" in
+            "hyprland") compositor_config_dir="hypr" ;;
+            *) compositor_config_dir="${desktop_interface}" ;;
+        esac
+        generate_autostart "${compositor_config_dir}"
     fi
 
     configure_desktop_interface "${distro}" "${desktop_interface}" "${scale_factor}"
