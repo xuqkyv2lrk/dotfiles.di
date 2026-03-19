@@ -398,6 +398,7 @@ SWAYIDLE
                     echo "swaync &"
                     echo 'wlsunset -l 40.7 -L -74.0 -t 5000 &'
                     echo 'wl-paste --type text --watch cliphist store &'
+                    echo 'wl-paste --type image --watch cliphist store &'
                     ;;
                 "niri")
                     echo 'swww-daemon &'
@@ -405,6 +406,7 @@ SWAYIDLE
                     echo 'swaync &'
                     echo 'wlsunset -l 40.7 -L -74.0 -t 5000 &'
                     echo 'wl-paste --type text --watch cliphist store &'
+                    echo 'wl-paste --type image --watch cliphist store &'
                     ;;
                 "sway")
                     echo 'waybar &'
