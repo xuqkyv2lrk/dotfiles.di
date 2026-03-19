@@ -1,0 +1,3 @@
+[submodule "quickshell/noctalia-shell"]
+	path = quickshell/noctalia-shell
+	url = gitlab:wd2nf8gqct/noctalia-shell.git
