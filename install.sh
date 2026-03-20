@@ -772,7 +772,11 @@ function configure_desktop_interface() {
             ;;
         "niri")
             configure_catppuccin_gtk
-            systemctl --user enable --now idle.service
+            if [[ "${use_quickshell}" == "true" ]]; then
+                systemctl --user disable --now hypridle.service 2>/dev/null || true
+            else
+                systemctl --user enable --now idle.service
+            fi
             ;;
         "sway")
             gsettings set org.gnome.desktop.interface color-scheme prefer-dark
