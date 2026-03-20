@@ -133,9 +133,8 @@
                     "usePadding": false
                 },
                 {
-                    "compactMode": true,
+                    "compactMode": false,
                     "hideMode": "transparent",
-                    "hideWhenIdle": false,
                     "id": "MediaMini",
                     "maxWidth": 250,
                     "panelShowAlbumArt": true,

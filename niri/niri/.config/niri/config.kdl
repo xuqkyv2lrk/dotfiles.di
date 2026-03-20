@@ -177,6 +177,7 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
+    Mod+Shift+M { spawn "~/.config/niri/scripts/media.sh"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
@@ -242,6 +243,9 @@ binds {
     XF86AudioLowerVolume { spawn "pamixer" "--decrease" "5"; }
     XF86AudioMute { spawn "pamixer" "--toggle-mute"; }
     XF86AudioMicMute { spawn "pamixer" "--default-source" "--toggle-mute"; }
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
     
     // Brightness controls
     XF86MonBrightnessUp { spawn "brightnessctl" "set" "+10%"; }
