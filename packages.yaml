@@ -57,8 +57,9 @@ desktop_packages:
     - libva-utils
     - nvidia-open-dkms
     - nvidia-utils
+    - catppuccin-gtk-theme-mocha
     - papirus-folders-catppuccin-git
-    - papirus-icon-theme 
+    - papirus-icon-theme
     - polkit
     - polkit-gnome
     - pwvucontrol

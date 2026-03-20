@@ -462,6 +462,26 @@ function install_colloid_catppuccin() {
     trap - EXIT
 }
 
+# Function: configure_catppuccin_gtk
+# Description: Links Catppuccin Mocha Lavender GTK4 theme files and applies GNOME settings.
+function configure_catppuccin_gtk() {
+    local THEME_DIR="/usr/share/themes/catppuccin-mocha-lavender-standard+default/gtk-4.0"
+    local GTK4_CONFIG="${HOME}/.config/gtk-4.0"
+
+    print_step "Applying Catppuccin Mocha Lavender GTK4 theme..."
+
+    mkdir -p "${GTK4_CONFIG}"
+    ln -sf "${THEME_DIR}/gtk.css"      "${GTK4_CONFIG}/gtk.css"
+    ln -sf "${THEME_DIR}/gtk-dark.css" "${GTK4_CONFIG}/gtk-dark.css"
+    ln -sf "${THEME_DIR}/assets"       "${GTK4_CONFIG}/assets"
+
+    gsettings set org.gnome.desktop.interface gtk-theme      "catppuccin-mocha-lavender-standard+default"
+    gsettings set org.gnome.desktop.interface color-scheme   "prefer-dark"
+    gsettings set org.gnome.desktop.interface icon-theme     "Papirus-Dark"
+
+    print_success "GTK4 Catppuccin theme applied."
+}
+
 # Function: install_paperwm
 # Description: Installs the PaperWM GNOME Shell extension.
 function install_paperwm() {
@@ -749,7 +769,7 @@ function configure_desktop_interface() {
             gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
             ;;
         "niri")
-            install_colloid_catppuccin
+            configure_catppuccin_gtk
             systemctl --user enable --now idle.service
             ;;
         "sway")
