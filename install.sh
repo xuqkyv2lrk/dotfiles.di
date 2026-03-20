@@ -364,7 +364,9 @@ function generate_autostart() {
             "niri")
                 echo '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &'
                 echo '/usr/lib/xdg-desktop-portal-gtk &'
-                echo 'hypridle &'
+                if [[ \"${use_quickshell}\" != \"true\" ]]; then
+                    echo 'hypridle &'
+                fi
                 echo 'xwayland-satellite &'
                 ;;
             "sway")

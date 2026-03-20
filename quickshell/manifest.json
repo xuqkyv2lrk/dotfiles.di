@@ -1,6 +1,7 @@
 {
   "replaces": [
     "fuzzel",
+    "hypridle",
     "nwg-bar",
     "rofi",
     "swaylock",
