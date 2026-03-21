@@ -179,6 +179,7 @@ binds {
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
     Mod+Shift+M { spawn "~/.config/niri/scripts/media.sh"; }
     Mod+Shift+S { spawn "qs" "ipc" "-p" "/home/chdxn/.dotfiles.di/quickshell/noctalia-shell" "call" "settings" "toggle"; }
+    Mod+Shift+C { spawn "qs" "ipc" "-p" "/home/chdxn/.dotfiles.di/quickshell/noctalia-shell" "call" "controlCenter" "toggle"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
