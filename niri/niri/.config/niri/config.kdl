@@ -178,6 +178,7 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
     Mod+Shift+M { spawn "~/.config/niri/scripts/media.sh"; }
+    Mod+Shift+S { spawn "qs" "ipc" "-p" "/home/chdxn/.dotfiles.di/quickshell/noctalia-shell" "call" "settings" "toggle"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
