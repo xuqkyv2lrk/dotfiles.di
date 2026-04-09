@@ -45,6 +45,7 @@ desktop_packages:
     - grim
     - slurp
     - swappy
+    - wl-clipboard
     - wlsunset
     - gnome-keyring
     - gnome-themes-extra
@@ -103,12 +104,36 @@ desktop_packages:
     - wlr-randr
 
 exceptions:
-  arch: 
+  arch:
     - pipewire: pipewire pipewire-alsa pipewire-pulseaudio pamixer
   ubuntu:
     - extension-manager: gnome-shell-extension-manager
     - gnome: skip
     - pinentry: pinentry-tty
     - pipewire: skip
+    # Niri: package name differences on Ubuntu
+    - waybar-cava: waybar
+    - gtk-engine-murrine: gtk2-engines-murrine
+    - polkit-gnome: policykit-1-gnome
+    # Niri: packages built/installed by install_niri_stack_ubuntu
+    - niri: skip
+    - swaylock-effects: skip
+    - swaync: skip
+    - xwayland-satellite: skip
+    - hypridle: skip
+    - swww: skip
+    - cliphist: skip
+    - yazi: skip
+    - bluetui: skip
+    - nwg-bar: skip
+    - wlsunset: skip
+    - dart-sass: skip
+    - catppuccin-gtk-theme-mocha: skip
+    - papirus-folders-catppuccin-git: skip
+    - pwvucontrol: skip
+    # Niri: NVIDIA handled by install_niri_stack_ubuntu on Ubuntu
+    - nvidia-open-dkms: skip
+    - nvidia-utils: skip
+    - libva-nvidia-driver: skip
 
 repositories:

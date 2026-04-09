@@ -10,6 +10,18 @@ BLUE="\033[34m"
 MAGENTA="\033[35m"
 NC="\033[0m"
 
+# Catppuccin Mocha palette
+readonly MAUVE='\033[38;2;203;166;247m'
+readonly TEAL='\033[38;2;148;226;213m'
+readonly TEXT='\033[38;2;205;214;244m'
+
+function print_info()    { echo -e "${BLUE}[INFO]${NC} $*"; }
+function print_success() { echo -e "${GREEN}[OK]${NC} $*"; }
+function print_warning() { echo -e "${YELLOW}[WARN]${NC} $*" >&2; }
+function print_error()   { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+function print_step()    { echo -e "${MAUVE}==>${NC} $*"; }
+function print_dry_run() { echo -e "${TEAL}[DRY-RUN]${NC} $*"; }
+
 BASEDIR="${HOME}/.dotfiles.di"
 PACKAGES_YAML="${BASEDIR}/packages.yaml"
 
@@ -111,86 +123,80 @@ function install_package() {
 }
 
 # Function: select_desktop_interface
-# Description: On Ubuntu, prompts the user to apply a custom GNOME configuration or leave the current setup unchanged. On other distros, prompts for desktop interface selection.
+# Description: Prompts the user to select a desktop interface to install.
 function select_desktop_interface() {
     local __choice=$1
+
     local distro
     distro=$(detect_distro)
-    if [[ "$distro" == "ubuntu" ]]; then
-        # Check if the current desktop session is GNOME
-        if [[ "$XDG_CURRENT_DESKTOP" != *"GNOME"* && "$DESKTOP_SESSION" != "gnome" ]]; then
-            echo -e "\n${RED}Unsupported desktop environment detected.\nThis script supports only Ubuntu with GNOME desktop. Exiting.${NC}\n"
-            exit 1
-        fi
-        echo -e "\n${BLUE}${BOLD}You are running Ubuntu with GNOME.${NC}"
-        echo -e "${BLUE}How would you like to handle your GNOME desktop configuration?${NC}"
-        select choice in "Apply custom GNOME configuration" "Apply custom GNOME configuration with PaperWM" "Leave GNOME as it is"; do
-            case $choice in
-                "Apply custom GNOME configuration")
-                    eval "$__choice"="gnome"
-                    use_paperwm="false"
-                    return
-                    ;;
-                "Apply custom GNOME configuration with PaperWM")
-                    eval "$__choice"="gnome"
-                    use_paperwm="true"
-                    return
-                    ;;
-                "Leave GNOME as it is")
-                    printf "\nNo changes will be made to your GNOME desktop.\n"
-                    exit
-                    ;;
-                *)
-                    echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                    ;;
-            esac
-        done
-    else
-        echo -e "\n${BLUE}${BOLD}Do you want to install a desktop interface?${NC}"
-        select choice in "Yes" "No"; do
-            case $choice in
-                "Yes")
-                    clone_repository
-                    echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
+
+    echo -e "\n${BLUE}${BOLD}Do you want to install a desktop interface?${NC}"
+    select choice in "Yes" "No"; do
+        case $choice in
+            "Yes")
+                clone_repository
+                echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
+                local options
+                if [[ "${distro}" == "ubuntu" ]]; then
+                    # Hyprland and Sway are Arch-only; Ubuntu supports gnome and niri
+                    options=("gnome" "niri")
+                else
                     mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}" 2>/dev/null | tr -d '"')
-                    select de in "${options[@]}"; do
-                        if [[ -n "$de" ]]; then
-                            eval "$__choice"="$de"
-                            if [[ "${de}" != "gnome" ]]; then
-                                echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
-                                echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
-                                select qs_choice in "Yes" "No"; do
-                                    case "${qs_choice}" in
-                                        "Yes")
-                                            use_quickshell="true"
-                                            return
-                                            ;;
-                                        "No")
-                                            use_quickshell="false"
-                                            return
-                                            ;;
-                                        *)
-                                            echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                                            ;;
-                                    esac
-                                done
-                            fi
-                            return
-                        else
-                            echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                fi
+                select de in "${options[@]}"; do
+                    if [[ -n "$de" ]]; then
+                        eval "$__choice"="$de"
+                        if [[ "${de}" == "gnome" ]]; then
+                            echo -e "\n${BLUE}${BOLD}Would you like to install PaperWM?${NC}"
+                            select pw_choice in "Yes" "No"; do
+                                case "${pw_choice}" in
+                                    "Yes")
+                                        use_paperwm="true"
+                                        return
+                                        ;;
+                                    "No")
+                                        use_paperwm="false"
+                                        return
+                                        ;;
+                                    *)
+                                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                                        ;;
+                                esac
+                            done
+                        elif [[ "${de}" == "niri" ]]; then
+                            echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
+                            echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
+                            select qs_choice in "Yes" "No"; do
+                                case "${qs_choice}" in
+                                    "Yes")
+                                        use_quickshell="true"
+                                        return
+                                        ;;
+                                    "No")
+                                        use_quickshell="false"
+                                        return
+                                        ;;
+                                    *)
+                                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                                        ;;
+                                esac
+                            done
                         fi
-                    done
-                    ;;
-                "No")
-                    printf "\nSkipping desktop interface installation.\n"
-                    exit
-                    ;;
-                *)
-                    echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                    ;;
-            esac
-        done
-    fi
+                        return
+                    else
+                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                    fi
+                done
+                ;;
+            "No")
+                printf "\nSkipping desktop interface installation.\n"
+                exit
+                ;;
+            *)
+                echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                ;;
+        esac
+    done
 }
 
 # Function: install_dependencies
@@ -330,6 +336,9 @@ function configure_pre_install() {
             if [[ "${desktop_interface}" == "sway" ]]; then
                 echo -e "\n${MAGENTA}Installing ${BOLD}swaysome${NC}"
                 cargo install --locked --root "${HOME}" swaysome
+            fi
+            if [[ "${distro}" == "ubuntu" && "${desktop_interface}" == "niri" ]]; then
+                install_niri_stack_ubuntu
             fi
             ;;
         *)
@@ -477,9 +486,9 @@ function configure_catppuccin_gtk() {
     ln -sf "${THEME_DIR}/gtk-dark.css" "${GTK4_CONFIG}/gtk-dark.css"
     ln -sf "${THEME_DIR}/assets"       "${GTK4_CONFIG}/assets"
 
-    gsettings set org.gnome.desktop.interface gtk-theme      "catppuccin-mocha-lavender-standard+default"
-    gsettings set org.gnome.desktop.interface color-scheme   "prefer-dark"
-    gsettings set org.gnome.desktop.interface icon-theme     "Papirus-Dark"
+    gsettings set org.gnome.desktop.interface gtk-theme      "catppuccin-mocha-lavender-standard+default" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface color-scheme   "prefer-dark" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme     "Papirus-Dark" 2>/dev/null || true
 
     print_success "GTK4 Catppuccin theme applied."
 }
@@ -546,6 +555,364 @@ function detect_hidpi_screen() {
     else
         echo "100"
     fi
+}
+
+# Function: find_systemd_boot_entries
+# Description: Returns the systemd-boot loader entries directory if systemd-boot
+#              is installed, regardless of where the ESP is mounted.
+#              Checks via bootctl first, then falls back to common mount points.
+function find_systemd_boot_entries() {
+    local esp=""
+    if command -v bootctl &>/dev/null && bootctl is-installed &>/dev/null; then
+        esp=$(bootctl --print-esp-path 2>/dev/null)
+    fi
+    if [[ -z "${esp}" ]]; then
+        for mount_point in /boot /efi /boot/efi; do
+            if [[ -d "${mount_point}/loader/entries" ]]; then
+                esp="${mount_point}"
+                break
+            fi
+        done
+    fi
+    if [[ -n "${esp}" && -d "${esp}/loader/entries" ]]; then
+        echo "${esp}/loader/entries"
+    fi
+}
+
+# Function: install_hyprland_suite
+# Description: Installs Hyprland and related components on Ubuntu via the official installer.
+# Parameters: List of hyprland components to install (e.g. hyprland hypridle hyprlock hyprpaper)
+function install_hyprland_suite() {
+    local components=("$@")
+    echo -e "\n${BLUE}Installing Hyprland suite on Ubuntu: ${components[*]}${NC}"
+    if ! command -v Hyprland &>/dev/null; then
+        curl -sSL https://raw.githubusercontent.com/JaKooLit/Ubuntu-Hyprland/main/install.sh \
+            | bash -s -- --quiet
+    else
+        echo -e "\n${YELLOW}Hyprland already installed, skipping suite install${NC}"
+    fi
+}
+
+# ─── Ubuntu Niri Stack ───────────────────────────────────────────────────────
+
+# Function: install_niri_build_deps_ubuntu
+# Description: Installs system packages required to build the niri stack from source.
+function install_niri_build_deps_ubuntu() {
+    echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
+    sudo apt-get update -y
+    sudo apt-get install -y \
+        build-essential cmake meson ninja-build pkg-config git \
+        libwayland-dev libxkbcommon-dev libinput-dev libudev-dev \
+        libgbm-dev libdrm-dev libseat-dev libegl-dev libgles-dev \
+        libdbus-1-dev libsystemd-dev libpipewire-0.3-dev \
+        libpango1.0-dev libpangocairo-1.0-0 libdisplay-info-dev libclang-dev \
+        wayland-protocols libgdk-pixbuf2.0-dev libpam0g-dev \
+        libgtk-3-dev libgtk-layer-shell-dev libgee-0.8-dev \
+        libjson-glib-dev libhandy-1-dev valac scdoc \
+        libx11-dev libxcb1-dev libxcb-shape0-dev libxcb-render0-dev \
+        unzip python3-pip golang-go
+}
+
+# Function: build_niri_ubuntu
+# Description: Builds and installs niri via cargo, and registers its session file.
+function build_niri_ubuntu() {
+    if command -v niri &>/dev/null; then
+        echo -e "\n${YELLOW}niri already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}niri${NC}"
+    cargo install --locked niri
+    local session_dir="/usr/share/wayland-sessions"
+    sudo mkdir -p "${session_dir}"
+    if [[ ! -f "${session_dir}/niri.desktop" ]]; then
+        printf '[Desktop Entry]\nName=Niri\nComment=A scrollable-tiling Wayland compositor\nExec=niri-session\nType=Application\n' \
+            | sudo tee "${session_dir}/niri.desktop" > /dev/null
+    fi
+}
+
+# Function: build_swaync_ubuntu
+# Description: Builds and installs SwayNotificationCenter from source.
+function build_swaync_ubuntu() {
+    if command -v swaync &>/dev/null; then
+        echo -e "\n${YELLOW}swaync already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}swaync${NC}"
+    local build_dir="/tmp/swaync-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/ErikReider/SwayNotificationCenter.git "${build_dir}"
+    cd "${build_dir}"
+    meson setup build --prefix=/usr
+    ninja -C build
+    sudo ninja -C build install
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: build_swaylock_effects_ubuntu
+# Description: Builds and installs swaylock-effects from source.
+function build_swaylock_effects_ubuntu() {
+    if command -v swaylock &>/dev/null; then
+        echo -e "\n${YELLOW}swaylock already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}swaylock-effects${NC}"
+    local build_dir="/tmp/swaylock-effects-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/mortie/swaylock-effects.git "${build_dir}"
+    cd "${build_dir}"
+    meson setup build --prefix=/usr
+    ninja -C build
+    sudo ninja -C build install
+    if [[ ! -f /etc/pam.d/swaylock ]]; then
+        echo "auth include login" | sudo tee /etc/pam.d/swaylock > /dev/null
+    fi
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: build_xwayland_satellite_ubuntu
+# Description: Builds and installs xwayland-satellite via cargo.
+function build_xwayland_satellite_ubuntu() {
+    if command -v xwayland-satellite &>/dev/null; then
+        echo -e "\n${YELLOW}xwayland-satellite already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}xwayland-satellite${NC}"
+    cargo install --locked xwayland-satellite
+}
+
+# Function: build_hypridle_ubuntu
+# Description: Builds and installs hypridle from source using cmake.
+function build_hypridle_ubuntu() {
+    if command -v hypridle &>/dev/null; then
+        echo -e "\n${YELLOW}hypridle already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}hypridle${NC}"
+    local build_dir="/tmp/hypridle-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/hyprwm/hypridle.git "${build_dir}"
+    cd "${build_dir}"
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+    cmake --build build
+    sudo cmake --install build
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: build_wlsunset_ubuntu
+# Description: Builds and installs wlsunset from source.
+function build_wlsunset_ubuntu() {
+    if command -v wlsunset &>/dev/null; then
+        echo -e "\n${YELLOW}wlsunset already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}wlsunset${NC}"
+    local build_dir="/tmp/wlsunset-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://git.sr.ht/~kennylevinsen/wlsunset "${build_dir}"
+    cd "${build_dir}"
+    meson setup build --prefix=/usr
+    ninja -C build
+    sudo ninja -C build install
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: install_swww_ubuntu
+# Description: Installs swww from GitHub releases (pre-built static binary).
+function install_swww_ubuntu() {
+    if command -v swww &>/dev/null; then
+        echo -e "\n${YELLOW}swww already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}"
+    local latest_tag
+    latest_tag=$(curl -s https://api.github.com/repos/LGFae/swww/releases/latest | grep '"tag_name"' | cut -d '"' -f4)
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+    curl -L "https://github.com/LGFae/swww/releases/download/${latest_tag}/swww-x86_64-unknown-linux-musl.tar.gz" \
+        | tar xz -C "${tmp_dir}"
+    sudo install -m 755 "${tmp_dir}/swww" /usr/local/bin/swww
+    sudo install -m 755 "${tmp_dir}/swww-daemon" /usr/local/bin/swww-daemon
+    rm -rf "${tmp_dir}"
+}
+
+# Function: install_cliphist_ubuntu
+# Description: Installs cliphist via go install.
+function install_cliphist_ubuntu() {
+    if command -v cliphist &>/dev/null; then
+        echo -e "\n${YELLOW}cliphist already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}cliphist${NC}"
+    GOBIN="${HOME}/.local/bin" go install go.senan.xyz/cliphist@latest
+}
+
+# Function: install_yazi_ubuntu
+# Description: Installs yazi from GitHub releases (pre-built static binary).
+function install_yazi_ubuntu() {
+    if command -v yazi &>/dev/null; then
+        echo -e "\n${YELLOW}yazi already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}yazi${NC}"
+    local latest_tag
+    latest_tag=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest | grep '"tag_name"' | cut -d '"' -f4)
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+    curl -L "https://github.com/sxyazi/yazi/releases/download/${latest_tag}/yazi-x86_64-unknown-linux-musl.zip" \
+        -o "${tmp_dir}/yazi.zip"
+    unzip -q "${tmp_dir}/yazi.zip" -d "${tmp_dir}"
+    sudo install -m 755 "${tmp_dir}/yazi-x86_64-unknown-linux-musl/yazi" /usr/local/bin/yazi
+    sudo install -m 755 "${tmp_dir}/yazi-x86_64-unknown-linux-musl/ya" /usr/local/bin/ya
+    rm -rf "${tmp_dir}"
+}
+
+# Function: install_bluetui_ubuntu
+# Description: Installs bluetui via cargo.
+function install_bluetui_ubuntu() {
+    if command -v bluetui &>/dev/null; then
+        echo -e "\n${YELLOW}bluetui already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}bluetui${NC}"
+    cargo install --locked --root "${HOME}" bluetui
+}
+
+# Function: install_nwg_bar_ubuntu
+# Description: Installs nwg-bar via go install.
+function install_nwg_bar_ubuntu() {
+    if command -v nwg-bar &>/dev/null; then
+        echo -e "\n${YELLOW}nwg-bar already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}nwg-bar${NC}"
+    GOBIN="${HOME}/.local/bin" go install github.com/nwg-piotr/nwg-bar@latest
+}
+
+# Function: install_dart_sass_ubuntu
+# Description: Installs dart-sass binary from GitHub releases.
+function install_dart_sass_ubuntu() {
+    if command -v sass &>/dev/null; then
+        echo -e "\n${YELLOW}dart-sass already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}dart-sass${NC}"
+    local latest_tag
+    latest_tag=$(curl -s https://api.github.com/repos/sass/dart-sass/releases/latest | grep '"tag_name"' | cut -d '"' -f4)
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+    curl -L "https://github.com/sass/dart-sass/releases/download/${latest_tag}/dart-sass-${latest_tag}-linux-x64.tar.gz" \
+        | tar xz -C "${tmp_dir}"
+    sudo install -m 755 "${tmp_dir}/dart-sass/sass" /usr/local/bin/sass
+    rm -rf "${tmp_dir}"
+}
+
+# Function: install_catppuccin_gtk_ubuntu
+# Description: Installs Catppuccin Mocha Lavender GTK theme from source to /usr/share/themes.
+function install_catppuccin_gtk_ubuntu() {
+    local theme_dir="/usr/share/themes/catppuccin-mocha-lavender-standard+default"
+    if [[ -d "${theme_dir}" ]]; then
+        echo -e "\n${YELLOW}catppuccin-gtk-theme-mocha already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}catppuccin-gtk-theme-mocha${NC}"
+    local build_dir="/tmp/catppuccin-gtk-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/catppuccin/gtk.git "${build_dir}"
+    cd "${build_dir}"
+    pip3 install --quiet --user -r requirements.txt
+    sudo python3 install.py mocha lavender --dest /usr/share/themes
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: install_papirus_catppuccin_ubuntu
+# Description: Installs Catppuccin Papirus folder icons from source.
+function install_papirus_catppuccin_ubuntu() {
+    if [[ -f "/usr/share/icons/Papirus-Dark/places/22/folder-mocha-lavender.svg" ]]; then
+        echo -e "\n${YELLOW}papirus-folders-catppuccin already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}papirus-folders-catppuccin${NC}"
+    local build_dir="/tmp/papirus-catppuccin-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/catppuccin/papirus-folders.git "${build_dir}"
+    cd "${build_dir}"
+    sudo cp -r src/* /usr/share/icons/Papirus/ 2>/dev/null || true
+    sudo cp -r src/* /usr/share/icons/Papirus-Dark/ 2>/dev/null || true
+    sudo cp -r src/* /usr/share/icons/Papirus-Light/ 2>/dev/null || true
+    papirus-folders -C cat-mocha-lavender --theme Papirus-Dark 2>/dev/null || true
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: install_pwvucontrol_ubuntu
+# Description: Installs pwvucontrol via cargo.
+function install_pwvucontrol_ubuntu() {
+    if command -v pwvucontrol &>/dev/null; then
+        echo -e "\n${YELLOW}pwvucontrol already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}pwvucontrol${NC}"
+    sudo apt-get install -y libpipewire-0.3-dev libgtk-4-dev libadwaita-1-dev
+    cargo install --locked pwvucontrol
+}
+
+# Function: install_niri_stack_ubuntu
+# Description: Installs the full niri stack on Ubuntu for packages not available via apt.
+#              Called from configure_pre_install before the main package loop runs.
+function install_niri_stack_ubuntu() {
+    echo -e "\n${BLUE}${BOLD}Installing niri stack for Ubuntu...${NC}"
+    install_niri_build_deps_ubuntu
+    build_niri_ubuntu
+    build_swaync_ubuntu
+    build_swaylock_effects_ubuntu
+    build_xwayland_satellite_ubuntu
+    build_hypridle_ubuntu
+    build_wlsunset_ubuntu
+    install_swww_ubuntu
+    install_cliphist_ubuntu
+    install_yazi_ubuntu
+    install_bluetui_ubuntu
+    install_nwg_bar_ubuntu
+    install_dart_sass_ubuntu
+    install_catppuccin_gtk_ubuntu
+    install_papirus_catppuccin_ubuntu
+    install_pwvucontrol_ubuntu
+    echo -e "\n${GREEN}${BOLD}niri stack installation complete.${NC}"
+}
+
+# Function: configure_display_wakeup
+# Description: Installs udev rules that allow the system to wake from S0ix when
+#              an external display is connected. Covers Thunderbolt/USB4 (USB-C
+#              monitors and docks) and PCIe GPU display outputs (HDMI/DisplayPort).
+#              Only meaningful if S0ix is active; harmless otherwise.
+function configure_display_wakeup() {
+    local rules_file="/etc/udev/rules.d/99-niri-display-wakeup.rules"
+
+    echo -e "\n${BLUE}Configuring display hotplug wakeup sources...${NC}"
+
+    sudo tee "${rules_file}" > /dev/null << 'EOF'
+# Wake system on Thunderbolt/USB4 device connect (USB-C monitors, docks)
+ACTION=="add|change", SUBSYSTEM=="thunderbolt", ATTR{power/wakeup}="enabled"
+
+# Wake system on PCIe display controller hotplug (HDMI/DisplayPort on integrated GPU)
+# Class 0x0300 = VGA-compatible, 0x0302 = 3D controller, 0x0380 = other display
+ACTION=="add|change", SUBSYSTEM=="pci", ATTR{class}=="0x030000", ATTR{power/wakeup}="enabled"
+ACTION=="add|change", SUBSYSTEM=="pci", ATTR{class}=="0x030200", ATTR{power/wakeup}="enabled"
+ACTION=="add|change", SUBSYSTEM=="pci", ATTR{class}=="0x038000", ATTR{power/wakeup}="enabled"
+
+# Wake system on USB device connect (USB-C hubs and display adapters)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{power/wakeup}="enabled"
+EOF
+
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger --subsystem-match=pci --subsystem-match=thunderbolt 2>/dev/null || true
+
+    echo -e "${GREEN}Display wakeup rules installed: ${rules_file}${NC}"
 }
 
 # Function: configure_desktop_interface
@@ -772,10 +1139,12 @@ function configure_desktop_interface() {
             ;;
         "niri")
             configure_catppuccin_gtk
+            configure_display_wakeup
             if [[ "${use_quickshell}" == "true" ]]; then
                 systemctl --user disable --now hypridle.service 2>/dev/null || true
             else
-                systemctl --user enable --now idle.service
+                systemctl --user enable --now idle.service 2>/dev/null || \
+                    echo -e "\n${YELLOW}Could not enable idle.service — enable it manually after first login.${NC}"
             fi
             ;;
         "sway")
@@ -826,30 +1195,56 @@ function configure_nvidia_for_niri() {
     echo -e "\n${YELLOW}Nvidia GPU detected. Configuring kernel parameters for Niri...${NC}"
     local distro
     distro="$(detect_distro)"
-    install_package "nvidia-dkms" "${distro}"
-    local mkinitcpio_conf="/etc/mkinitcpio.conf"
     local required_modules="nvidia nvidia_modeset nvidia_uvm nvidia_drm"
-    if [[ -f "${mkinitcpio_conf}" ]]; then
-        local current_modules
-        current_modules=$(grep "^MODULES=" "${mkinitcpio_conf}" | sed 's/^MODULES=//' | tr -d '()')
-        local updated_modules="${current_modules}"
+    if [[ "${distro}" == "ubuntu" ]]; then
+        # Install NVIDIA open kernel modules via ubuntu-drivers
+        if ! dpkg -l | grep -q "^ii.*nvidia-open"; then
+            echo -e "\n${MAGENTA}Installing NVIDIA open kernel modules...${NC}"
+            sudo apt-get install -y ubuntu-drivers-common
+            sudo ubuntu-drivers install --gpgpu 2>/dev/null || sudo ubuntu-drivers autoinstall
+        fi
+        # Register required modules for initramfs
+        local initramfs_modules="/etc/initramfs-tools/modules"
+        local updated=0
         for mod in ${required_modules}; do
-            if ! grep -qw "${mod}" <<< "${current_modules}"; then
-                updated_modules="${updated_modules} ${mod}"
+            if [[ -z "$(grep -w "${mod}" "${initramfs_modules}" 2>/dev/null)" ]]; then
+                echo "${mod}" | sudo tee -a "${initramfs_modules}" > /dev/null
+                updated=1
             fi
         done
-        updated_modules=$(echo "${updated_modules}" | xargs)
-        if [[ "${updated_modules}" != "${current_modules}" ]]; then
-            sudo sed -i "s|^MODULES=.*|MODULES=(${updated_modules})|" "${mkinitcpio_conf}"
-            echo -e "\n${GREEN}Updated MODULES in ${mkinitcpio_conf}: (${updated_modules})${NC}"
-            sudo mkinitcpio -P
+        if [[ "${updated}" -eq 1 ]]; then
+            echo -e "\n${GREEN}Updated ${initramfs_modules} with NVIDIA modules${NC}"
+            sudo update-initramfs -u
         else
-            echo -e "\n${GREEN}NVIDIA modules already present in mkinitcpio.conf.${NC}"
+            echo -e "\n${GREEN}NVIDIA modules already present in initramfs config.${NC}"
+        fi
+    else
+        install_package "nvidia-dkms" "${distro}"
+        local mkinitcpio_conf="/etc/mkinitcpio.conf"
+        if [[ -f "${mkinitcpio_conf}" ]]; then
+            local current_modules
+            current_modules=$(grep "^MODULES=" "${mkinitcpio_conf}" | sed 's/^MODULES=//' | tr -d '()')
+            local updated_modules="${current_modules}"
+            for mod in ${required_modules}; do
+                if ! grep -qw "${mod}" <<< "${current_modules}"; then
+                    updated_modules="${updated_modules} ${mod}"
+                fi
+            done
+            updated_modules=$(echo "${updated_modules}" | xargs)
+            if [[ "${updated_modules}" != "${current_modules}" ]]; then
+                sudo sed -i "s|^MODULES=.*|MODULES=(${updated_modules})|" "${mkinitcpio_conf}"
+                echo -e "\n${GREEN}Updated MODULES in ${mkinitcpio_conf}: (${updated_modules})${NC}"
+                sudo mkinitcpio -P
+            else
+                echo -e "\n${GREEN}NVIDIA modules already present in mkinitcpio.conf.${NC}"
+            fi
         fi
     fi
-    if [[ -d /boot/loader/entries ]]; then
+    local entries_dir
+    entries_dir=$(find_systemd_boot_entries)
+    if [[ -n "${entries_dir}" ]]; then
         local updated_any=0
-        for entry in /boot/loader/entries/*.conf; do
+        for entry in "${entries_dir}"/*.conf; do
             if [[ "${entry}" == *fallback* ]]; then
                 continue
             fi
@@ -876,6 +1271,35 @@ function configure_nvidia_for_niri() {
     echo -e "\n${GREEN}Nvidia kernel modesetting and fbdev configured. Please reboot to apply changes.${NC}"
 }
 
+# Function: select_de_options
+# Description: Asks DE-specific follow-up questions (PaperWM for gnome,
+#              Quickshell for compositors). Called when desktop_interface is
+#              provided externally (e.g. from provision.sh) so those questions
+#              are still answered interactively.
+function select_de_options() {
+    local desktop_interface="${1}"
+    if [[ "${desktop_interface}" == "gnome" ]]; then
+        echo -e "\n${BLUE}${BOLD}Would you like to install PaperWM?${NC}"
+        select pw_choice in "Yes" "No"; do
+            case "${pw_choice}" in
+                "Yes") use_paperwm="true"; return ;;
+                "No")  use_paperwm="false"; return ;;
+                *)     echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+            esac
+        done
+    elif [[ "${desktop_interface}" == "niri" ]]; then
+        echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
+        echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
+        select qs_choice in "Yes" "No"; do
+            case "${qs_choice}" in
+                "Yes") use_quickshell="true"; return ;;
+                "No")  use_quickshell="false"; return ;;
+                *)     echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+            esac
+        done
+    fi
+}
+
 # Function: main
 # Description: Orchestrates the full installation and configuration process for the system.
 #   - Detects the Linux distribution and validates support.
@@ -891,17 +1315,10 @@ function configure_nvidia_for_niri() {
 #   - Runs hardware-specific post-setup configuration.
 # Parameters:
 #   $1 - (Optional) The distribution ID (e.g., "arch", "ubuntu"). If not provided, auto-detected.
-#   $2 - (Optional) The desktop interface (e.g., "gnome", "hyprland"). If not provided, user is prompted.
-#   $3 - (Optional) PaperWM option ("true" or "false"). If not provided, defaults to "false".
-#   $4 - (Optional) Display scaling factor ("auto", "100", "125", "150", "175", "200"). Defaults to "auto".
+#   $2 - (Optional) The desktop interface (e.g., "gnome", "niri"). If not provided, user is prompted.
 function main() {
     local distro=${1:-$(detect_distro)}
     local desktop_interface=${2:-}
-    local paperwm_option=${3:-"false"}
-    local scale_factor=${4:-"auto"}
-
-    # Set the global variable based on the parameter
-    use_paperwm="${paperwm_option}"
 
     if [[ "${distro}" == "legacy" ]]; then
         echo -e "\n${YELLOW}This distribution is no longer supported. Please use the ${BOLD}legacy-distros${NC}${YELLOW} branch for best-effort support. No further updates will be provided for ${BOLD}${distro}${NC}${YELLOW}.${NC}"
@@ -917,13 +1334,12 @@ function main() {
     echo -e "\n***************************************${NC}"
 
     if [[ -z "${desktop_interface}" ]]; then
+        # Full interactive path: selects DE + DE-specific options (Quickshell, PaperWM)
         select_desktop_interface desktop_interface
     else
         clone_repository
-        # If desktop_interface is provided but paperwm_option wasn't set and it's gnome, keep the current use_paperwm value
-        if [[ "${desktop_interface}" == "gnome" && "${paperwm_option}" == "false" && -z "${3}" ]]; then
-            use_paperwm="false"
-        fi
+        # DE provided externally (e.g. from provision.sh); ask DE-specific options
+        select_de_options "${desktop_interface}"
     fi
 
     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
