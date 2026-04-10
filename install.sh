@@ -624,20 +624,25 @@ function install_niri_build_deps_ubuntu() {
     echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
 
     # The installed Mesa stack (libgbm1, libdrm2, etc.) may be at a newer version
-    # than what is available in the standard Ubuntu repos, installed from a PPA or
-    # source that is no longer configured. The -dev packages in the standard repos
-    # have strict = version deps and will fail to install. We cannot downgrade the
-    # runtimes either since xwayland, libmutter, Chrome, and others depend on them.
-    # Solution: add the Kisak Mesa PPA which provides a complete matching Mesa stack
-    # including -dev packages at the same version as the installed runtimes.
-    local repo_gbm
+    # than what is available in the standard Ubuntu repos — typically from a PPA
+    # that is no longer configured. The -dev packages in the standard repos have
+    # strict = version deps and will fail. We cannot downgrade the runtimes since
+    # xwayland, libmutter, Chrome, and others depend on the newer versions.
+    # Solution: add ppa:oibaf/graphics-drivers which provides a complete Mesa stack
+    # including matching -dev packages (unlike kisak-mesa which omits -dev packages).
+    #
+    # NOTE: We compare against the archive version (via apt-cache madison), NOT the
+    # apt Candidate, because when the installed version is newer than the repo the
+    # Candidate field reflects the installed version — making installed == candidate
+    # and masking the mismatch.
+    local archive_gbm
     local installed_gbm
-    repo_gbm=$(apt-cache policy libgbm1 2>/dev/null | awk '/Candidate:/{print $2}')
-    installed_gbm=$(dpkg -l libgbm1 2>/dev/null | awk '/^ii/{print $3}')
-    if [[ -n "${installed_gbm}" && "${installed_gbm}" != "${repo_gbm}" ]]; then
-        echo -e "${YELLOW}Installed Mesa (${installed_gbm}) is ahead of repo (${repo_gbm}).${NC}"
-        echo -e "${YELLOW}Adding kisak-mesa PPA for matching -dev packages...${NC}"
-        sudo add-apt-repository -y ppa:kisak/kisak-mesa
+    archive_gbm=$(apt-cache madison libgbm1 2>/dev/null | awk -F'|' '/ubuntu\.com/{gsub(/[[:space:]]/,"",$2); print $2; exit}')
+    installed_gbm=$(dpkg-query -W -f='${Version}' libgbm1 2>/dev/null)
+    if [[ -n "${installed_gbm}" && -n "${archive_gbm}" && "${installed_gbm}" != "${archive_gbm}" ]]; then
+        echo -e "${YELLOW}Installed Mesa (${installed_gbm}) is ahead of Ubuntu archive (${archive_gbm}).${NC}"
+        echo -e "${YELLOW}Adding oibaf/graphics-drivers PPA for matching -dev packages...${NC}"
+        sudo add-apt-repository -y ppa:oibaf/graphics-drivers
     fi
 
     sudo apt-get update -y
