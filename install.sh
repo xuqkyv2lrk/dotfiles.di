@@ -623,10 +623,13 @@ function install_hyprland_suite() {
 function install_niri_build_deps_ubuntu() {
     echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
     sudo apt-get update -y
-    # dist-upgrade resolves -dev package conflicts caused by security-patched
-    # runtime libs having strict = version deps not yet matched by -dev packages.
-    sudo apt-get dist-upgrade -y
-    sudo apt-get install -y \
+    # --allow-downgrades handles the case where Ubuntu security patches have
+    # bumped runtime lib versions (e.g. libbz2, libdrm) but the corresponding
+    # -dev packages still require the exact older version and no updated -dev
+    # packages are available yet. dist-upgrade cannot help when the fix isn't
+    # published; --allow-downgrades lets apt satisfy the strict = deps by
+    # temporarily pinning the runtimes to what -dev packages expect.
+    sudo apt-get install -y --allow-downgrades \
         build-essential cmake meson ninja-build pkg-config git \
         libwayland-dev libxkbcommon-dev libinput-dev libudev-dev \
         libgbm-dev libdrm-dev libseat-dev libegl-dev libgles-dev \
@@ -1342,9 +1345,19 @@ function select_de_options() {
 # Parameters:
 #   $1 - (Optional) The distribution ID (e.g., "arch", "ubuntu"). If not provided, auto-detected.
 #   $2 - (Optional) The desktop interface (e.g., "gnome", "niri"). If not provided, user is prompted.
+#   $3 - (Optional) DE-specific option ("quickshell" for niri, "paperwm" for gnome).
+#        Skips the follow-up interactive prompt when provided.
 function main() {
     local distro=${1:-$(detect_distro)}
     local desktop_interface=${2:-}
+    local de_option=${3:-}
+
+    # Apply DE-specific option flags passed as arguments
+    if [[ "${de_option}" == "quickshell" ]]; then
+        use_quickshell="true"
+    elif [[ "${de_option}" == "paperwm" ]]; then
+        use_paperwm="true"
+    fi
 
     if [[ "${distro}" == "legacy" ]]; then
         echo -e "\n${YELLOW}This distribution is no longer supported. Please use the ${BOLD}legacy-distros${NC}${YELLOW} branch for best-effort support. No further updates will be provided for ${BOLD}${distro}${NC}${YELLOW}.${NC}"
@@ -1364,8 +1377,10 @@ function main() {
         select_desktop_interface desktop_interface
     else
         clone_repository
-        # DE provided externally (e.g. from provision.sh); ask DE-specific options
-        select_de_options "${desktop_interface}"
+        # Only prompt for DE-specific options if not already set via argument
+        if [[ -z "${de_option}" ]]; then
+            select_de_options "${desktop_interface}"
+        fi
     fi
 
     echo -e "\n${YELLOW}Preparing to install ${BOLD}${desktop_interface}${NC}${YELLOW} on ${BOLD}${distro}${NC}${YELLOW}..."
