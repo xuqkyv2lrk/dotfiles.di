@@ -623,6 +623,9 @@ function install_hyprland_suite() {
 function install_niri_build_deps_ubuntu() {
     echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
     sudo apt-get update -y
+    # dist-upgrade resolves -dev package conflicts caused by security-patched
+    # runtime libs having strict = version deps not yet matched by -dev packages.
+    sudo apt-get dist-upgrade -y
     sudo apt-get install -y \
         build-essential cmake meson ninja-build pkg-config git \
         libwayland-dev libxkbcommon-dev libinput-dev libudev-dev \
