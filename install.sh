@@ -623,26 +623,20 @@ function install_hyprland_suite() {
 function install_niri_build_deps_ubuntu() {
     echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
 
-    # The installed Mesa stack (libgbm1, libdrm2, etc.) may be at a newer version
-    # than what is available in the standard Ubuntu repos — typically from a PPA
-    # that is no longer configured. The -dev packages in the standard repos have
-    # strict = version deps and will fail. We cannot downgrade the runtimes since
-    # xwayland, libmutter, Chrome, and others depend on the newer versions.
-    # Solution: add ppa:oibaf/graphics-drivers which provides a complete Mesa stack
-    # including matching -dev packages (unlike kisak-mesa which omits -dev packages).
-    #
-    # NOTE: We compare against the archive version (via apt-cache madison), NOT the
-    # apt Candidate, because when the installed version is newer than the repo the
-    # Candidate field reflects the installed version — making installed == candidate
-    # and masking the mismatch.
-    local archive_gbm
-    local installed_gbm
-    archive_gbm=$(apt-cache madison libgbm1 2>/dev/null | awk -F'|' '/ubuntu\.com/{gsub(/[[:space:]]/,"",$2); print $2; exit}')
-    installed_gbm=$(dpkg-query -W -f='${Version}' libgbm1 2>/dev/null)
-    if [[ -n "${installed_gbm}" && -n "${archive_gbm}" && "${installed_gbm}" != "${archive_gbm}" ]]; then
-        echo -e "${YELLOW}Installed Mesa (${installed_gbm}) is ahead of Ubuntu archive (${archive_gbm}).${NC}"
-        echo -e "${YELLOW}Adding oibaf/graphics-drivers PPA for matching -dev packages...${NC}"
-        sudo add-apt-repository -y ppa:oibaf/graphics-drivers
+    # noble-updates must be enabled for -dev packages to match their security-patched
+    # and HWE-updated runtimes (libdrm2, libgbm1, libinput10, etc.). Without it, apt
+    # only sees noble/main versions of -dev packages but has newer runtimes installed,
+    # causing strict = version dep failures. noble-updates is a core Ubuntu component,
+    # not a PPA — it should always be present but may be missing on minimal installs
+    # or systems set up without it.
+    if ! grep -r "noble-updates" /etc/apt/sources.list.d/ /etc/apt/sources.list 2>/dev/null | grep -q "noble-updates"; then
+        echo -e "${YELLOW}noble-updates not configured — enabling it for matching -dev packages...${NC}"
+        sudo tee /etc/apt/sources.list.d/noble-updates.sources > /dev/null <<'EOF'
+Types: deb
+URIs: http://us.archive.ubuntu.com/ubuntu/
+Suites: noble-updates noble-backports
+Components: main restricted universe multiverse
+EOF
     fi
 
     sudo apt-get update -y
