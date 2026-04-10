@@ -622,14 +622,26 @@ function install_hyprland_suite() {
 # Description: Installs system packages required to build the niri stack from source.
 function install_niri_build_deps_ubuntu() {
     echo -e "\n${BLUE}Installing niri stack build dependencies...${NC}"
+
+    # The installed Mesa stack (libgbm1, libdrm2, etc.) may be at a newer version
+    # than what is available in the standard Ubuntu repos, installed from a PPA or
+    # source that is no longer configured. The -dev packages in the standard repos
+    # have strict = version deps and will fail to install. We cannot downgrade the
+    # runtimes either since xwayland, libmutter, Chrome, and others depend on them.
+    # Solution: add the Kisak Mesa PPA which provides a complete matching Mesa stack
+    # including -dev packages at the same version as the installed runtimes.
+    local repo_gbm
+    local installed_gbm
+    repo_gbm=$(apt-cache policy libgbm1 2>/dev/null | awk '/Candidate:/{print $2}')
+    installed_gbm=$(dpkg -l libgbm1 2>/dev/null | awk '/^ii/{print $3}')
+    if [[ -n "${installed_gbm}" && "${installed_gbm}" != "${repo_gbm}" ]]; then
+        echo -e "${YELLOW}Installed Mesa (${installed_gbm}) is ahead of repo (${repo_gbm}).${NC}"
+        echo -e "${YELLOW}Adding kisak-mesa PPA for matching -dev packages...${NC}"
+        sudo add-apt-repository -y ppa:kisak/kisak-mesa
+    fi
+
     sudo apt-get update -y
-    # --allow-downgrades handles the case where Ubuntu security patches have
-    # bumped runtime lib versions (e.g. libbz2, libdrm) but the corresponding
-    # -dev packages still require the exact older version and no updated -dev
-    # packages are available yet. dist-upgrade cannot help when the fix isn't
-    # published; --allow-downgrades lets apt satisfy the strict = deps by
-    # temporarily pinning the runtimes to what -dev packages expect.
-    sudo apt-get install -y --allow-downgrades \
+    sudo apt-get install -y \
         build-essential cmake meson ninja-build pkg-config git \
         libwayland-dev libxkbcommon-dev libinput-dev libudev-dev \
         libgbm-dev libdrm-dev libseat-dev libegl-dev libgles-dev \
