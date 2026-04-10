@@ -123,80 +123,103 @@ function install_package() {
 }
 
 # Function: select_desktop_interface
-# Description: Prompts the user to select a desktop interface to install.
+# Description: Prompts the user to select a desktop configuration to apply.
+#              On Ubuntu, GNOME is already present so we ask how to configure it
+#              rather than asking whether to "install" a desktop. On Arch, presents
+#              the full list of available desktop interfaces from packages.yaml.
 function select_desktop_interface() {
     local __choice=$1
 
     local distro
     distro=$(detect_distro)
 
-    echo -e "\n${BLUE}${BOLD}Do you want to install a desktop interface?${NC}"
-    select choice in "Yes" "No"; do
-        case $choice in
-            "Yes")
-                clone_repository
-                echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
-                local options
-                if [[ "${distro}" == "ubuntu" ]]; then
-                    # Hyprland and Sway are Arch-only; Ubuntu supports gnome and niri
-                    options=("gnome" "niri")
-                else
+    if [[ "${distro}" == "ubuntu" ]]; then
+        clone_repository
+        # Ubuntu ships with GNOME — we are configuring it, not installing a DE.
+        echo -e "\n${BLUE}${BOLD}How would you like to configure your desktop?${NC}"
+        echo -e "${BLUE}Ubuntu includes GNOME by default.${NC}"
+        select de in "Configure GNOME (+ optional PaperWM)" "Install Niri (Wayland compositor)" "Skip"; do
+            case "${de}" in
+                "Configure GNOME (+ optional PaperWM)")
+                    eval "${__choice}"="gnome"
+                    echo -e "\n${BLUE}${BOLD}Would you like to install PaperWM?${NC}"
+                    select pw_choice in "Yes" "No"; do
+                        case "${pw_choice}" in
+                            "Yes")  use_paperwm="true";  return ;;
+                            "No")   use_paperwm="false"; return ;;
+                            *)      echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+                        esac
+                    done
+                    ;;
+                "Install Niri (Wayland compositor)")
+                    eval "${__choice}"="niri"
+                    echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
+                    echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
+                    select qs_choice in "Yes" "No"; do
+                        case "${qs_choice}" in
+                            "Yes")  use_quickshell="true";  return ;;
+                            "No")   use_quickshell="false"; return ;;
+                            *)      echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+                        esac
+                    done
+                    ;;
+                "Skip")
+                    printf "\nSkipping desktop configuration.\n"
+                    exit
+                    ;;
+                *)
+                    echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                    ;;
+            esac
+        done
+    else
+        echo -e "\n${BLUE}${BOLD}Do you want to install a desktop interface?${NC}"
+        select choice in "Yes" "No"; do
+            case $choice in
+                "Yes")
+                    clone_repository
+                    echo -e "\n${BLUE}${BOLD}Please select a desktop interface:${NC}"
+                    local options
                     mapfile -t options < <(yq -e '.desktop_packages | keys | .[]' "${PACKAGES_YAML}" 2>/dev/null | tr -d '"')
-                fi
-                select de in "${options[@]}"; do
-                    if [[ -n "$de" ]]; then
-                        eval "$__choice"="$de"
-                        if [[ "${de}" == "gnome" ]]; then
-                            echo -e "\n${BLUE}${BOLD}Would you like to install PaperWM?${NC}"
-                            select pw_choice in "Yes" "No"; do
-                                case "${pw_choice}" in
-                                    "Yes")
-                                        use_paperwm="true"
-                                        return
-                                        ;;
-                                    "No")
-                                        use_paperwm="false"
-                                        return
-                                        ;;
-                                    *)
-                                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                                        ;;
-                                esac
-                            done
-                        elif [[ "${de}" == "niri" ]]; then
-                            echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
-                            echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
-                            select qs_choice in "Yes" "No"; do
-                                case "${qs_choice}" in
-                                    "Yes")
-                                        use_quickshell="true"
-                                        return
-                                        ;;
-                                    "No")
-                                        use_quickshell="false"
-                                        return
-                                        ;;
-                                    *)
-                                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                                        ;;
-                                esac
-                            done
+                    select de in "${options[@]}"; do
+                        if [[ -n "$de" ]]; then
+                            eval "$__choice"="$de"
+                            if [[ "${de}" == "gnome" ]]; then
+                                echo -e "\n${BLUE}${BOLD}Would you like to install PaperWM?${NC}"
+                                select pw_choice in "Yes" "No"; do
+                                    case "${pw_choice}" in
+                                        "Yes")  use_paperwm="true";  return ;;
+                                        "No")   use_paperwm="false"; return ;;
+                                        *)      echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+                                    esac
+                                done
+                            elif [[ "${de}" == "niri" ]]; then
+                                echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
+                                echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
+                                select qs_choice in "Yes" "No"; do
+                                    case "${qs_choice}" in
+                                        "Yes")  use_quickshell="true";  return ;;
+                                        "No")   use_quickshell="false"; return ;;
+                                        *)      echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
+                                    esac
+                                done
+                            fi
+                            return
+                        else
+                            echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
                         fi
-                        return
-                    else
-                        echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                    fi
-                done
-                ;;
-            "No")
-                printf "\nSkipping desktop interface installation.\n"
-                exit
-                ;;
-            *)
-                echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
-                ;;
-        esac
-    done
+                    done
+                    ;;
+                "No")
+                    printf "\nSkipping desktop interface installation.\n"
+                    exit
+                    ;;
+                *)
+                    echo -e "\n${RED}Invalid option. Please try again.${NC}\n"
+                    ;;
+            esac
+        done
+    fi
 }
 
 # Function: install_dependencies
