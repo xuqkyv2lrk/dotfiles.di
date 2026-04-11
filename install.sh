@@ -657,7 +657,8 @@ EOF
         libx11-dev libxcb1-dev libxcb-shape0-dev libxcb-render0-dev \
         scdoc \
         libxcb-cursor-dev \
-        unzip python3-pip
+        unzip python3-pip \
+        seatd
 }
 
 # Function: build_niri_ubuntu
@@ -690,6 +691,7 @@ Before=xdg-desktop-autostart.target
 [Service]
 Slice=session.slice
 Type=notify
+Environment=LIBSEAT_BACKEND=seatd
 ExecStart=%h/.cargo/bin/niri --session
 NIRI_SERVICE
 
@@ -749,6 +751,12 @@ systemctl --user unset-environment \
     2>/dev/null || true
 NIRI_SESSION
     sudo chmod +x /usr/local/bin/niri-session
+
+    # seatd must be running before niri starts so that libseat can open DRM/input
+    # devices without depending on logind's less reliable seat management.
+    # seatd on Ubuntu runs with -g video, so the user must be in that group.
+    sudo systemctl enable --now seatd.service
+    sudo usermod -aG video,render "${USER}"
 
     local session_dir="/usr/share/wayland-sessions"
     sudo mkdir -p "${session_dir}"
