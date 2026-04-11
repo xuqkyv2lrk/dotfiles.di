@@ -1,0 +1,83 @@
+/* PaperWM user styles — Catppuccin Mocha */
+
+/* Catppuccin Mocha palette references:
+   Base:     #1e1e2e   Mantle:   #181825   Crust:    #11111b
+   Surface0: #313244   Surface1: #45475a   Surface2: #585b70
+   Text:     #cdd6f4   Subtext1: #bac2de   Subtext0: #a6adc8
+   Mauve:    #cba6f7   Green:    #a6e3a1   Red:      #f38ba8
+*/
+
+/* Active window selection border — Catppuccin Mauve */
+.paperwm-selection.tile-preview {
+    background-color: transparent !important;
+    border: 2px solid #cba6f7 !important;
+}
+
+/* No dimming on inactive windows */
+.paperwm-clone-shade {
+    background-color: transparent !important;
+}
+
+/* Top bar background — semi-transparent dark mantle */
+.topbar-transparent-background {
+    background-color: rgba(24, 24, 37, 0.85);
+    box-shadow: none;
+}
+
+/* Minimap selection indicator — mauve accent */
+.paperwm-minimap-selection {
+    border-radius: 8px;
+    background-color: rgba(203, 166, 247, 0.25);
+    border: 1px solid rgba(203, 166, 247, 0.6);
+}
+
+/* Window position bar backdrop */
+.paperwm-window-position-bar-backdrop {
+    background-color: rgba(24, 24, 37, 0.7);
+}
+
+/* Window position bar indicator */
+.paperwm-window-position-bar {
+    border: 0;
+    border-radius: 2px;
+    background-color: #cba6f7;
+}
+
+/* Workspace indicator in the top bar */
+.space-workspace-indicator {
+    padding: 0 10px 0 0;
+    background-color: transparent;
+    border-image: none;
+    background-image: none;
+    border: none;
+}
+
+/* Focus mode icon */
+.space-focus-mode-icon {
+    icon-size: 16px;
+    padding: 0 18px 0 18px;
+    margin-left: 3px;
+    background-color: transparent;
+}
+
+/* Workspace icon buttons in the panel */
+.workspace-icon-button {
+    -st-icon-style: symbolic;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.workspace-icon-button StIcon {
+    icon-size: 16px;
+}
+
+/* Tooltip and hint overlays */
+.focus-button-tooltip,
+.take-window-hint {
+    background-color: rgba(24, 24, 37, 0.9);
+    color: #cdd6f4;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(203, 166, 247, 0.4);
+}

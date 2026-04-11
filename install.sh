@@ -520,16 +520,33 @@ function configure_catppuccin_gtk() {
 }
 
 # Function: install_paperwm
-# Description: Installs the PaperWM GNOME Shell extension.
+# Description: Installs the PaperWM GNOME Shell extension and applies dotfile config.
 function install_paperwm() {
-    local EXT_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/paperwm@hedning:matrix.org"
-    if [[ ! -d "${EXT_DIR}" ]]; then
-        echo -e "\n${BLUE}Cloning PaperWM extension...${NC}"
-        git clone --depth=1 https://github.com/paperwm/PaperWM.git "${EXT_DIR}"
+    local SRC_DIR="${HOME}/.local/share/paperwm"
+    local SETTINGS_DIR="${BASEDIR}/gnome/_settings"
+
+    if [[ ! -d "${SRC_DIR}" ]]; then
+        print_step "Cloning PaperWM extension..."
+        git clone --depth=1 https://github.com/paperwm/PaperWM.git "${SRC_DIR}"
     fi
-    echo -e "\n${BLUE}Installing PaperWM...${NC}"
-    (cd "${EXT_DIR}" && ./install.sh)
-    echo -e "\n${GREEN}PaperWM installed and enabled.${NC}"
+
+    print_step "Installing PaperWM..."
+    (cd "${SRC_DIR}" && make install)
+
+    if [[ -f "${SETTINGS_DIR}/paperwm.ini" ]]; then
+        print_step "Applying PaperWM dconf settings..."
+        dconf load /org/gnome/shell/extensions/paperwm/ < "${SETTINGS_DIR}/paperwm.ini"
+        print_success "PaperWM dconf settings applied"
+    fi
+
+    if [[ -f "${SETTINGS_DIR}/paperwm-user.css" ]]; then
+        print_step "Copying PaperWM user stylesheet..."
+        mkdir -p "${HOME}/.config/paperwm"
+        cp "${SETTINGS_DIR}/paperwm-user.css" "${HOME}/.config/paperwm/user.css"
+        print_success "PaperWM stylesheet applied"
+    fi
+
+    print_success "PaperWM installed and configured."
 }
 
 # Function: detect_hidpi_screen
