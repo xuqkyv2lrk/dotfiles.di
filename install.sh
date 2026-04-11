@@ -621,6 +621,43 @@ function install_hyprland_suite() {
 
 # ─── Ubuntu Niri Stack ───────────────────────────────────────────────────────
 
+# Function: build_libwayland_ubuntu
+# Description: Builds and installs libwayland >= 1.23 from source. Ubuntu 24.04
+#              ships 1.22.0 which is missing wl_client_set_max_buffer_size,
+#              a symbol required by niri >= 25.x.
+function build_libwayland_ubuntu() {
+    # Check if a sufficiently new version is already installed.
+    local installed_ver
+    installed_ver="$(pkg-config --modversion wayland-server 2>/dev/null || echo "0")"
+    local required_ver="1.23.0"
+    if dpkg --compare-versions "${installed_ver}" ge "${required_ver}" 2>/dev/null; then
+        echo -e "\n${YELLOW}libwayland ${installed_ver} already satisfies >= ${required_ver}, skipping${NC}"
+        return
+    fi
+
+    echo -e "\n${MAGENTA}Building libwayland ${required_ver} from source...${NC}"
+    sudo apt-get install -y libffi-dev libxml2-dev wayland-protocols
+
+    local wayland_ver="1.23.1"
+    local build_dir="/tmp/wayland-build"
+    rm -rf "${build_dir}"
+    mkdir -p "${build_dir}"
+    curl -fsSL "https://gitlab.freedesktop.org/wayland/wayland/-/releases/${wayland_ver}/downloads/wayland-${wayland_ver}.tar.xz" \
+        -o "${build_dir}/wayland.tar.xz"
+    tar -xf "${build_dir}/wayland.tar.xz" -C "${build_dir}" --strip-components=1
+    cd "${build_dir}"
+    meson setup build \
+        --prefix=/usr/local \
+        --libdir=/usr/local/lib/x86_64-linux-gnu \
+        -Dtests=false \
+        -Ddocumentation=false
+    ninja -C build
+    sudo ninja -C build install
+    sudo ldconfig
+    cd -
+    rm -rf "${build_dir}"
+}
+
 # Function: install_niri_build_deps_ubuntu
 # Description: Installs system packages required to build the niri stack from source.
 function install_niri_build_deps_ubuntu() {
@@ -960,6 +997,7 @@ function install_noctalia_ubuntu() {
 function install_niri_stack_ubuntu() {
     echo -e "\n${BLUE}${BOLD}Installing niri stack for Ubuntu...${NC}"
     install_niri_build_deps_ubuntu
+    build_libwayland_ubuntu
     build_niri_ubuntu
     build_xwayland_satellite_ubuntu
     build_wlsunset_ubuntu
