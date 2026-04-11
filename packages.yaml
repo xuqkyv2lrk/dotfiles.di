@@ -100,7 +100,7 @@ desktop_packages:
     - cliphist
     - ddcutil
     - imagemagick
-    - noctalia-qs
+    - noctalia-shell
     - wlr-randr
 
 exceptions:
@@ -111,29 +111,25 @@ exceptions:
     - gnome: skip
     - pinentry: pinentry-tty
     - pipewire: skip
-    # Niri: package name differences on Ubuntu
     - waybar-cava: waybar
     - gtk-engine-murrine: gtk2-engines-murrine
     - polkit-gnome: policykit-1-gnome
-    # Niri: packages built/installed by install_niri_stack_ubuntu
-    - niri: skip
-    - swaylock-effects: skip
-    - swaync: skip
-    - xwayland-satellite: skip
-    - hypridle: skip
-    - swww: skip
-    - cliphist: skip
-    - yazi: skip
-    - bluetui: skip
-    - nwg-bar: skip
-    - wlsunset: skip
-    - dart-sass: skip
-    - catppuccin-gtk-theme-mocha: skip
-    - papirus-folders-catppuccin-git: skip
-    - pwvucontrol: skip
-    # Niri: NVIDIA handled by install_niri_stack_ubuntu on Ubuntu
-    - nvidia-open-dkms: skip
-    - nvidia-utils: skip
-    - libva-nvidia-driver: skip
+    - niri: skip                          # built by install_niri_stack_ubuntu
+    - xwayland-satellite: skip            # built by install_niri_stack_ubuntu
+    - cliphist: skip                      # built by install_niri_stack_ubuntu
+    - yazi: skip                          # built by install_niri_stack_ubuntu
+    - bluetui: skip                       # built by install_niri_stack_ubuntu
+    - wlsunset: skip                      # built by install_niri_stack_ubuntu
+    - dart-sass: skip                     # built by install_niri_stack_ubuntu
+    - catppuccin-gtk-theme-mocha: skip    # built by install_niri_stack_ubuntu
+    - papirus-folders-catppuccin-git: skip # built by install_niri_stack_ubuntu
+    - pwvucontrol: skip                   # built by install_niri_stack_ubuntu
+    - swappy: skip                        # not in Ubuntu 24.04 apt repos
+    - noctalia-shell: skip                # installed via apt repo in install_niri_stack_ubuntu
+    - libva-utils: vainfo
+    - polkit: polkitd
+    - nvidia-open-dkms: skip             # handled by ubuntu-drivers in configure_nvidia_for_niri
+    - nvidia-utils: skip                 # handled by ubuntu-drivers in configure_nvidia_for_niri
+    - libva-nvidia-driver: skip          # handled by ubuntu-drivers in configure_nvidia_for_niri
 
 repositories:

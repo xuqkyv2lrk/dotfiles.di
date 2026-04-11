@@ -1,5 +1,6 @@
 {
   "replaces": [
+    "bluetui",
     "fuzzel",
     "hypridle",
     "nwg-bar",

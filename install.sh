@@ -153,15 +153,12 @@ function select_desktop_interface() {
                     ;;
                 "Install Niri (Wayland compositor)")
                     eval "${__choice}"="niri"
-                    echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
-                    echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
-                    select qs_choice in "Yes" "No"; do
-                        case "${qs_choice}" in
-                            "Yes")  use_quickshell="true";  return ;;
-                            "No")   use_quickshell="false"; return ;;
-                            *)      echo -e "\n${RED}Invalid option. Please try again.${NC}\n" ;;
-                        esac
-                    done
+                    # Quickshell (Noctalia) is required on Ubuntu — it provides the full
+                    # niri shell stack. Building individual tools (swaync, swaylock-effects,
+                    # swww, hypridle, etc.) against Ubuntu 24.04's GTK stack is not supported.
+                    echo -e "\n${BLUE}Quickshell (Noctalia) is required on Ubuntu niri.${NC}"
+                    use_quickshell="true"
+                    return
                     ;;
                 "Skip")
                     printf "\nSkipping desktop configuration.\n"
@@ -243,6 +240,11 @@ function install_dependencies() {
                 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
                 . "${HOME}/.cargo/env"
                 rustup default stable
+            elif [[ "${dep}" == "yq" && "${distro}" == "ubuntu" ]]; then
+                local yq_bin="/usr/local/bin/yq"
+                local yq_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+                sudo curl -fsSL -o "${yq_bin}" "${yq_url}"
+                sudo chmod +x "${yq_bin}"
             else
                 install_package "${dep}" "${distro}"
             fi
@@ -316,6 +318,7 @@ function install_desktop_packages() {
     local qs_replaces=()
     if [[ "${use_quickshell}" == "true" ]]; then
         mapfile -t qs_replaces < <(yq -e ".replaces[]" "${BASEDIR}/quickshell/manifest.json" 2>/dev/null)
+        qs_replaces=("${qs_replaces[@]//\"/}")
     fi
 
     for package in "${packages[@]}"; do
@@ -629,7 +632,10 @@ function install_niri_build_deps_ubuntu() {
     # causing strict = version dep failures. noble-updates is a core Ubuntu component,
     # not a PPA — it should always be present but may be missing on minimal installs
     # or systems set up without it.
-    if ! grep -r "noble-updates" /etc/apt/sources.list.d/ /etc/apt/sources.list 2>/dev/null | grep -q "noble-updates"; then
+    # Only check files apt actually loads (.list and .sources) — not .orig backups
+    if ! grep -rq "noble-updates" /etc/apt/sources.list \
+            /etc/apt/sources.list.d/*.list \
+            /etc/apt/sources.list.d/*.sources 2>/dev/null; then
         echo -e "${YELLOW}noble-updates not configured — enabling it for matching -dev packages...${NC}"
         sudo tee /etc/apt/sources.list.d/noble-updates.sources > /dev/null <<'EOF'
 Types: deb
@@ -640,6 +646,7 @@ EOF
     fi
 
     sudo apt-get update -y
+    # niri build deps
     sudo apt-get install -y \
         build-essential cmake meson ninja-build pkg-config git \
         libwayland-dev libxkbcommon-dev libinput-dev libudev-dev \
@@ -647,10 +654,10 @@ EOF
         libdbus-1-dev libsystemd-dev libpipewire-0.3-dev \
         libpango1.0-dev libpangocairo-1.0-0 libdisplay-info-dev libclang-dev \
         wayland-protocols libgdk-pixbuf2.0-dev libpam0g-dev \
-        libgtk-3-dev libgtk-layer-shell-dev libgee-0.8-dev \
-        libjson-glib-dev libhandy-1-dev valac scdoc \
         libx11-dev libxcb1-dev libxcb-shape0-dev libxcb-render0-dev \
-        unzip python3-pip golang-go
+        scdoc \
+        libxcb-cursor-dev \
+        unzip python3-pip
 }
 
 # Function: build_niri_ubuntu
@@ -661,54 +668,24 @@ function build_niri_ubuntu() {
         return
     fi
     echo -e "\n${MAGENTA}Installing ${BOLD}niri${NC}"
-    cargo install --locked niri
+    cargo install --locked --git https://github.com/YaLTeR/niri.git niri
+    # On Ubuntu 24.04 LTS, GDM cannot reach ~/.cargo/bin, so provide a
+    # system-wide niri-session wrapper that extends PATH and delegates to
+    # `niri --session`.
+    if [[ ! -f /usr/local/bin/niri-session ]]; then
+        sudo tee /usr/local/bin/niri-session > /dev/null << 'NIRI_SESSION'
+#!/usr/bin/env bash
+export PATH="${HOME}/.cargo/bin:${PATH}"
+exec niri --session "$@"
+NIRI_SESSION
+        sudo chmod +x /usr/local/bin/niri-session
+    fi
     local session_dir="/usr/share/wayland-sessions"
     sudo mkdir -p "${session_dir}"
     if [[ ! -f "${session_dir}/niri.desktop" ]]; then
         printf '[Desktop Entry]\nName=Niri\nComment=A scrollable-tiling Wayland compositor\nExec=niri-session\nType=Application\n' \
             | sudo tee "${session_dir}/niri.desktop" > /dev/null
     fi
-}
-
-# Function: build_swaync_ubuntu
-# Description: Builds and installs SwayNotificationCenter from source.
-function build_swaync_ubuntu() {
-    if command -v swaync &>/dev/null; then
-        echo -e "\n${YELLOW}swaync already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}swaync${NC}"
-    local build_dir="/tmp/swaync-build"
-    rm -rf "${build_dir}"
-    git clone --depth=1 https://github.com/ErikReider/SwayNotificationCenter.git "${build_dir}"
-    cd "${build_dir}"
-    meson setup build --prefix=/usr
-    ninja -C build
-    sudo ninja -C build install
-    cd -
-    rm -rf "${build_dir}"
-}
-
-# Function: build_swaylock_effects_ubuntu
-# Description: Builds and installs swaylock-effects from source.
-function build_swaylock_effects_ubuntu() {
-    if command -v swaylock &>/dev/null; then
-        echo -e "\n${YELLOW}swaylock already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}swaylock-effects${NC}"
-    local build_dir="/tmp/swaylock-effects-build"
-    rm -rf "${build_dir}"
-    git clone --depth=1 https://github.com/mortie/swaylock-effects.git "${build_dir}"
-    cd "${build_dir}"
-    meson setup build --prefix=/usr
-    ninja -C build
-    sudo ninja -C build install
-    if [[ ! -f /etc/pam.d/swaylock ]]; then
-        echo "auth include login" | sudo tee /etc/pam.d/swaylock > /dev/null
-    fi
-    cd -
-    rm -rf "${build_dir}"
 }
 
 # Function: build_xwayland_satellite_ubuntu
@@ -719,26 +696,7 @@ function build_xwayland_satellite_ubuntu() {
         return
     fi
     echo -e "\n${MAGENTA}Installing ${BOLD}xwayland-satellite${NC}"
-    cargo install --locked xwayland-satellite
-}
-
-# Function: build_hypridle_ubuntu
-# Description: Builds and installs hypridle from source using cmake.
-function build_hypridle_ubuntu() {
-    if command -v hypridle &>/dev/null; then
-        echo -e "\n${YELLOW}hypridle already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}hypridle${NC}"
-    local build_dir="/tmp/hypridle-build"
-    rm -rf "${build_dir}"
-    git clone --depth=1 https://github.com/hyprwm/hypridle.git "${build_dir}"
-    cd "${build_dir}"
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
-    cmake --build build
-    sudo cmake --install build
-    cd -
-    rm -rf "${build_dir}"
+    cargo install --locked --git https://github.com/Supreeeme/xwayland-satellite.git xwayland-satellite
 }
 
 # Function: build_wlsunset_ubuntu
@@ -758,25 +716,6 @@ function build_wlsunset_ubuntu() {
     sudo ninja -C build install
     cd -
     rm -rf "${build_dir}"
-}
-
-# Function: install_swww_ubuntu
-# Description: Installs swww from GitHub releases (pre-built static binary).
-function install_swww_ubuntu() {
-    if command -v swww &>/dev/null; then
-        echo -e "\n${YELLOW}swww already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}swww${NC}"
-    local latest_tag
-    latest_tag=$(curl -s https://api.github.com/repos/LGFae/swww/releases/latest | grep '"tag_name"' | cut -d '"' -f4)
-    local tmp_dir
-    tmp_dir=$(mktemp -d)
-    curl -L "https://github.com/LGFae/swww/releases/download/${latest_tag}/swww-x86_64-unknown-linux-musl.tar.gz" \
-        | tar xz -C "${tmp_dir}"
-    sudo install -m 755 "${tmp_dir}/swww" /usr/local/bin/swww
-    sudo install -m 755 "${tmp_dir}/swww-daemon" /usr/local/bin/swww-daemon
-    rm -rf "${tmp_dir}"
 }
 
 # Function: install_cliphist_ubuntu
@@ -821,17 +760,6 @@ function install_bluetui_ubuntu() {
     cargo install --locked --root "${HOME}" bluetui
 }
 
-# Function: install_nwg_bar_ubuntu
-# Description: Installs nwg-bar via go install.
-function install_nwg_bar_ubuntu() {
-    if command -v nwg-bar &>/dev/null; then
-        echo -e "\n${YELLOW}nwg-bar already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}nwg-bar${NC}"
-    GOBIN="${HOME}/.local/bin" go install github.com/nwg-piotr/nwg-bar@latest
-}
-
 # Function: install_dart_sass_ubuntu
 # Description: Installs dart-sass binary from GitHub releases.
 function install_dart_sass_ubuntu() {
@@ -863,7 +791,7 @@ function install_catppuccin_gtk_ubuntu() {
     rm -rf "${build_dir}"
     git clone --depth=1 https://github.com/catppuccin/gtk.git "${build_dir}"
     cd "${build_dir}"
-    pip3 install --quiet --user -r requirements.txt
+    pip3 install --quiet --user --break-system-packages -r requirements.txt
     sudo python3 install.py mocha lavender --dest /usr/share/themes
     cd -
     rm -rf "${build_dir}"
@@ -890,15 +818,62 @@ function install_papirus_catppuccin_ubuntu() {
 }
 
 # Function: install_pwvucontrol_ubuntu
-# Description: Installs pwvucontrol via cargo.
+# Description: Installs pwvucontrol from source via meson (cargo install not supported).
 function install_pwvucontrol_ubuntu() {
     if command -v pwvucontrol &>/dev/null; then
         echo -e "\n${YELLOW}pwvucontrol already installed, skipping${NC}"
         return
     fi
     echo -e "\n${MAGENTA}Installing ${BOLD}pwvucontrol${NC}"
-    sudo apt-get install -y libpipewire-0.3-dev libgtk-4-dev libadwaita-1-dev
-    cargo install --locked pwvucontrol
+    sudo apt-get install -y libpipewire-0.3-dev libgtk-4-dev libadwaita-1-dev \
+        libwireplumber-0.4-dev gettext
+    local build_dir="/tmp/pwvucontrol-build"
+    rm -rf "${build_dir}"
+    git clone --depth=1 https://github.com/saivert/pwvucontrol.git "${build_dir}"
+    cd "${build_dir}"
+    # Meson generates a ninja rule that calls cargo with a custom CARGO_HOME,
+    # stripping PATH. The real cargo binary then can't find rustc. Patch the
+    # generated build.ninja to inject RUSTC explicitly before running ninja.
+    local real_cargo_dir
+    real_cargo_dir="$(dirname "$(~/.cargo/bin/rustup which cargo)")"
+    PATH="${real_cargo_dir}:${PATH}" meson setup build --prefix=/usr
+    sed -i "s|/usr/bin/env CARGO_HOME=${build_dir}/build/cargo-home|/usr/bin/env CARGO_HOME=${build_dir}/build/cargo-home RUSTC=${real_cargo_dir}/rustc|" "${build_dir}/build/build.ninja"
+    ninja -C build
+    sudo ninja -C build install
+    cd -
+    rm -rf "${build_dir}"
+}
+
+# Function: install_noctalia_ubuntu
+# Description: Installs noctalia-shell (includes the quickshell runtime) from the official
+#              noctalia apt repo. Requires Ubuntu 25.04+ (Qt6 >= 6.6). Warns and skips on 24.04.
+function install_noctalia_ubuntu() {
+    if command -v qs &>/dev/null; then
+        echo -e "\n${YELLOW}noctalia-shell already installed, skipping${NC}"
+        return
+    fi
+    echo -e "\n${MAGENTA}Installing ${BOLD}noctalia-shell${NC}"
+
+    local codename
+    codename="$(source /etc/os-release && echo "${VERSION_CODENAME:-}")"
+
+    local noctalia_codename
+    case "${codename}" in
+        plucky)   noctalia_codename="plucky" ;;
+        questing) noctalia_codename="questing" ;;
+        *)
+            echo -e "${YELLOW}[WARN] noctalia-shell requires Ubuntu 25.04+. Detected: ${codename}. Skipping.${NC}" >&2
+            return
+            ;;
+    esac
+
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://pkg.noctalia.dev/gpg.key \
+        | sudo gpg --dearmor -o /etc/apt/keyrings/noctalia.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/noctalia.gpg] https://pkg.noctalia.dev/apt ${noctalia_codename} main" \
+        | sudo tee /etc/apt/sources.list.d/noctalia.list > /dev/null
+    sudo apt-get update -y
+    sudo apt-get install -y noctalia-shell
 }
 
 # Function: install_niri_stack_ubuntu
@@ -908,20 +883,16 @@ function install_niri_stack_ubuntu() {
     echo -e "\n${BLUE}${BOLD}Installing niri stack for Ubuntu...${NC}"
     install_niri_build_deps_ubuntu
     build_niri_ubuntu
-    build_swaync_ubuntu
-    build_swaylock_effects_ubuntu
     build_xwayland_satellite_ubuntu
-    build_hypridle_ubuntu
     build_wlsunset_ubuntu
-    install_swww_ubuntu
     install_cliphist_ubuntu
     install_yazi_ubuntu
     install_bluetui_ubuntu
-    install_nwg_bar_ubuntu
     install_dart_sass_ubuntu
     install_catppuccin_gtk_ubuntu
     install_papirus_catppuccin_ubuntu
     install_pwvucontrol_ubuntu
+    install_noctalia_ubuntu
     echo -e "\n${GREEN}${BOLD}niri stack installation complete.${NC}"
 }
 
@@ -1328,6 +1299,13 @@ function select_de_options() {
             esac
         done
     elif [[ "${desktop_interface}" == "niri" ]]; then
+        local distro
+        distro=$(detect_distro)
+        if [[ "${distro}" == "ubuntu" ]]; then
+            echo -e "\n${BLUE}Quickshell (Noctalia) is required on Ubuntu niri.${NC}"
+            use_quickshell="true"
+            return
+        fi
         echo -e "\n${BLUE}${BOLD}Would you like to use Quickshell (Noctalia) as your desktop shell?${NC}"
         echo -e "${BLUE}This replaces waybar, swaync, and other individual tools.${NC}"
         select qs_choice in "Yes" "No"; do
@@ -1356,18 +1334,27 @@ function select_de_options() {
 # Parameters:
 #   $1 - (Optional) The distribution ID (e.g., "arch", "ubuntu"). If not provided, auto-detected.
 #   $2 - (Optional) The desktop interface (e.g., "gnome", "niri"). If not provided, user is prompted.
-#   $3 - (Optional) DE-specific option ("quickshell" for niri, "paperwm" for gnome).
-#        Skips the follow-up interactive prompt when provided.
+#   $3 - (Optional) DE-specific option ("quickshell" for niri on Arch, "paperwm" for gnome).
+#        On Ubuntu + niri, quickshell is always enabled automatically — this arg is ignored.
+#        Skips the follow-up interactive prompt when provided on Arch.
 function main() {
     local distro=${1:-$(detect_distro)}
     local desktop_interface=${2:-}
     local de_option=${3:-}
+    local scale_factor="${4:-auto}"
 
     # Apply DE-specific option flags passed as arguments
     if [[ "${de_option}" == "quickshell" ]]; then
         use_quickshell="true"
     elif [[ "${de_option}" == "paperwm" ]]; then
         use_paperwm="true"
+    fi
+
+    # Niri on Ubuntu always uses Quickshell — the individual niri stack tools
+    # (swaync, swaylock-effects, swww, hypridle, etc.) require GTK versions
+    # not available in Ubuntu 24.04 and are all replaced by Noctalia anyway.
+    if [[ "${distro}" == "ubuntu" && "${desktop_interface}" == "niri" ]]; then
+        use_quickshell="true"
     fi
 
     if [[ "${distro}" == "legacy" ]]; then
@@ -1408,7 +1395,13 @@ function main() {
     local qs_replaces=()
     if [[ "${use_quickshell}" == "true" ]]; then
         mapfile -t qs_replaces < <(yq -e ".replaces[]" "${BASEDIR}/quickshell/manifest.json" 2>/dev/null)
+        qs_replaces=("${qs_replaces[@]//\"/}")
     fi
+
+    # Remove any pre-existing catppuccin gtk-4.0 symlinks so stow can take ownership
+    rm -f "${HOME}/.config/gtk-4.0/gtk.css" \
+          "${HOME}/.config/gtk-4.0/gtk-dark.css" \
+          "${HOME}/.config/gtk-4.0/assets" 2>/dev/null || true
 
     for dir in "${BASEDIR}/${desktop_interface}"/*/; do
         dirname=$(basename "${dir}")
@@ -1426,14 +1419,16 @@ function main() {
             done
             [[ "${skip}" == "true" ]] && continue
         fi
-        stow -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
+        stow --adopt -v -t "${HOME}" -d "${BASEDIR}/${desktop_interface}" "${dirname}"
     done
+    git -C "${BASEDIR}/${desktop_interface}" restore */ 2>/dev/null || true
 
     # Stow quickshell configs if selected
     if [[ "${use_quickshell}" == "true" ]]; then
         echo -e "\n${YELLOW}Stowing ${BOLD}quickshell${NC}${YELLOW} configurations...${NC}${GREEN}"
-        [[ -d "${BASEDIR}/quickshell/quickshell" ]] && stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
-        [[ -d "${BASEDIR}/quickshell/noctalia" ]] && stow -v -t "${HOME}" -d "${BASEDIR}/quickshell" noctalia
+        [[ -d "${BASEDIR}/quickshell/quickshell" ]] && stow --adopt -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
+        [[ -d "${BASEDIR}/quickshell/noctalia" ]] && stow --adopt -v -t "${HOME}" -d "${BASEDIR}/quickshell" noctalia
+        git -C "${BASEDIR}/quickshell" restore */ 2>/dev/null || true
     fi
 
     # Generate autostart script for Wayland compositors
