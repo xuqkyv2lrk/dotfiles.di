@@ -661,7 +661,8 @@ EOF
 }
 
 # Function: build_niri_ubuntu
-# Description: Builds and installs niri via cargo, and registers its session file.
+# Description: Builds and installs niri via cargo, registers its GDM session
+# file, installs systemd user units, and writes the niri-session launcher.
 function build_niri_ubuntu() {
     if command -v niri &>/dev/null; then
         echo -e "\n${YELLOW}niri already installed, skipping${NC}"
@@ -669,17 +670,86 @@ function build_niri_ubuntu() {
     fi
     echo -e "\n${MAGENTA}Installing ${BOLD}niri${NC}"
     cargo install --locked --git https://github.com/YaLTeR/niri.git niri
-    # On Ubuntu 24.04 LTS, GDM cannot reach ~/.cargo/bin, so provide a
-    # system-wide niri-session wrapper that extends PATH and delegates to
-    # `niri --session`.
-    if [[ ! -f /usr/local/bin/niri-session ]]; then
-        sudo tee /usr/local/bin/niri-session > /dev/null << 'NIRI_SESSION'
+
+    # Install systemd user units so niri.service can be started by the session
+    # launcher. These are always written so re-running install.sh keeps them
+    # up to date.
+    local systemd_user_dir="${HOME}/.config/systemd/user"
+    mkdir -p "${systemd_user_dir}"
+
+    cat > "${systemd_user_dir}/niri.service" << 'NIRI_SERVICE'
+[Unit]
+Description=A scrollable-tiling Wayland compositor
+BindsTo=graphical-session.target
+Before=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target
+Wants=xdg-desktop-autostart.target
+Before=xdg-desktop-autostart.target
+
+[Service]
+Slice=session.slice
+Type=notify
+ExecStart=%h/.cargo/bin/niri --session
+NIRI_SERVICE
+
+    cat > "${systemd_user_dir}/niri-shutdown.target" << 'NIRI_SHUTDOWN'
+[Unit]
+Description=Shutdown running niri session
+DefaultDependencies=no
+StopWhenUnneeded=true
+Conflicts=graphical-session.target graphical-session-pre.target
+After=graphical-session.target graphical-session-pre.target
+NIRI_SHUTDOWN
+
+    systemctl --user daemon-reload 2>/dev/null || true
+
+    # GDM calls niri-session to start the compositor. This wrapper mirrors the
+    # Arch start-niri script but targets Ubuntu/Intel: it imports the login
+    # manager environment into the systemd user manager and D-Bus, then starts
+    # niri via its service unit so the full graphical session target activates.
+    # Always overwrite so re-running install.sh keeps this in sync.
+    sudo tee /usr/local/bin/niri-session > /dev/null << 'NIRI_SESSION'
 #!/usr/bin/env bash
+set -euo pipefail
+
+# Abort if a session is already running.
+if systemctl --user -q is-active niri.service 2>/dev/null; then
+    echo 'A niri session is already running.' >&2
+    exit 1
+fi
+
+# Ensure ~/.cargo/bin is visible to both the session and the service unit.
 export PATH="${HOME}/.cargo/bin:${PATH}"
-exec niri --session "$@"
+
+# Reset any previously failed user units.
+systemctl --user reset-failed 2>/dev/null || true
+
+# Propagate the login manager environment (set by PAM/logind) into the
+# systemd user manager so niri.service and autostart units inherit it.
+systemctl --user import-environment \
+    PATH HOME USER LOGNAME SHELL \
+    XDG_RUNTIME_DIR XDG_SESSION_ID XDG_SEAT XDG_VTNR XDG_SESSION_TYPE \
+    DBUS_SESSION_BUS_ADDRESS \
+    LANG LANGUAGE \
+    SSH_AUTH_SOCK 2>/dev/null || true
+
+# Sync to the D-Bus activation environment as well.
+dbus-update-activation-environment --all 2>/dev/null || true
+
+# Start niri and block until it exits.
+systemctl --user --wait start niri.service
+
+# Tear down the graphical session target.
+systemctl --user start --job-mode=replace-irreversibly niri-shutdown.target 2>/dev/null || true
+
+# Clean up compositor-set variables from the user manager environment.
+systemctl --user unset-environment \
+    WAYLAND_DISPLAY DISPLAY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP NIRI_SOCKET \
+    2>/dev/null || true
 NIRI_SESSION
-        sudo chmod +x /usr/local/bin/niri-session
-    fi
+    sudo chmod +x /usr/local/bin/niri-session
+
     local session_dir="/usr/share/wayland-sessions"
     sudo mkdir -p "${session_dir}"
     if [[ ! -f "${session_dir}/niri.desktop" ]]; then
