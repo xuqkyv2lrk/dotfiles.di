@@ -7,6 +7,37 @@ We go to the next version after each release on the
 
 ## [Unreleased]
 
+## [36.0] - 2026-01-26
+
+### Added
+
+- Backlight Toggle Button Visibility in Quick Settings.
+- Do Not Disturb Toggle Button Visibility in Quick Settings by @michael.online.
+- GNOME Shell 50 Support.
+
+### Fixed
+
+- Looking Glass Position on Vertical Panel.
+- On Screen Display (OSD) visibility on GNOME Shell 49.
+
+### Removed
+
+- Icons page from preferences window and moved the items to the visibility page.
+
+## [35.0] - 2025-08-29
+
+### Added
+
+- GNOME Shell 49 Support.
+- Window Menu Visibility.
+
+### Fixed
+
+- Avoid showing support notifications immediately after login.
+- Primary monitor error for registering looking glass signals.
+- Startup freeze on NixOS.
+- The page icon in preferences window for GNOME Shell 48.
+
 ## [34.0] - 2025-02-02
 
 ### Removed
@@ -18,6 +49,7 @@ We go to the next version after each release on the
 ### Fixed
 
 - The monthly notification support calculation.
+- German Translation by [@uwe-ss](https://gitlab.gnome.org/uwe-ss).
 
 ## [32.0] - 2025-02-01
 
@@ -596,4 +628,3 @@ We go to the next version after each release on the
 - Hide top panel.
 - Hide workspace switcher.
 - Hot corner to toggle overview visibility.
-

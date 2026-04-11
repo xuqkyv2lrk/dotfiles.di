@@ -3,6 +3,7 @@
   "description": "Alphabetically order the app grid and folders",
   "donations": {
     "github": "stuarthayhurst",
+    "kofi": "stuarthayhurst",
     "paypal": "stuartahayhurst"
   },
   "gettext-domain": "AlphabeticalAppGrid@stuarthayhurst",
@@ -12,9 +13,11 @@
     "45",
     "46",
     "47",
-    "48"
+    "48",
+    "49",
+    "50"
   ],
   "url": "https://github.com/stuarthayhurst/alphabetical-grid-extension",
   "uuid": "AlphabeticalAppGrid@stuarthayhurst",
-  "version": 42
+  "version": 44
 }

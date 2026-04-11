@@ -2,7 +2,7 @@
  * Extension
  *
  * @author     Javad Rahmatzadeh <j.rahmatzadeh@gmail.com>
- * @copyright  2020-2025
+ * @copyright  2020-2026
  * @license    GPL-3.0-only
  */
 
@@ -118,17 +118,16 @@ export default class JustPerfection extends Extension
             {
                 API: this.#api,
                 Settings: settings,
-            },
-            shellVersion
+            }
         );
 
-        this.#manager.registerSettingsSignals();
-        this.#manager.applyAll();
+        this.#manager.start();
 
         this.#supportNotifier = new SupportNotifier(
             {
                 MessageTray,
                 Main,
+                GLib,
                 Gio,
                 Settings: settings,
             },
@@ -147,7 +146,7 @@ export default class JustPerfection extends Extension
      */
     disable()
     {
-        this.#manager?.revertAll();
+        this.#manager?.stop();
         this.#manager = null;
 
         this.#api?.close();
@@ -157,4 +156,3 @@ export default class JustPerfection extends Extension
         this.#supportNotifier = null;
     }
 }
-

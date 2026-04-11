@@ -2,7 +2,7 @@
  * API Library
  *
  * @author     Javad Rahmatzadeh <j.rahmatzadeh@gmail.com>
- * @copyright  2020-2025
+ * @copyright  2020-2026
  * @license    GPL-3.0-only
  */
 
@@ -43,7 +43,7 @@ const DASH_ICON_SIZES = [16, 22, 24, 32, 40, 48, 56, 64];
 
 /**
  * API to avoid calling GNOME Shell directly
- * and make all parts compatible with different GNOME Shell versions 
+ * and make all parts compatible with different GNOME Shell versions
  */
 export class API
 {
@@ -72,32 +72,32 @@ export class API
      * Class Constructor
      *
      * @param {Object} dependencies
-     *   'Main' reference to ui::main
-     *   'BackgroundMenu' reference to ui::backgroundMenu
-     *   'OverviewControls' reference to ui::overviewControls
-     *   'WorkspaceSwitcherPopup' reference to ui::workspaceSwitcherPopup
-     *   'SwitcherPopup' reference to ui::switcherPopup
-     *   'InterfaceSettings' reference to Gio::Settings for 'org.gnome.desktop.interface'
-     *   'Search' reference to ui::search
-     *   'SearchController' reference to ui::searchController
-     *   'WorkspaceThumbnail' reference to ui::workspaceThumbnail
-     *   'WorkspacesView' reference to ui::workspacesView
-     *   'Panel' reference to ui::panel
-     *   'PanelMenu' reference to ui::panelMenu
-     *   'WindowPreview' reference to ui::windowPreview
-     *   'Workspace' reference to ui::workspace
-     *   'LookingGlass' reference to ui::lookingGlass
-     *   'MessageTray' reference to ui::messageTray
-     *   'OSDWindow' reference to ui::osdTray
-     *   'WindowMenu' reference to ui::windowMenu
-     *   'AltTab' reference to ui::altTab
+     *   'Main' reference to ui.main
+     *   'BackgroundMenu' reference to ui.backgroundMenu
+     *   'OverviewControls' reference to ui.overviewControls
+     *   'WorkspaceSwitcherPopup' reference to ui.workspaceSwitcherPopup
+     *   'SwitcherPopup' reference to ui.switcherPopup
+     *   'InterfaceSettings' reference to Gio.Settings for 'org.gnome.desktop.interface'
+     *   'Search' reference to ui.search
+     *   'SearchController' reference to ui.searchController
+     *   'WorkspaceThumbnail' reference to ui.workspaceThumbnail
+     *   'WorkspacesView' reference to ui.workspacesView
+     *   'Panel' reference to ui.panel
+     *   'PanelMenu' reference to ui.panelMenu
+     *   'WindowPreview' reference to ui.windowPreview
+     *   'Workspace' reference to ui.workspace
+     *   'LookingGlass' reference to ui.lookingGlass
+     *   'MessageTray' reference to ui.messageTray
+     *   'OSDWindow' reference to ui.osdTray
+     *   'WindowMenu' reference to ui.windowMenu
+     *   'AltTab' reference to ui.altTab
      *   'St' reference to St
      *   'GLib' reference to GLib
      *   'Clutter' reference to Clutter
-     *   'Util' reference to misc::util
+     *   'Util' reference to misc.util
      *   'Meta' reference to Meta
      *   'GObject' reference to GObject
-     * @param {number} shellVersion float in major.minor format
+     * @param {number} shellVersion - float in major.minor format
      */
     constructor(dependencies, shellVersion)
     {
@@ -145,26 +145,50 @@ export class API
     open()
     {
         this.UIStyleClassAdd(this.#getAPIClassname('shell-version'));
-        this.#registerLookingGlassSignals();
+
+        // Getting the looking glass instance before having primary monitor
+        // can cause fatal error. So we wait for primary monitor
+        // until it is available
+        // Fixes #166
+        this.#timeoutIds.registerLookingGlassSignals = this._glib.timeout_add(
+            this._glib.PRIORITY_DEFAULT,
+            1000,
+            () => {
+                let pMonitor = this._main.layoutManager.primaryMonitor;
+
+                if (!pMonitor) {
+                    return this._glib.SOURCE_CONTINUE;
+                }
+
+                this.#registerLookingGlassSignals();
+
+                this.#timeoutIds.registerLookingGlassSignals = null;
+
+                return this._glib.SOURCE_REMOVE;
+            }
+        );
     }
 
     /**
-     * remove everything from GNOME Shell been added by this class 
+     * remove everything from GNOME Shell been added by this class
      *
      * @returns {void}
      */
     close()
     {
+        for (let [name, id] of Object.entries(this.#timeoutIds)) {
+            if (id) {
+                this._glib.source_remove(id);
+            }
+            delete(this.#timeoutIds[name]);
+        }
+
         this.UIStyleClassRemove(this.#getAPIClassname('shell-version'));
         this.#startSearchSignal(false);
         this.#computeWorkspacesBoxForStateSetDefault();
         this.#altTabSizesSetDefault();
         this.#unregisterLookingGlassSignals();
-        
-        for (let [name, id] of Object.entries(this.#timeoutIds)) {
-            this._glib.source_remove(id);
-            delete(this.#timeoutIds[name]);
-        }
+        this.#stopAllOnQuickSettingsPropertyCalls();
     }
 
     /**
@@ -422,7 +446,7 @@ export class API
             // so we fix it with top margin in search entry
             // the panel height is the actual scaled height
             // css engine applies the scale automatically so we need to use
-            // the original non-scaled value as initial value 
+            // the original non-scaled value as initial value
             const scaleFactor = this._st.ThemeContext.get_for_stage(global.stage).scale_factor;
             let marginTop = (mode === PANEL_HIDE_MODE.ALL) ? 15 : Math.round(panelHeight / scaleFactor);
             searchEntryParent.set_style(`margin-top: ${marginTop}px;`);
@@ -457,16 +481,16 @@ export class API
 
         let classname = this.#getAPIClassname('no-panel');
         this.UIStyleClassAdd(classname);
-        
+
         // update hot corners since we need to make them available
         // outside overview
         this._main.layoutManager._updateHotCorners();
 
+        // For GNOME Shell 45-48
         // Maximized windows will have bad maximized gap after unlock in Wayland
         // This is a Mutter issue,
         // See https://gitlab.gnome.org/GNOME/mutter/-/issues/1627
-        // TODO remove after the issue is fixed on Mutter
-        if (this._meta.is_wayland_compositor()) {
+        if (this.#shellVersion <= 48 && this._meta.is_wayland_compositor()) {
             let duration = this.#addToAnimationDuration(180);
             this.#timeoutIds.panelHide = this._glib.timeout_add(
                 this._glib.PRIORITY_DEFAULT,
@@ -474,6 +498,7 @@ export class API
                 () => {
                     panelBox.hide();
                     panelBox.show();
+                    this.#timeoutIds.panelHide = null;
                     return this._glib.SOURCE_REMOVE;
                 }
             );
@@ -555,13 +580,13 @@ export class API
     #updateWindowPreviewOverlap()
     {
         let wpp = this._windowPreview.WindowPreview.prototype;
-        
+
         if (this.isDashVisible() && wpp.overlapHeightsOld) {
             wpp.overlapHeights = wpp.overlapHeightsOld;
             delete(wpp.overlapHeightsOld);
             return;
         }
-        
+
         if (!this.isDashVisible()) {
             wpp.overlapHeightsOld = wpp.overlapHeights;
             wpp.overlapHeights = function () {
@@ -751,7 +776,7 @@ export class API
      * add search signals that needs to be show search entry when the
      * search entry is hidden
      *
-     * @param {boolean} add true means add the signal, false means remove 
+     * @param {boolean} add true means add the signal, false means remove
      *   the signal
      *
      * @returns {void}
@@ -812,7 +837,7 @@ export class API
 
     /**
      * Set maximum displayed search result
-     * 
+     *
      * @param {number} items max items
      *
      * @returns {void}
@@ -820,7 +845,7 @@ export class API
     setMaxDisplayedSearchResult(items)
     {
         let ListSearchResultsProto = this._search.ListSearchResults.prototype;
-        
+
         if (!this.#originals['searchGetMaxDisplayedResults']) {
             this.#originals['searchGetMaxDisplayedResults'] = ListSearchResultsProto._getMaxDisplayedResults;
         }
@@ -842,6 +867,8 @@ export class API
         }
 
         this._main.osdWindowManager.show = this.#originals['osdWindowManagerShow'];
+        this._main.osdWindowManager.showOne = this.#originals['osdWindowManagerShowOne'];
+        this._main.osdWindowManager.showAll = this.#originals['osdWindowManagerShowAll'];
     }
 
     /**
@@ -856,7 +883,19 @@ export class API
             = this._main.osdWindowManager.show;
         }
 
+        if (this.#shellVersion >= 49 && !this.#originals['osdWindowManagerShowOne']) {
+            this.#originals['osdWindowManagerShowOne']
+            = this._main.osdWindowManager.showOne;
+        }
+
+        if (this.#shellVersion >= 49 && !this.#originals['osdWindowManagerShowAll']) {
+            this.#originals['osdWindowManagerShowAll']
+            = this._main.osdWindowManager.showAll;
+        }
+
         this._main.osdWindowManager.show = () => {};
+        this._main.osdWindowManager.showOne = () => {};
+        this._main.osdWindowManager.showAll = () => {};
     }
 
     /**
@@ -899,7 +938,7 @@ export class API
     workspaceSwitcherShow()
     {
         this.UIStyleClassRemove(this.#getAPIClassname('no-workspace'));
-        
+
         this.#workspaceSwitcherShouldShowSetToLast();
     }
 
@@ -1022,7 +1061,7 @@ export class API
     /**
      * add element to stage
      *
-     * @param {St.Widget} element widget 
+     * @param {St.Widget} element widget
      *
      * @returns {void}
      */
@@ -1038,7 +1077,7 @@ export class API
     /**
      * remove element from stage
      *
-     * @param {St.Widget} element widget 
+     * @param {St.Widget} element widget
      *
      * @returns {void}
      */
@@ -1384,7 +1423,7 @@ export class API
     }
 
     /**
-     * disconnect all clock menu position signals 
+     * disconnect all clock menu position signals
      *
      * @returns {void}
      */
@@ -1403,9 +1442,9 @@ export class API
             delete(this._clockMenuPositionSignals);
         }
     }
-     
+
     /**
-     * set the clock menu position to default 
+     * set the clock menu position to default
      *
      * @returns {void}
      */
@@ -1419,7 +1458,7 @@ export class API
      * set the clock menu position
      *
      * @param {number} pos see PANEL_BOX_POSITION
-     * @param {number} offset starts from 0 
+     * @param {number} offset starts from 0
      *
      * @returns {void}
      */
@@ -1432,7 +1471,7 @@ export class API
             this._main.panel._rightBox,
             this._main.panel._leftBox,
         ];
-        
+
         this.#disconnectClockMenuPositionSignals();
 
         let fromPos = -1;
@@ -1466,7 +1505,7 @@ export class API
         if (this.isLocked()) {
             this.dateMenuHide();
         }
-        
+
         if (!this._clockMenuPositionSignals) {
             this._clockMenuPositionSignals = [null, null, null];
             for (let i = 0; i <= 2; i++) {
@@ -1643,15 +1682,19 @@ export class API
             return;
         }
 
-        let display = global.display;
-
-        let createdFunction = (display, window) => {
-            if (window.can_maximize()) {
-                window.maximize(this._meta.MaximizeFlags.HORIZONTAL | this._meta.MaximizeFlags.VERTICAL);
+        this._displayWindowCreatedSignal = global.display.connect(
+            'window-created',
+            (display, window) => {
+                if (!window.can_maximize()) {
+                    return;
+                }
+                if (this.#shellVersion >= 49) {
+                    window.maximize();
+                } else {
+                    window.maximize(this._meta.MaximizeFlags.HORIZONTAL | this._meta.MaximizeFlags.VERTICAL);
+                }
             }
-        };
-
-        this._displayWindowCreatedSignal = display.connect('window-created', createdFunction);
+        );
     }
 
     /**
@@ -1665,9 +1708,7 @@ export class API
             return;
         }
 
-        let display = global.display;
-
-        display.disconnect(this._displayWindowCreatedSignal);
+        global.display.disconnect(this._displayWindowCreatedSignal);
         delete(this._displayWindowCreatedSignal);
     }
 
@@ -1849,7 +1890,7 @@ export class API
 
         controlsLayout._computeWorkspacesBoxForState
         = this.#originals['computeWorkspacesBoxForState'];
-        
+
         if (this._appButtonForComputeWorkspacesSignal) {
             let showAppsButton = this._main.overview.dash.showAppsButton;
             showAppsButton.disconnect(this._appButtonForComputeWorkspacesSignal);
@@ -1952,7 +1993,7 @@ export class API
         // this is the same function from (ui.messageTray.messageTray._hideNotification)
         // with clutter animation mode set to EASE.
         // because the EASE_OUT_BACK (original code) causes glitch when
-        // the tray is on bottom 
+        // the tray is on bottom
         const State = this._messageTray.State;
         const ANIMATION_TIME = this._messageTray.ANIMATION_TIME;
         const Clutter = this._clutter;
@@ -2274,7 +2315,7 @@ export class API
             const cornerRadius = scaleFactor * size;
 
             const backgroundContent = this._bgManager.backgroundActor.content;
-            backgroundContent.rounded_clip_radius = 
+            backgroundContent.rounded_clip_radius =
                 Util.lerp(0, cornerRadius, this._stateAdjustment.value);
         }
 
@@ -2476,7 +2517,9 @@ export class API
     {
         let SwitcherPopupProto = this._switcherPopup.SwitcherPopup.prototype;
 
-        SwitcherPopupProto.showOld = SwitcherPopupProto.show;
+        if (!SwitcherPopupProto.showOld) {
+            SwitcherPopupProto.showOld = SwitcherPopupProto.show;
+        }
 
         SwitcherPopupProto.show = function (...args) {
             let res = this.showOld(...args);
@@ -2504,9 +2547,9 @@ export class API
 
         delete(osdWindowProto._oldShow);
         delete(this.#originals['osdWindowShow']);
-        
+
         if (
-            this.#originals['osdWindowXAlign'] !== undefined && 
+            this.#originals['osdWindowXAlign'] !== undefined &&
             this.#originals['osdWindowYAlign'] !== undefined
         ) {
             let osdWindows = this._main.osdWindowManager._osdWindows;
@@ -2539,7 +2582,7 @@ export class API
         }
 
         if (
-            this.#originals['osdWindowXAlign'] === undefined || 
+            this.#originals['osdWindowXAlign'] === undefined ||
             this.#originals['osdWindowYAlign'] === undefined
         ) {
             let osdWindows = this._main.osdWindowManager._osdWindows;
@@ -2565,7 +2608,7 @@ export class API
         ) {
             this.UIStyleClassAdd(this.#getAPIClassname('osd-position-top'));
         }
-        
+
         if (
             pos === XY_POSITION.BOTTOM_START ||
             pos === XY_POSITION.BOTTOM_CENTER ||
@@ -2573,7 +2616,7 @@ export class API
         ) {
             this.UIStyleClassAdd(this.#getAPIClassname('osd-position-bottom'));
         }
-        
+
         if (
             pos === XY_POSITION.CENTER_START ||
             pos === XY_POSITION.CENTER_CENTER ||
@@ -2657,7 +2700,7 @@ export class API
             calendarBox.insert_child_at_index(calendar, 1);
             calendarBox.insert_child_at_index(date, 2);
         }
-   
+
         this._isCalendarColumnInverted = true;
     }
 
@@ -2973,9 +3016,11 @@ export class API
             ? Math.min(monitorInfo.height * height, availableHeight * 0.9)
             : originalHeight;
 
-            let panelHeight = (this.isPanelVisible()) ? this._main.layoutManager.panelBox.height : 0;
+            let panelBox = this._main.layoutManager.panelBox;
+            let isPanelHorizontal = (panelBox.width > panelBox.height);
+            let panelGap = (this.isPanelVisible() && isPanelHorizontal) ? panelBox.height : 0;
 
-            lookingGlass._hiddenY = monitorInfo.y + panelHeight - dialogHeight;
+            lookingGlass._hiddenY = monitorInfo.y + panelGap - dialogHeight;
             lookingGlass._targetY = lookingGlass._hiddenY + dialogHeight;
 
             lookingGlass.set_size(dialogWidth, dialogHeight);
@@ -2988,6 +3033,43 @@ export class API
                 this.#registerLookingGlassSignals();
             });
         }
+    }
+
+    /**
+     * show window menu
+     *
+     * @returns {void}
+     */
+    windowMenuShow()
+    {
+        let WindowMenuManagerProto = this._windowMenu.WindowMenuManager.prototype;
+
+        if (!this.#originals['showWindowMenuForWindow']) {
+            return;
+        }
+
+        WindowMenuManagerProto.showWindowMenuForWindow = this.#originals['showWindowMenuForWindow'];
+
+        delete(this.#originals['showWindowMenuForWindow']);
+    }
+
+    /**
+     * hide window menu
+     *
+     * @returns {void}
+     */
+    windowMenuHide()
+    {
+        let WindowMenuManagerProto = this._windowMenu.WindowMenuManager.prototype;
+
+        if (!this.#originals['showWindowMenuForWindow']) {
+            this.#originals['showWindowMenuForWindow'] = WindowMenuManagerProto.showWindowMenuForWindow;
+        }
+
+        WindowMenuManagerProto.showWindowMenuForWindow = (window, _type, _rect) => {
+            window.focus(global.get_current_time());
+            window.raise();
+        };
     }
 
     /**
@@ -3296,12 +3378,12 @@ export class API
 
         wsvp._getSpacing = function (box, fitMode, vertical) {
             if (fitMode === 0) {
-                return size; 
+                return size;
             }
             return this._getSpacingOld(box, fitMode, vertical);
         };
     }
-    
+
     /**
      * show dash app running dot
      *
@@ -3417,7 +3499,86 @@ export class API
     }
 
     /**
-     * set workspaces view spacing size
+     * show do not disturb toggle button in quick settings
+     *
+     * @returns {void}
+     */
+    quickSettingsDoNotDisturbToggleShow()
+    {
+        if (this.#shellVersion < 49) {
+            return;
+        }
+
+        this.#onQuickSettingsPropertyCall('_doNotDisturb', (doNotDisturb) => {
+            doNotDisturb.quickSettingsItems[0].show();
+        });
+    }
+
+    /**
+     * hide do not disturb toggle button in quick settings
+     *
+     * @returns {void}
+     */
+    quickSettingsDoNotDisturbToggleHide()
+    {
+        if (this.#shellVersion < 49) {
+            return;
+        }
+
+        this.#onQuickSettingsPropertyCall('_doNotDisturb', (doNotDisturb) => {
+            doNotDisturb.quickSettingsItems[0].hide();
+        });
+    }
+
+    /**
+     * show backlight toggle button in quick settings
+     *
+     * @returns {void}
+     */
+    quickSettingsBacklightToggleShow()
+    {
+        this.#onQuickSettingsPropertyCall('_backlight', (backlight) => {
+            let item = backlight.quickSettingsItems[0];
+
+            if (this.#originals['backlightToggleVisibleDefaultStatus'] !== undefined) {
+                item.visible = this.#originals['backlightToggleVisibleDefaultStatus'];
+                delete(this.#originals['backlightToggleVisibleDefaultStatus']);
+            }
+
+            if (this._backlightToggleShowSignal) {
+                item.disconnect(this._backlightToggleShowSignal);
+            }
+        });
+    }
+
+    /**
+     * hide backlight toggle button in quick settings
+     *
+     * @returns {void}
+     */
+    quickSettingsBacklightToggleHide()
+    {
+        this._backlightToggleShowSignal;
+
+        this.#onQuickSettingsPropertyCall('_backlight', (backlight) => {
+            let item = backlight.quickSettingsItems[0];
+
+            if (!this.#originals['backlightToggleVisibleDefaultStatus']) {
+                this.#originals['backlightToggleVisibleDefaultStatus'] = item.visible;
+            }
+
+            item.hide();
+
+            if (!this._backlightToggleShowSignal) {
+                this._backlightToggleShowSignal = item.connect('show', () => {
+                    item.hide();
+                });
+            }
+        });
+    }
+
+    /**
+     * call a function when async property of quick settings is available
      *
      * @param {string} propertyName
      * @param {Function} func function to call when the property is available
@@ -3427,14 +3588,57 @@ export class API
     #onQuickSettingsPropertyCall(propertyName, func)
     {
         const quickSettings = this._main.panel.statusArea.quickSettings;
+        const indicators = quickSettings._indicators;
 
-        this._glib.idle_add(this._glib.PRIORITY_DEFAULT_IDLE, () => {
-            if (!quickSettings[propertyName]) {
-                return this._glib.SOURCE_CONTINUE;
-            }
+        if (quickSettings[propertyName]) {
             func(quickSettings[propertyName]);
-            return this._glib.SOURCE_REMOVE;
-        });
+            return;
+        }
+
+        if (!this._quickSettingsCallSignals) {
+            this._quickSettingsCallSignals = {};
+        }
+
+        if (this._quickSettingsCallSignals[propertyName]) {
+            indicators.disconnect(this._quickSettingsCallSignals[propertyName]);
+        }
+
+        this._quickSettingsCallSignals[propertyName] = indicators.connect(
+            (this.#shellVersion >= 46) ? 'child-added' : 'actor-added',
+            () => {
+                if (!quickSettings[propertyName]) {
+                    return;
+                }
+
+                if (this._quickSettingsCallSignals[propertyName]) {
+                    indicators.disconnect(this._quickSettingsCallSignals[propertyName]);
+                }
+
+                func(quickSettings[propertyName]);
+            }
+        );
+    }
+
+    /**
+     * disconnect all quick settings property calls
+     *
+     * @returns {void}
+     */
+    #stopAllOnQuickSettingsPropertyCalls()
+    {
+        if (!this._quickSettingsCallSignals) {
+            return;
+        }
+
+        const indicators = this._main.panel.statusArea.quickSettings._indicators;
+
+        for (let [_name, id] of Object.entries(this._quickSettingsCallSignals)) {
+            if (id) {
+                indicators.disconnect(id);
+            }
+        }
+
+        delete(this._quickSettingsCallSignals);
     }
 
     /**
