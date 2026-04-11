@@ -1301,6 +1301,18 @@ function configure_desktop_interface() {
     esac
 }
 
+# Function: configure_usb_audio
+# Description: Writes modprobe options for USB audio devices.
+#              Fixes snd_usb_audio loading for the Behringer UV1 by applying
+#              interface and clock options. The quirk_flags vid:pid:flags format
+#              was dropped in kernel 6.x, so it is intentionally omitted.
+function configure_usb_audio() {
+    print_step "Configuring USB audio modprobe options"
+    echo "options snd_usb_audio implicit_fb=1 ignore_ctl_error=1 autoclock=0" \
+        | sudo tee /etc/modprobe.d/uv1-audio.conf > /dev/null
+    print_success "Written /etc/modprobe.d/uv1-audio.conf"
+}
+
 # Function: configure_hardware
 # Description: Performs post system setup dependant on hardware.
 function configure_hardware() {
@@ -1581,6 +1593,7 @@ function main() {
         install_paperwm
     fi
 
+    configure_usb_audio
     configure_hardware
 }
 
