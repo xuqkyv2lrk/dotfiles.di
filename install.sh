@@ -861,26 +861,6 @@ function install_cliphist_ubuntu() {
     GOBIN="${HOME}/.local/bin" go install go.senan.xyz/cliphist@latest
 }
 
-# Function: install_yazi_ubuntu
-# Description: Installs yazi from GitHub releases (pre-built static binary).
-function install_yazi_ubuntu() {
-    if command -v yazi &>/dev/null; then
-        echo -e "\n${YELLOW}yazi already installed, skipping${NC}"
-        return
-    fi
-    echo -e "\n${MAGENTA}Installing ${BOLD}yazi${NC}"
-    local latest_tag
-    latest_tag=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest | grep '"tag_name"' | cut -d '"' -f4)
-    local tmp_dir
-    tmp_dir=$(mktemp -d)
-    curl -L "https://github.com/sxyazi/yazi/releases/download/${latest_tag}/yazi-x86_64-unknown-linux-musl.zip" \
-        -o "${tmp_dir}/yazi.zip"
-    unzip -q "${tmp_dir}/yazi.zip" -d "${tmp_dir}"
-    sudo install -m 755 "${tmp_dir}/yazi-x86_64-unknown-linux-musl/yazi" /usr/local/bin/yazi
-    sudo install -m 755 "${tmp_dir}/yazi-x86_64-unknown-linux-musl/ya" /usr/local/bin/ya
-    rm -rf "${tmp_dir}"
-}
-
 # Function: install_bluetui_ubuntu
 # Description: Installs bluetui via cargo.
 function install_bluetui_ubuntu() {
@@ -1019,7 +999,6 @@ function install_niri_stack_ubuntu() {
     build_xwayland_satellite_ubuntu
     build_wlsunset_ubuntu
     install_cliphist_ubuntu
-    install_yazi_ubuntu
     install_bluetui_ubuntu
     install_dart_sass_ubuntu
     install_catppuccin_gtk_ubuntu

@@ -71,7 +71,6 @@ desktop_packages:
     - waybar-cava
     - xdg-desktop-portal-gtk
     - xwayland-satellite
-    - yazi
   sway:
     - bemenu-wayland
     - brightnessctl
@@ -117,7 +116,6 @@ exceptions:
     - niri: skip                          # built by install_niri_stack_ubuntu
     - xwayland-satellite: skip            # built by install_niri_stack_ubuntu
     - cliphist: skip                      # built by install_niri_stack_ubuntu
-    - yazi: skip                          # built by install_niri_stack_ubuntu
     - bluetui: skip                       # built by install_niri_stack_ubuntu
     - wlsunset: skip                      # built by install_niri_stack_ubuntu
     - dart-sass: skip                     # built by install_niri_stack_ubuntu
