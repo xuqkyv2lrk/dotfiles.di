@@ -24,4 +24,8 @@ export GTK_THEME="Adwaita-dark:dark"
 #env = __GLX_VENDOR_LIBRARY_NAME,nvidia
 #env = WLR_NO_HARDWARE_CURSORS,1
 
-exec start-hyprland
+if command -v start-hyprland &>/dev/null; then
+    exec start-hyprland
+else
+    exec Hyprland
+fi
