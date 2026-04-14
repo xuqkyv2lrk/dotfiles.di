@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "~/Pictures/Wallpapers",
+        "directory": "",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
