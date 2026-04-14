@@ -386,7 +386,7 @@
         "animationDisabled": false,
         "animationSpeed": 1,
         "autoStartAuth": false,
-        "avatarImage": "/home/chdxn/.dotfiles.di/gnome/additional/avatar.png",
+        "avatarImage": "",
         "boxRadiusRatio": 1,
         "clockFormat": "HH:mm t",
         "clockStyle": "analog",
@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+        "directory": "~/.dotfiles.di/hyprland/hypr/.config/hypr/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
@@ -680,11 +680,6 @@
         "fillMode": "crop",
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
-            {
-                "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
-                "name": "HDMI-A-1",
-                "wallpaper": ""
-            }
         ],
         "overviewBlur": 0.4,
         "overviewEnabled": false,
