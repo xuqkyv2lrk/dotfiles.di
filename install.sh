@@ -427,7 +427,7 @@ SWAYIDLE
         echo ''
         echo '# Shell'
         if [[ "${use_quickshell}" == "true" ]]; then
-            echo "qs -p ${BASEDIR}/quickshell/noctalia-shell &"
+            echo "qs -p ${BASEDIR}/quickshell/noctalia-shell-shell &"
         else
             case "${compositor}" in
                 "hypr")
@@ -1540,7 +1540,7 @@ function main() {
     if [[ "${use_quickshell}" == "true" ]]; then
         echo -e "\n${YELLOW}Stowing ${BOLD}quickshell${NC}${YELLOW} configurations...${NC}${GREEN}"
         [[ -d "${BASEDIR}/quickshell/quickshell" ]] && stow --adopt -v -t "${HOME}" -d "${BASEDIR}/quickshell" quickshell
-        [[ -d "${BASEDIR}/quickshell/noctalia" ]] && stow --adopt -v -t "${HOME}" -d "${BASEDIR}/quickshell" noctalia
+        [[ -d "${BASEDIR}/quickshell/noctalia-shell" ]] && stow --adopt -v -t "${HOME}" -d "${BASEDIR}/quickshell" noctalia
         git -C "${BASEDIR}/quickshell" restore */ 2>/dev/null || true
     fi
 

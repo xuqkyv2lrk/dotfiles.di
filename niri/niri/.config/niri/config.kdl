@@ -49,7 +49,7 @@ output "HDMI-A-1" {
 // Startup & Session Management
 // ****
 
-spawn-at-startup "sh" "-c" "qs -p ~/.dotfiles.di/quickshell/noctalia"
+spawn-at-startup "sh" "-c" "qs -p ~/.dotfiles.di/quickshell/noctalia-shell"
 
 // ****
 // Debugging & Diagnostics
@@ -178,8 +178,8 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
     Mod+Shift+M { spawn "~/.config/niri/scripts/media.sh"; }
-    Mod+Shift+S { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia call settings toggle"; }
-    Mod+Shift+C { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia call controlCenter toggle"; }
+    Mod+Shift+S { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call settings toggle"; }
+    Mod+Shift+C { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call controlCenter toggle"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
