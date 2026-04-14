@@ -12,6 +12,7 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE="${HOME}/.cache"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export GTK_THEME="Adwaita-dark:dark"
+export HYPRLAND_CMD=Hyprland
 
 
 #Add your own exports below this line
