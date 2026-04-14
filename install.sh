@@ -1302,18 +1302,7 @@ function configure_hardware() {
     case "${hardware}" in
         "ROG") ;;
         "ThinkPad T480s") ;;
-        "XPS 13 9350")
-            local bluetooth_firmware_file
-            local bluetooth_firmware
-            bluetooth_firmware_file="BCM4350C5_003.006.007.0095.1703.hcd"
-            bluetooth_firmware="BCM4350C5-0a5c-6412.hcd"
-            echo -e "\n${YELLOW}Post system configuration for ${BOLD}${hardware}${NC}"
-            echo -e "${BLUE}Configuring bluetooth driver${NC}"
-            if [ ! -d "/lib/firmware/brcm/" ]; then
-                sudo mkdir -p /lib/firmware/brcm/
-            fi
-            sudo cp -f "${BASEDIR}/system_components/${hardware_lowercase}/bluetooth/${bluetooth_firmware_file}" "/lib/firmware/brcm/${bluetooth_firmware}"
-            ;;
+
     esac
 }
 
