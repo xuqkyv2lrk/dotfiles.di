@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "~/Pictures/Wallpapers",
+        "directory": "~/.dotfiles.di/hyprland/hypr/.config/hypr/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
