@@ -29,8 +29,7 @@ shadows disable
 
 corner_radius 5
 
-layer_effects "waybar" blur enable
-layer_effects "swaync" blur enable
+layer_effects "quickshell" blur enable
 layer_effects "bemenu" blur enable
 
 default_dim_inactive 0.25
@@ -299,7 +298,7 @@ bindswitch --reload --locked lid:off exec ~/.config/sway/scripts/lid_handler.sh 
 #
 # Autostart
 #
-exec ~/.config/sway/autostart.sh
+exec qs -p ~/.dotfiles.di/quickshell/noctalia
 
 bindgesture swipe:left workspace prev
 bindgesture swipe:right workspace next
