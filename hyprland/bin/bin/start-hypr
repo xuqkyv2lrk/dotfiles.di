@@ -12,9 +12,6 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE="${HOME}/.cache"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export GTK_THEME="Adwaita-dark:dark"
-export HYPRLAND_CMD="$(command -v Hyprland)"
-
-
 #Add your own exports below this line
 
 
@@ -27,4 +24,4 @@ export HYPRLAND_CMD="$(command -v Hyprland)"
 #env = __GLX_VENDOR_LIBRARY_NAME,nvidia
 #env = WLR_NO_HARDWARE_CURSORS,1
 
-exec Hyprland
+exec start-hyprland
