@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./_docs/ui-circular.png" alt="dotfiles.di" width="250px" />
 <h3>dotfiles.di</h3>
-<p>A personalized installation framework for configuring modern Wayland desktop interfaces on Arch Linux and Ubuntu.</p>
+<p>Desktop interface configurations for Hyprland, Niri, Sway, and GNOME — managed with GNU Stow.</p>
 <p>
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License" /></a>
   <a href="https://gitlab.com/wd2nf8gqct/dotfiles.di"><img src="https://img.shields.io/badge/GitLab-Main-orange.svg?logo=gitlab" alt="GitLab" /></a>
@@ -66,3 +66,36 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 </div>
 <br />
 </div>
+
+## Usage
+
+```bash
+git clone https://gitlab.com/wd2nf8gqct/dotfiles.di.git ~/.dotfiles.di
+cd ~/.dotfiles.di
+```
+
+Stow a specific desktop interface:
+
+```bash
+stow niri
+stow hyprland
+stow sway
+stow gnome
+```
+
+For full machine setup — package installation, hardware configuration, and bootstrapping — see [dotfiles.bootstrap](https://gitlab.com/wd2nf8gqct/dotfiles.bootstrap).
+
+## Repository layout
+
+```
+.
+├── gnome/        # GNOME shell config and extensions
+├── hyprland/     # Hyprland compositor config
+├── niri/         # Niri compositor config
+├── quickshell/   # Quickshell bar config
+└── sway/         # Sway compositor config
+```
+
+## License
+
+BSD 3-Clause License. See [LICENSE](LICENSE) file.
