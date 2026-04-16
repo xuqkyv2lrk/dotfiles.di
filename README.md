@@ -67,6 +67,22 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 <br />
 </div>
 
+<br />
+
+<div align="center">
+<h3 style="margin-bottom: 0;">
+<img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
+Noctalia</h3>
+<div style="margin-top: 0; font-size: 0.9em;">
+A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
+</div>
+<div style="margin-top: 0.4em; font-size: 0.85em; color: #888;">
+Handles the bar, launcher, notifications, lock screen, session management, screenshots, and wallpapers.
+Compositor configs delegate all shell functionality to Noctalia via IPC rather than bundling their own tools.
+</div>
+<br />
+</div>
+
 ## Usage
 
 ```bash
@@ -87,13 +103,41 @@ For full machine setup — package installation, hardware configuration, and boo
 
 ## Repository layout
 
+Each top-level directory is a collection of stow packages. Each sub-directory within it
+is an independent stow package targeting `~/.config` (or `~/` for systemd and bin).
+
 ```
 .
-├── gnome/        # GNOME shell config and extensions
-├── hyprland/     # Hyprland compositor config
-├── niri/         # Niri compositor config
-├── quickshell/   # Quickshell bar config
-└── sway/         # Sway compositor config
+├── gnome/              # GNOME shell config and extensions
+├── hyprland/
+│   ├── bin/            # start-hypr launcher script
+│   ├── hypr/           # Hyprland + hypridle + hyprlock config
+│   ├── kvantum/        # Kvantum theme
+│   ├── qt5ct/          # Qt5 theme
+│   ├── gtk-2.0/
+│   ├── gtk-3.0/
+│   ├── gtk-4.0/
+│   └── systemd/        # idle.service (hypridle)
+├── niri/
+│   ├── bin/            # start-niri launcher script
+│   ├── hypr/           # hypridle + hyprlock config
+│   ├── niri/           # Niri compositor config
+│   ├── swappy/         # screenshot annotation config
+│   ├── gtk-3.0/
+│   ├── gtk-4.0/
+│   ├── systemd/        # idle.service (hypridle)
+│   └── xdg/            # mimeapps.list
+├── quickshell/         # Noctalia shell layer config
+└── sway/
+    ├── bin/            # start-sway launcher script
+    ├── hypr/           # hypridle config
+    ├── kanshi/         # output management config
+    ├── swappy/         # screenshot annotation config
+    ├── sway/           # Sway compositor config
+    ├── gtk-3.0/
+    ├── gtk-4.0/
+    ├── systemd/        # idle.service (hypridle)
+    └── swaynag/        # swaynag dialog config
 ```
 
 ## License
