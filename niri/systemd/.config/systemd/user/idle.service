@@ -5,7 +5,7 @@ Requisite=graphical-session.target
 
 
 [Service]
-ExecStart=/usr/bin/hypridle -c %h/.config/hypr/hypridle.conf
+ExecStart=/usr/bin/env hypridle -c %h/.config/hypr/hypridle.conf
 Restart=on-failure
 
 [Install]
