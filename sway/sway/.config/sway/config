@@ -282,7 +282,7 @@ bindsym $mod+r mode "resize"
 # Applications
 #
 bindsym $mod+o exec firefox
-bindsym $mod+e exec thunar
+bindsym $mod+e exec nautilus
 
 #
 # Screen Lock
@@ -307,7 +307,7 @@ bindgesture swipe:right workspace next
 bindsym $mod+Shift+n exec ~/.config/sway/scripts/notifications.sh
 
 for_window [title="File Operation Progress"] floating enable
-for_window [app_id="thunar"] floating enable, resize set 1000px 650px, move position center
+for_window [app_id="org.gnome.Nautilus"] floating enable, resize set 1000px 650px, move position center
 for_window [app_id="imv"] floating enable, resize set 1280px 720px, move position center
 for_window [app_id="mpv"] floating enable, resize set 1280px 720px, move position center
 for_window [class="1Password"] floating enable, resize set 1500px 1050px, move position center
