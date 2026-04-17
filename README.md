@@ -111,32 +111,29 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 ├── gnome/              # GNOME shell config and extensions
 ├── hyprland/
 │   ├── bin/            # start-hypr launcher script
-│   ├── hypr/           # Hyprland + hypridle + hyprlock config
+│   ├── hypr/           # Hyprland + hyprlock config
 │   ├── kvantum/        # Kvantum theme
 │   ├── qt5ct/          # Qt5 theme
 │   ├── gtk-2.0/
 │   ├── gtk-3.0/
-│   ├── gtk-4.0/
-│   └── systemd/        # idle.service (hypridle)
+│   └── gtk-4.0/
 ├── niri/
 │   ├── bin/            # start-niri launcher script
-│   ├── hypr/           # hypridle + hyprlock config
+│   ├── hypr/           # hyprlock config
 │   ├── niri/           # Niri compositor config
 │   ├── swappy/         # screenshot annotation config
 │   ├── gtk-3.0/
 │   ├── gtk-4.0/
-│   ├── systemd/        # idle.service (hypridle)
 │   └── xdg/            # mimeapps.list
-├── quickshell/         # Noctalia shell layer config
+├── quickshell/         # Noctalia shell layer config (handles idle)
 └── sway/
     ├── bin/            # start-sway launcher script
-    ├── hypr/           # hypridle config
+    ├── hypr/           # hyprlock config
     ├── kanshi/         # output management config
     ├── swappy/         # screenshot annotation config
     ├── sway/           # Sway compositor config
     ├── gtk-3.0/
     ├── gtk-4.0/
-    ├── systemd/        # idle.service (hypridle)
     └── swaynag/        # swaynag dialog config
 ```
 

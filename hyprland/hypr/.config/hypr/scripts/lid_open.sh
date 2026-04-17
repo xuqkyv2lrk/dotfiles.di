@@ -28,5 +28,3 @@ else
     hyprctl keyword monitor "${internal_monitor}, preferred, auto, auto"
 fi
 
-# Reset hypridle timers
-pkill -USR1 hypridle
