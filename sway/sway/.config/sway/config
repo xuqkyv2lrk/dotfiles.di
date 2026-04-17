@@ -287,7 +287,7 @@ bindsym $mod+e exec nautilus
 #
 # Screen Lock
 #
-bindsym Ctrl+Alt+l exec ~/.config/sway/scripts/lock.sh
+bindsym Ctrl+Alt+l exec sh -c "qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock"
 
 #
 # Autostart
