@@ -163,20 +163,11 @@
                 },
                 {
                     "hideWhenZero": false,
-                    "hideWhenZeroUnread": false,
+                    "hideWhenZeroUnread": true,
                     "iconColor": "none",
                     "id": "NotificationHistory",
                     "showUnreadBadge": true,
                     "unreadBadgeColor": "primary"
-                },
-                {
-                    "deviceNativePath": "BAT0",
-                    "displayMode": "graphic-clean",
-                    "hideIfIdle": false,
-                    "hideIfNotDetected": true,
-                    "id": "Battery",
-                    "showNoctaliaPerformance": false,
-                    "showPowerProfiles": false
                 },
                 {
                     "displayMode": "onhover",
@@ -203,6 +194,15 @@
                     "iconColor": "none",
                     "id": "Bluetooth",
                     "textColor": "none"
+                },
+                {
+                    "deviceNativePath": "BAT0",
+                    "displayMode": "graphic",
+                    "hideIfIdle": false,
+                    "hideIfNotDetected": true,
+                    "id": "Battery",
+                    "showNoctaliaPerformance": false,
+                    "showPowerProfiles": false
                 },
                 {
                     "colorizeDistroLogo": false,
@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "~/.dotfiles.di/hyprland/hypr/.config/hypr/wallpapers",
+        "directory": "/home/bxxjs/.dotfiles.di/niri/niri/.config/niri/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
@@ -680,6 +680,11 @@
         "fillMode": "crop",
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
+            {
+                "directory": "/home/bxxjs/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "name": "eDP-1",
+                "wallpaper": ""
+            }
         ],
         "overviewBlur": 0.4,
         "overviewEnabled": false,
