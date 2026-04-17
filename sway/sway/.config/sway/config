@@ -290,12 +290,6 @@ bindsym $mod+e exec nautilus
 bindsym Ctrl+Alt+l exec ~/.config/sway/scripts/lock.sh
 
 #
-# Disable laptop screen when lid is closed
-#
-bindswitch --reload --locked lid:on exec ~/.config/sway/scripts/lid_handler.sh disable
-bindswitch --reload --locked lid:off exec ~/.config/sway/scripts/lid_handler.sh enable
-
-#
 # Autostart
 #
 exec qs -p ~/.dotfiles.di/quickshell/noctalia
@@ -322,4 +316,3 @@ for_window [app_id="tv.plex.Plex"] inhibit_idle fullscreen
 include "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf"
 
 exec_always "${XDG_CONFIG_HOME}/sway/scripts/autotiling"
-exec_always "${XDG_CONFIG_HOME}/sway/scripts/lid_state.sh"
