@@ -461,7 +461,7 @@
         "enabled": true,
         "fadeDuration": 5,
         "lockCommand": "",
-        "lockTimeout": 330,
+        "lockTimeout": 85,
         "resumeLockCommand": "",
         "resumeScreenOffCommand": "",
         "resumeSuspendCommand": "",
