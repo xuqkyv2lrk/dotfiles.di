@@ -169,7 +169,7 @@ binds {
     Mod+E { spawn "nautilus"; }
     Mod+D { spawn "~/.config/niri/scripts/launcher.sh"; }
     Mod+O { spawn "firefox"; }
-    Mod+L { spawn "~/.config/niri/scripts/lock.sh"; }
+    Mod+L { spawn "sh" "-c" "qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock"; }
     Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
