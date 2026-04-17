@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call lockScreen lock
+qs ipc --any-display -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call lockScreen lock
