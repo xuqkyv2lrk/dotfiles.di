@@ -1,30 +1,11 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}"
+internal=$(hyprctl monitors -j | jq -r '.[] | select(.name | startswith("eDP")) | .name')
+[[ -z "${internal}" ]] && exit 0
 
-# Update cache immediately to avoid race condition
-echo "open" > "${cache_dir}/lid_state"
-
-actual_lid_state=$(grep -q "closed" /proc/acpi/button/lid/*/state && echo "closed" || echo "open")
-echo "${actual_lid_state}" > "${cache_dir}/lid_state"
-
-internal_monitor=$(cat "${cache_dir}/internal_monitor" 2>/dev/null)
-
-if [[ -z "${internal_monitor}" ]]; then
-    internal_monitor=$(hyprctl monitors -j | jq -r '.[] | select(.name | startswith("eDP")) | .name')
-
-    if [[ -z "${internal_monitor}" ]]; then
-        echo "No internal monitor found!"
-        exit 1
-    fi
-    
-    echo "${internal_monitor}" > "${cache_dir}/internal_monitor"
-fi
-
-# Re-enable the monitor
-if [ "${internal_monitor}" = "eDP-2" ]; then
-    hyprctl keyword monitor "${internal_monitor}, preferred, auto, 1.6"
+if [[ "${internal}" == "eDP-2" ]]; then
+    hyprctl keyword monitor "${internal}, preferred, auto, 1.6"
 else
-    hyprctl keyword monitor "${internal_monitor}, preferred, auto, auto"
+    hyprctl keyword monitor "${internal}, preferred, auto, auto"
 fi
-
