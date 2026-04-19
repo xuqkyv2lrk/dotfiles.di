@@ -93,10 +93,14 @@ cd ~/.dotfiles.di
 Stow a Wayland compositor — Noctalia is required as the shell layer for all three:
 
 ```bash
-# Compositor config + Noctalia shell layer (bar, launcher, notifications, lock, etc.)
-stow niri && stow noctalia
-stow hyprland && stow noctalia
-stow sway && stow noctalia
+# Pick one compositor
+stow niri
+stow hyprland
+stow sway
+
+# Then stow Noctalia (bar, launcher, notifications, lock screen, etc.)
+stow -d quickshell noctalia
+stow -d quickshell noctalia-shell
 ```
 
 GNOME manages its own shell, so Noctalia is not needed:
