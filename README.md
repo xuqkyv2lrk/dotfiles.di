@@ -86,7 +86,7 @@ Compositor configs delegate all shell functionality to Noctalia via IPC rather t
 ## Usage
 
 ```bash
-git clone https://gitlab.com/wd2nf8gqct/dotfiles.di.git ~/.dotfiles.di
+git clone --recurse-submodules https://gitlab.com/wd2nf8gqct/dotfiles.di.git ~/.dotfiles.di
 cd ~/.dotfiles.di
 ```
 
@@ -100,7 +100,6 @@ stow sway
 
 # Then stow Noctalia (bar, launcher, notifications, lock screen, etc.)
 stow -d quickshell noctalia
-stow -d quickshell noctalia-shell
 ```
 
 GNOME manages its own shell, so Noctalia is not needed:
