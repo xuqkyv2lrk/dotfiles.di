@@ -90,12 +90,18 @@ git clone https://gitlab.com/wd2nf8gqct/dotfiles.di.git ~/.dotfiles.di
 cd ~/.dotfiles.di
 ```
 
-Stow a specific desktop interface:
+Stow a Wayland compositor — Noctalia is required as the shell layer for all three:
 
 ```bash
-stow niri
-stow hyprland
-stow sway
+# Compositor config + Noctalia shell layer (bar, launcher, notifications, lock, etc.)
+stow niri && stow noctalia
+stow hyprland && stow noctalia
+stow sway && stow noctalia
+```
+
+GNOME manages its own shell, so Noctalia is not needed:
+
+```bash
 stow gnome
 ```
 
