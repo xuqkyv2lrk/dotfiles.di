@@ -74,7 +74,7 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 <img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 Noctalia</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
-A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
+A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/noctalia-dev">GitHub</a> · <a href="https://noctalia.dev">Website</a> · <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
 </div>
 <div style="margin-top: 0.4em; font-size: 0.85em; color: #888;">
 Handles the bar, launcher, notifications, lock screen, session management, screenshots, and wallpapers.
