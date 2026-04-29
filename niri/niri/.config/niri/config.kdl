@@ -72,9 +72,7 @@ input {
         repeat-delay 600
         repeat-rate 25
     }
-    touchpad {
-        natural-scroll
-    }
+    touchpad {}
 }
 
 
