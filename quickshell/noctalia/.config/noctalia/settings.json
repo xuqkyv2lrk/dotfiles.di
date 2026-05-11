@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+        "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
@@ -681,12 +681,12 @@
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
             {
-                "directory": "/home/bxxjs/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
                 "name": "eDP-1",
                 "wallpaper": ""
             },
             {
-                "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
                 "name": "HDMI-A-1",
                 "wallpaper": ""
             }
