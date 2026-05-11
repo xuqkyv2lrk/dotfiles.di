@@ -183,6 +183,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+R { switch-preset-column-width; }
     Mod+Shift+B { spawn "~/.config/niri/scripts/dock_toggle.sh"; }
+    Mod+Shift+T { spawn "sh" "-c" "~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"; }
     Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
 
     // Focus movement
