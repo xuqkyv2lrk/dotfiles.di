@@ -185,6 +185,7 @@ binds {
     Mod+Shift+B { spawn "~/.config/niri/scripts/dock_toggle.sh"; }
     Mod+Shift+T { spawn "sh" "-c" "~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"; }
     Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
+    Mod+Shift+I { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call idleInhibitor toggle"; }
 
     // Focus movement
     Mod+Left { focus-column-left; }
