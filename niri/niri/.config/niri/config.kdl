@@ -25,9 +25,11 @@
 
 prefer-no-csd
 
-environment {
-    DISPLAY ":0"
-}
+// DISPLAY is exported by niri's built-in xwayland-satellite integration
+// after xwayland-satellite is ready. Hardcoding it here caused a race
+// where apps received DISPLAY before xwayland-satellite started, and
+// quickshell's Qt X11 connection broke on every sleep/resume when
+// xwayland-satellite crashed — corrupting focus state for the session.
 
 hotkey-overlay {
     skip-at-startup
