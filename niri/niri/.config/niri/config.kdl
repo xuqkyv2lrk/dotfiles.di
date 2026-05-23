@@ -40,10 +40,9 @@ hotkey-overlay {
 // Display & Output
 // ****
 
-output "HDMI-A-1" {
-    mode "7680x2160@59.987"
+output "DP-1" {
+    mode "7680x2160@119.997"
     scale 1.5
-    // variable-refresh-rate // Disabled due to flickering caused by NVIDIA GPU
 }
 
 
