@@ -47,7 +47,7 @@
         "capsuleOpacity": 1,
         "contentPadding": 6,
         "density": "default",
-        "displayMode": "always_visible",
+        "displayMode": "auto_hide",
         "enableExclusionZoneInset": false,
         "floating": false,
         "fontScale": 1,
@@ -525,7 +525,7 @@
         ],
         "normalUrgencyDuration": 5,
         "overlayLayer": true,
-        "respectExpireTimeout": true,
+        "respectExpireTimeout": false,
         "saveToHistory": {
             "critical": true,
             "low": true,
