@@ -41,7 +41,8 @@ hotkey-overlay {
 // ****
 
 output "DP-1" {
-    mode "7680x2160@59.987"
+    mode "7680x2160@119.997"
+    //mode "7680x2160@59.987"
     scale 1.5
 }
 
@@ -312,4 +313,9 @@ window-rule {
     open-floating true
     default-column-width { fixed 275; }
     default-window-height { fixed 655; }
+}
+
+window-rule {
+    match app-id="gamescope"
+    default-column-width { proportion 0.66667; }
 }
