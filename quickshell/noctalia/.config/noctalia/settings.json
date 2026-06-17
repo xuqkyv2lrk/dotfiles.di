@@ -47,7 +47,7 @@
         "capsuleOpacity": 1,
         "contentPadding": 6,
         "density": "default",
-        "displayMode": "auto_hide",
+        "displayMode": "always_visible",
         "enableExclusionZoneInset": false,
         "floating": false,
         "fontScale": 1,
@@ -688,6 +688,11 @@
             {
                 "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
                 "name": "HDMI-A-1",
+                "wallpaper": ""
+            },
+            {
+                "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "name": "DP-1",
                 "wallpaper": ""
             }
         ],
