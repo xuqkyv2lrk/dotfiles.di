@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mod="Super"
+
+# ---- Input ----
+riverctl keyboard-layout us
+riverctl set-repeat 25 600
+
+# ---- Applications ----
+riverctl map normal "$mod" Return spawn foot
+riverctl map normal "$mod" O      spawn firefox
+riverctl map normal "$mod" E      spawn nautilus
+riverctl map normal "$mod" D      spawn "$HOME/.config/river/scripts/launcher.sh"
+riverctl map normal "$mod" P      spawn "$HOME/.config/river/scripts/session_menu.sh"
+
+# ---- Session ----
+riverctl map normal "$mod"       L spawn "sh -c 'qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock'"
+riverctl map normal "$mod"       M exit
+
+# ---- Window management ----
+riverctl map normal "$mod"       Q close
+riverctl map normal "$mod+Shift" F toggle-fullscreen
+riverctl map normal "$mod"       V toggle-float
+
+# ---- Focus ----
+riverctl map normal "$mod" Left  focus-view left
+riverctl map normal "$mod" Right focus-view right
+riverctl map normal "$mod" Up    focus-view up
+riverctl map normal "$mod" Down  focus-view down
+
+# ---- Move windows ----
+riverctl map normal "$mod+Shift" Left  swap left
+riverctl map normal "$mod+Shift" Right swap right
+riverctl map normal "$mod+Shift" Up    swap up
+riverctl map normal "$mod+Shift" Down  swap down
+
+# ---- Layout (rivertile) ----
+riverctl map normal "$mod+Alt" Left  send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal "$mod+Alt" Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map normal "$mod+Alt" Up    send-layout-cmd rivertile "main-count +1"
+riverctl map normal "$mod+Alt" Down  send-layout-cmd rivertile "main-count -1"
+
+# ---- Tags 1-9 (Super+N to focus, Super+Shift+N to move window) ----
+for i in $(seq 1 9); do
+    tags=$((1 << (i - 1)))
+    riverctl map normal "$mod"         "$i" set-focused-tags    $tags
+    riverctl map normal "$mod+Shift"   "$i" set-view-tags       $tags
+    riverctl map normal "$mod+Control" "$i" toggle-focused-tags $tags
+done
+
+# ---- Mouse ----
+riverctl map-pointer normal "$mod" BTN_LEFT   move-view
+riverctl map-pointer normal "$mod" BTN_RIGHT  resize-view
+riverctl map-pointer normal "$mod" BTN_MIDDLE toggle-float
+
+# ---- Noctalia IPC ----
+riverctl map normal "$mod+Shift"   N spawn "$HOME/.config/river/scripts/notifications.sh"
+riverctl map normal "$mod+Shift"   M spawn "$HOME/.config/river/scripts/media.sh"
+riverctl map normal "$mod+Shift"   S spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call settings toggle'"
+riverctl map normal "$mod+Shift"   C spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call controlCenter toggle'"
+riverctl map normal "$mod+Shift"   B spawn "$HOME/.config/river/scripts/dock_toggle.sh"
+riverctl map normal "$mod+Shift"   T spawn "$HOME/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"
+riverctl map normal "$mod+Shift"   I spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call idleInhibitor toggle'"
+riverctl map normal "$mod+Control" V spawn "$HOME/.config/river/scripts/clipboard.sh"
+
+# ---- Media and brightness (work on lock screen too) ----
+for mode in normal locked; do
+    riverctl map "$mode" None XF86AudioRaiseVolume  spawn "pamixer --increase 5"
+    riverctl map "$mode" None XF86AudioLowerVolume  spawn "pamixer --decrease 5"
+    riverctl map "$mode" None XF86AudioMute         spawn "pamixer --toggle-mute"
+    riverctl map "$mode" None XF86AudioMicMute      spawn "pamixer --default-source --toggle-mute"
+    riverctl map "$mode" None XF86AudioPlay         spawn "playerctl play-pause"
+    riverctl map "$mode" None XF86AudioPrev         spawn "playerctl previous"
+    riverctl map "$mode" None XF86AudioNext         spawn "playerctl next"
+    riverctl map "$mode" None XF86MonBrightnessUp   spawn "brightnessctl set +10%"
+    riverctl map "$mode" None XF86MonBrightnessDown spawn "brightnessctl set 10%-"
+done
+
+# ---- Screenshots ----
+riverctl map normal None        Print spawn "sh -c 'pgrep -x slurp >/dev/null || grim -g \"\$(slurp)\" - | swappy -f -'"
+riverctl map normal Shift       Print spawn "sh -c 'grim - | swappy -f -'"
+
+# ---- Appearance ----
+riverctl background-color 0x1e1e2e
+riverctl border-color-focused   0xcba6f7
+riverctl border-color-unfocused 0x585b70
+riverctl border-color-urgent    0xf38ba8
+riverctl border-width 2
+
+# ---- Float rules ----
+riverctl rule-add -app-id "org.gnome.Nautilus"      float
+riverctl rule-add -app-id "com.saivert.pwvucontrol" float
+riverctl rule-add -app-id "lxqt-policykit-agent"    float
+riverctl rule-add -app-id "Plexamp"                 float
+
+# ---- Layout ----
+riverctl default-layout rivertile
+rivertile -view-padding 4 -outer-padding 4 &
+
+# ---- Autostart ----
+kanshi &
+qs -p ~/.dotfiles.di/quickshell/noctalia-shell &

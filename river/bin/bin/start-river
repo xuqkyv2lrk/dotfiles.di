@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+systemctl --user import-environment \
+    PATH HOME USER LOGNAME SHELL \
+    XDG_RUNTIME_DIR XDG_SESSION_ID XDG_SEAT XDG_VTNR XDG_SESSION_TYPE \
+    DBUS_SESSION_BUS_ADDRESS \
+    LANG LANGUAGE \
+    SSH_AUTH_SOCK 2>/dev/null || true
+
+dbus-update-activation-environment --all
+
+exec river
