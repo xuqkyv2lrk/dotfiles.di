@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./_docs/ui-circular.png" alt="dotfiles.di" width="250px" />
 <h3>dotfiles.di</h3>
-<p>Desktop interface configurations for Hyprland, Niri, Sway, and GNOME — managed with GNU Stow.</p>
+<p>Desktop interface configurations for Hyprland, Niri, Sway, River, and GNOME — managed with GNU Stow.</p>
 <p>
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License" /></a>
   <a href="https://gitlab.com/wd2nf8gqct/dotfiles.di"><img src="https://img.shields.io/badge/GitLab-Main-orange.svg?logo=gitlab" alt="GitLab" /></a>
@@ -90,13 +90,14 @@ git clone --recurse-submodules https://gitlab.com/wd2nf8gqct/dotfiles.di.git ~/.
 cd ~/.dotfiles.di
 ```
 
-Stow a Wayland compositor — Noctalia is required as the shell layer for all three:
+Stow a Wayland compositor — Noctalia is required as the shell layer for all four:
 
 ```bash
 # Pick one compositor
 stow niri
 stow hyprland
 stow sway
+stow river
 
 # Then stow Noctalia (bar, launcher, notifications, lock screen, etc.)
 stow -d quickshell noctalia
@@ -135,6 +136,13 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 │   ├── gtk-4.0/
 │   └── xdg/            # mimeapps.list
 ├── quickshell/         # Noctalia shell layer config (handles idle)
+├── river/
+│   ├── bin/            # start-river launcher script
+│   ├── hypr/           # hyprlock config
+│   ├── kanshi/         # output management config
+│   ├── river/          # River compositor config (init script)
+│   ├── gtk-3.0/
+│   └── gtk-4.0/
 └── sway/
     ├── bin/            # start-sway launcher script
     ├── hypr/           # hyprlock config
