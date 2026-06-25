@@ -22,6 +22,7 @@ riverctl map normal "$mod"       M exit
 riverctl map normal "$mod"       Q close
 riverctl map normal "$mod+Shift" F toggle-fullscreen
 riverctl map normal "$mod"       V toggle-float
+riverctl map normal "$mod"       Z zoom
 
 # ---- Focus ----
 riverctl map normal "$mod" Left  focus-view left
