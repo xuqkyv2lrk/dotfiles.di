@@ -103,7 +103,7 @@ riverctl rule-add -app-id "Plexamp"                 csd
 
 # ---- Layout ----
 riverctl default-layout rivertile
-rivertile -view-padding 4 -outer-padding 4 &
+rivertile -view-padding 2 -outer-padding 2 &
 
 # ---- Autostart ----
 kanshi &
