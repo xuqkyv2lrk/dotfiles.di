@@ -1,3 +1,3 @@
-# kanshi output management config
-# Add display profiles here as needed.
-# See: man kanshi
+profile {
+    output "eDP-1" scale 1.5
+}
