@@ -3,6 +3,11 @@ set -euo pipefail
 
 mod="Super"
 
+# Export Wayland environment into systemd and D-Bus so portals and services
+# that start after graphical-session.target can connect to the display
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY
+systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+
 # ---- Input ----
 riverctl keyboard-layout us
 riverctl set-repeat 25 600
