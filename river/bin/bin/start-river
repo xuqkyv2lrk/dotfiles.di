@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export XDG_CURRENT_DESKTOP=river
+
 systemctl --user import-environment \
     PATH HOME USER LOGNAME SHELL \
     XDG_RUNTIME_DIR XDG_SESSION_ID XDG_SEAT XDG_VTNR XDG_SESSION_TYPE \
