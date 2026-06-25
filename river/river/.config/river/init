@@ -88,6 +88,9 @@ riverctl border-color-unfocused 0x585b70
 riverctl border-color-urgent    0xf38ba8
 riverctl border-width 2
 
+# Force server-side decorations so River draws borders on all windows
+riverctl rule-add -app-id '*' ssd
+
 # ---- Float rules ----
 riverctl rule-add -app-id "org.gnome.Nautilus"      float
 riverctl rule-add -app-id "com.saivert.pwvucontrol" float
