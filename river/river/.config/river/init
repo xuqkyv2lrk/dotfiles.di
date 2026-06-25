@@ -91,11 +91,15 @@ riverctl border-width 2
 # Force server-side decorations so River draws borders on all windows
 riverctl rule-add -app-id '*' ssd
 
-# ---- Float rules ----
+# ---- Float rules (csd overrides global ssd — no border on floating windows) ----
 riverctl rule-add -app-id "org.gnome.Nautilus"      float
+riverctl rule-add -app-id "org.gnome.Nautilus"      csd
 riverctl rule-add -app-id "com.saivert.pwvucontrol" float
+riverctl rule-add -app-id "com.saivert.pwvucontrol" csd
 riverctl rule-add -app-id "lxqt-policykit-agent"    float
+riverctl rule-add -app-id "lxqt-policykit-agent"    csd
 riverctl rule-add -app-id "Plexamp"                 float
+riverctl rule-add -app-id "Plexamp"                 csd
 
 # ---- Layout ----
 riverctl default-layout rivertile
