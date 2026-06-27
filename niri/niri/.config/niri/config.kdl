@@ -57,8 +57,14 @@ spawn-at-startup "sh" "-c" "qs -p ~/.dotfiles.di/quickshell/noctalia-shell"
 // Debugging & Diagnostics
 // ****
 
+cursor {
+    xcursor-theme "catppuccin-mocha-mauve-cursors"
+    xcursor-size 24
+}
+
 debug {
     render-drm-device "/dev/dri/renderD128"
+    disable-cursor-plane
 }
 
 
