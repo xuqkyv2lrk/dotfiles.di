@@ -1,0 +1,13 @@
+[Unit]
+Description=Niri clamshell mode manager
+After=niri.service
+BindsTo=niri.service
+
+[Service]
+Type=simple
+ExecStart=%h/.config/niri/scripts/clamshell.sh
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=niri.service
