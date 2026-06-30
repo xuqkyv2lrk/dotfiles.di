@@ -1,0 +1,187 @@
+# Noctalia v5 config — ported from v4 settings.json
+
+
+[theme]
+source = "builtin"
+builtin = "Catppuccin"
+mode = "dark"
+
+[weather]
+enabled = true
+unit = "imperial"
+effects = true
+refresh_minutes = 30
+
+[weather.location]
+name = "South Riding, VA"
+# v5 uses location.name for weather city lookup
+
+[idle]
+behavior_order = ["lock", "screen-off", "lock-and-suspend"]
+pre_action_fade_seconds = 2.0
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = false
+    timeout = 85.0
+    command = ""
+    resume_command = ""
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 300.0
+    command = ""
+    resume_command = ""
+
+    [idle.behavior.lock-and-suspend]
+    action = "lock_and_suspend"
+    enabled = false
+    timeout = 1800.0
+    command = ""
+    resume_command = ""
+
+[bar]
+order = ["default"]
+
+    [bar.default]
+    enabled = true
+    position = "top"
+    thickness = 34
+    margin_edge = 0
+    margin_ends = 0
+    background_opacity = 0.72
+    capsule = false
+    capsule_opacity = 1.0
+    radius = 0
+    radius_top_left = 0
+    radius_top_right = 0
+    radius_bottom_left = 0
+    radius_bottom_right = 0
+    border_width = 0.0
+    shadow = true
+    reserve_space = true
+    show_on_workspace_switch = true
+    widget_spacing = 6
+    padding = 6
+    layer = "top"
+    auto_hide = false
+    start = ["workspaces", "sysmon", "media"]
+    center = ["clock"]
+    end = ["tray", "notifications", "volume", "brightness", "network", "bluetooth", "battery", "control-center", "session"]
+
+        [bar.default.dead_zone]
+        command = ""
+        middle_command = ""
+        right_command = ""
+        scroll_down_command = ""
+        scroll_up_command = ""
+
+[widget.clock]
+type = "clock"
+format = "{:%a, %b %d // %H:%M}"
+
+[widget.workspaces]
+type = "workspaces"
+
+[widget.sysmon]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.media]
+type = "media"
+art_size = 16.0
+max_length = 250.0
+min_length = 80.0
+title_scroll = "on_hover"
+
+[widget.tray]
+type = "tray"
+
+[widget.notifications]
+type = "notifications"
+
+[widget.volume]
+type = "volume"
+device = "output"
+
+[widget.brightness]
+type = "brightness"
+
+[widget.network]
+type = "network"
+
+[widget.bluetooth]
+type = "bluetooth"
+
+[widget.battery]
+type = "battery"
+
+[widget.control-center]
+type = "control-center"
+
+[widget.session]
+type = "session"
+
+[control_center]
+width = 700
+sidebar = "compact"
+sidebar_section = "compact"
+hidden_tabs = []
+
+    [[control_center.shortcuts]]
+    type = "wifi"
+
+    [[control_center.shortcuts]]
+    type = "bluetooth"
+
+    [[control_center.shortcuts]]
+    type = "nightlight"
+
+    [[control_center.shortcuts]]
+    type = "notification"
+
+    [[control_center.shortcuts]]
+    type = "power_profile"
+
+    [[control_center.shortcuts]]
+    type = "caffeine"
+
+
+[dock]
+enabled = false
+position = "bottom"
+reserve_space = true
+
+[wallpaper]
+enabled = true
+directory = "/home/xPnXavoH/.dotfiles.di/niri/niri/.config/niri/wallpapers"
+fill_mode = "crop"
+transition = ["fade", "disc", "stripes", "wipe", "pixelate", "honeycomb"]
+transition_duration = 1500.0
+transition_on_startup = false
+
+    [wallpaper.automation]
+    enabled = false
+    interval_seconds = 300
+    order = "random"
+    recursive = false
+
+[brightness]
+enable_ddcutil = false
+minimum_brightness = 0.0
+sync_all_monitors = false
+
+[audio]
+enable_overdrive = false
+enable_sounds = false
+
+[system.monitor]
+enabled = true
+cpu_poll_seconds = 2.0
+memory_poll_seconds = 2.0
+network_poll_seconds = 3.0
+disk_poll_seconds = 10.0
+cpu_temp_critical_threshold = 90.0
+cpu_usage_critical_threshold = 90.0
+ram_pct_critical_threshold = 90.0
