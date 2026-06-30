@@ -38,10 +38,14 @@ hotkey-overlay {
 // Display & Output
 // ****
 
-output "HDMI-A-1" {
+output "DP-1" {
     mode "7680x2160@59.987"
     scale 1.5
     // variable-refresh-rate // Disabled due to flickering caused by NVIDIA GPU
+}
+
+output "eDP-1" {
+
 }
 
 
@@ -49,15 +53,12 @@ output "HDMI-A-1" {
 // Startup & Session Management
 // ****
 
-spawn-at-startup "sh" "-c" "qs -p ~/.dotfiles.di/quickshell/noctalia-shell"
+spawn-at-startup "sh" "-c" "~/.config/niri/autostart.sh"
 
 // ****
 // Debugging & Diagnostics
 // ****
 
-debug {
-    render-drm-device "/dev/dri/renderD128"
-}
 
 
 // ****
@@ -73,7 +74,6 @@ input {
         repeat-rate 25
     }
     touchpad {
-        natural-scroll
     }
 }
 
@@ -170,7 +170,7 @@ binds {
     Mod+E { spawn "nautilus"; }
     Mod+D { spawn "~/.config/niri/scripts/launcher.sh"; }
     Mod+O { spawn "firefox"; }
-    Mod+L { spawn "sh" "-c" "qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock"; }
+    Mod+L { spawn "noctalia" "msg" "lock-screen"; }
     Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
@@ -178,8 +178,9 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
     Mod+Shift+M { spawn "~/.config/niri/scripts/media.sh"; }
-    Mod+Shift+S { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call settings toggle"; }
-    Mod+Shift+C { spawn "sh" "-c" "qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call controlCenter toggle"; }
+    Mod+Shift+I { spawn "noctalia" "msg" "caffeine-toggle"; }
+    Mod+Shift+S { spawn "noctalia" "msg" "settings-toggle"; }
+    Mod+Shift+C { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
