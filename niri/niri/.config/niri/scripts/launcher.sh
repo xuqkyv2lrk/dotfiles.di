@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call launcher toggle
+WAYLAND_DISPLAY=wayland-1 noctalia msg panel-toggle launcher

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call notifications toggleHistory
+WAYLAND_DISPLAY=wayland-1 noctalia msg panel-open control-center notifications
