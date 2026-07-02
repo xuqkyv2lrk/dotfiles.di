@@ -681,17 +681,17 @@
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
             {
-                "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "directory": "~/.dotfiles.di/wallpapers",
                 "name": "eDP-1",
                 "wallpaper": ""
             },
             {
-                "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "directory": "~/.dotfiles.di/wallpapers",
                 "name": "HDMI-A-1",
                 "wallpaper": ""
             },
             {
-                "directory": "/home/chdxn/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+                "directory": "~/.dotfiles.di/wallpapers",
                 "name": "DP-1",
                 "wallpaper": ""
             }
@@ -703,7 +703,7 @@
         "randomIntervalSec": 300,
         "setWallpaperOnAllMonitors": true,
         "showHiddenFiles": false,
-        "skipStartupTransition": false,
+        "skipStartupTransition": true,
         "solidColor": "#1a1a2e",
         "sortOrder": "name",
         "transitionDuration": 1500,
