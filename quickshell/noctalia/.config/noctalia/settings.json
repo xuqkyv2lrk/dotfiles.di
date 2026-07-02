@@ -671,7 +671,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "~/.dotfiles.di/niri/niri/.config/niri/wallpapers",
+        "directory": "/home/lqnw3c/.dotfiles.di/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
@@ -681,7 +681,7 @@
         "hideWallpaperFilenames": false,
         "monitorDirectories": [
             {
-                "directory": "~/.dotfiles.di/wallpapers",
+                "directory": "/home/lqnw3c/.dotfiles.di/wallpapers",
                 "name": "eDP-1",
                 "wallpaper": ""
             },
