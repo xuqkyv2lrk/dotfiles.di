@@ -170,7 +170,7 @@ binds {
     Mod+E { spawn "nautilus"; }
     Mod+D { spawn "~/.config/niri/scripts/launcher.sh"; }
     Mod+O { spawn "firefox"; }
-    Mod+L { spawn "noctalia" "msg" "lock-screen"; }
+    Mod+L { spawn "noctalia" "msg" "session" "lock"; }
     Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
@@ -255,8 +255,8 @@ binds {
     XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
 
     // Screenshots
-    Print { spawn "sh" "-c" "pgrep -x slurp >/dev/null || grim -g \"$(slurp)\" - | swappy -f -"; }
-    Shift+Print { spawn "sh" "-c" "pgrep -x swappy >/dev/null || grim - | swappy -f -"; }
+    Print { spawn "noctalia" "msg" "screenshot-region"; }
+    Shift+Print { spawn "noctalia" "msg" "screenshot-fullscreen"; }
     Ctrl+Alt+Print { screenshot-window; }
 }
 
