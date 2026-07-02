@@ -447,14 +447,14 @@
     "hooks": {
         "colorGeneration": "",
         "darkModeChange": "",
-        "enabled": false,
+        "enabled": true,
         "performanceModeDisabled": "",
         "performanceModeEnabled": "",
         "screenLock": "",
         "screenUnlock": "",
         "session": "",
         "startup": "",
-        "wallpaperChange": ""
+        "wallpaperChange": "~/.dotfiles.di/scripts/normalize_wallpaper_paths.sh"
     },
     "idle": {
         "customCommands": "[]",
