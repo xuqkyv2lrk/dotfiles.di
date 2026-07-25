@@ -157,6 +157,9 @@ bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && 
 # Active window screenshot with swappy
 bindsym Ctrl+Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
 
+# Screen recording (toggle: first press selects region and starts, second press stops)
+bindsym Ctrl+Print exec record-region
+
 #
 # Moving around:
 #

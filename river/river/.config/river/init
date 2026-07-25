@@ -86,6 +86,7 @@ done
 # ---- Screenshots ----
 riverctl map normal None        Print spawn "sh -c 'pgrep -x slurp >/dev/null || grim -g \"\$(slurp)\" - | swappy -f -'"
 riverctl map normal Shift       Print spawn "sh -c 'grim - | swappy -f -'"
+riverctl map normal Control     Print spawn "record-region"
 
 # ---- Appearance ----
 riverctl background-color 0x1e1e2e
