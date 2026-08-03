@@ -52,6 +52,8 @@ output "DP-1" {
 // ****
 
 spawn-at-startup "sh" "-c" "qs -p ~/.dotfiles.di/quickshell/noctalia-shell"
+spawn-at-startup "~/.config/niri/scripts/layout_profile.sh"
+spawn-at-startup "~/.config/niri/scripts/output_watch.sh"
 
 // ****
 // Debugging & Diagnostics
@@ -125,7 +127,7 @@ layout {
         proportion 0.66667
         proportion 1.0
     }
-    default-column-width { proportion 0.33333; }
+    default-column-width { proportion 0.33333; } // dynamic
 
     tab-indicator {
         active-color "#a6e3a1"
@@ -190,6 +192,7 @@ binds {
     Mod+Q { close-window; }
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { spawn "~/.config/niri/scripts/layout_profile.sh"; }
     Mod+Shift+B { spawn "~/.config/niri/scripts/dock_toggle.sh"; }
     Mod+Shift+T { spawn "sh" "-c" "~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"; }
     Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
