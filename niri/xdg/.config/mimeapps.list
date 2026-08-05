@@ -17,3 +17,15 @@ audio/mpeg=mpv.desktop
 audio/flac=mpv.desktop
 application/pdf=firefox.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/webcal=userapp-Thunderbird-XPINT3.desktop
+x-scheme-handler/webcals=userapp-Thunderbird-XPINT3.desktop
+text/calendar=userapp-Thunderbird-XPINT3.desktop
+application/x-extension-ics=userapp-Thunderbird-XPINT3.desktop
+x-scheme-handler/net.thunderbird=userapp-Thunderbird-OT8ST3.desktop
+
+[Added Associations]
+x-scheme-handler/webcal=userapp-Thunderbird-XPINT3.desktop;
+x-scheme-handler/webcals=userapp-Thunderbird-XPINT3.desktop;
+text/calendar=userapp-Thunderbird-XPINT3.desktop;
+application/x-extension-ics=userapp-Thunderbird-XPINT3.desktop;
+x-scheme-handler/net.thunderbird=userapp-Thunderbird-OT8ST3.desktop;
