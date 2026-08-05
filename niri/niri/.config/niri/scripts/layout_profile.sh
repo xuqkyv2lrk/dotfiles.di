@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-readonly CONFIG_FILE="${HOME}/.config/niri/config.kdl"
+readonly LOCAL_CONFIG="${HOME}/.config/niri/local.kdl"
 
 function is_ultrawide_active() {
     niri msg -j outputs 2>/dev/null \
@@ -18,14 +18,16 @@ function main() {
         proportion="0.5"
     fi
 
-    local current
-    current="$(grep '// dynamic' "${CONFIG_FILE}" | grep -o 'proportion [0-9.]*' | grep -o '[0-9.]*$')"
+    local current=""
+    if [[ -f "${LOCAL_CONFIG}" ]]; then
+        current="$(grep -o 'proportion [0-9.]*' "${LOCAL_CONFIG}" | grep -o '[0-9.]*$' || true)"
+    fi
 
     if [[ "${current}" == "${proportion}" ]]; then
         exit 0
     fi
 
-    sed -i "s/default-column-width { proportion [0-9.]*; } \/\/ dynamic/default-column-width { proportion ${proportion}; } \/\/ dynamic/" "${CONFIG_FILE}"
+    printf 'layout {\n    default-column-width { proportion %s; }\n}\n' "${proportion}" > "${LOCAL_CONFIG}"
     niri msg action load-config-file
 }
 
