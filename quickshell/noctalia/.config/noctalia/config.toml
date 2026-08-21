@@ -185,3 +185,10 @@ disk_poll_seconds = 10.0
 cpu_temp_critical_threshold = 90.0
 cpu_usage_critical_threshold = 90.0
 ram_pct_critical_threshold = 90.0
+
+[shell]
+screenshot_save_to_file = true
+screenshot_directory = "/home/xPnXavoH/Pictures/Screenshots"
+screenshot_copy_to_clipboard = true
+screenshot_freeze_screen = true
+screenshot_confirm_region = false
