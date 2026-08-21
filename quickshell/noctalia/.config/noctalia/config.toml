@@ -29,7 +29,7 @@ pre_action_fade_seconds = 2.0
 
     [idle.behavior.screen-off]
     action = "screen_off"
-    enabled = true
+    enabled = false
     timeout = 300.0
     command = ""
     resume_command = ""
