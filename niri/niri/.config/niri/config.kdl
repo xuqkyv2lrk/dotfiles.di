@@ -46,6 +46,10 @@ output "DP-1" {
     scale 1.5
 }
 
+output "DP-3" {
+    mode "7680x2160@59.987"
+    scale 1.5
+}
 
 // ****
 // Startup & Session Management
@@ -182,6 +186,7 @@ binds {
     Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
+    Mod+Ctrl+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh" "--pick"; }
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
