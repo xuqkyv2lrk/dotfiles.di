@@ -57,30 +57,30 @@ alt-ctrl-4 = ['resize width 99999']
 alt-shift-r = 'resize smart +50'
 alt-ctrl-r  = 'resize smart -50'
 
-# Join window into adjacent container (manual dwindle nesting)
-alt-shift-j = 'join-with down'
-alt-shift-k = 'join-with up'
-alt-shift-h = 'join-with left'
-alt-shift-l = 'join-with right'
-
 # Reload config
 alt-shift-c = 'reload-config'
 
-# Focus (Mod+Arrow equivalents)
+# Focus
 alt-left  = 'focus left'
 alt-right = 'focus right'
 alt-up    = 'focus up'
 alt-down  = 'focus down'
 
-# Move window (Mod+Shift+Arrow equivalents)
+# Move window
 alt-shift-left  = 'move left'
 alt-shift-right = 'move right'
 alt-shift-up    = 'move up'
 alt-shift-down  = 'move down'
 
-# Move to monitor (Mod+Alt+Arrow equivalents)
-alt-ctrl-left  = 'move-node-to-monitor left'
-alt-ctrl-right = 'move-node-to-monitor right'
+# Join into adjacent container (manual dwindle nesting)
+alt-ctrl-left  = 'join-with left'
+alt-ctrl-right = 'join-with right'
+alt-ctrl-up    = 'join-with up'
+alt-ctrl-down  = 'join-with down'
+
+# Move to monitor
+alt-ctrl-shift-left  = 'move-node-to-monitor left'
+alt-ctrl-shift-right = 'move-node-to-monitor right'
 
 # Workspaces (Mod+1-9 equivalents)
 alt-1 = 'workspace 1'
