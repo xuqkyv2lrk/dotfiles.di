@@ -7,7 +7,7 @@ PLUGIN_DIR="${HOME}/.config/sketchybar/plugins"
 
 sketchybar --add event aerospace_workspace_change
 
-for i in 1 2 3 4 5 6 7 8 9; do
+for i in $(aerospace list-workspaces --all); do
     sketchybar --add item "space.${i}" left \
                --set "space.${i}" \
                    icon="${i}" \
