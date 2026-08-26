@@ -88,9 +88,10 @@ Compositor configs delegate all shell functionality to Noctalia via IPC rather t
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
-macOS</h3>
+<img src="./_docs/aerospace/logo.png" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
+AeroSpace</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
-AeroSpace tiling window manager and SketchyBar status bar for Apple Silicon&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">AeroSpace</a> · <a href="https://github.com/FelixKratz/SketchyBar">SketchyBar</a> ]
+A tiling window manager for macOS (Apple Silicon) with SketchyBar as the status bar&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">GitHub</a> · <a href="https://nikitabobko.github.io/AeroSpace/guide">Guide</a> ]
 </div>
 <br />
 </div>
@@ -148,7 +149,7 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 | `river/river` | River compositor config |
 | `sway/sway` | Sway compositor config |
 
-**macOS**
+**macOS (AeroSpace)**
 
 | Package | Description |
 |---------|-------------|
