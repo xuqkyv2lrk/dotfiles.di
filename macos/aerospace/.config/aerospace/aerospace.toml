@@ -103,13 +103,3 @@ alt-shift-6 = 'move-node-to-workspace 6'
 alt-shift-7 = 'move-node-to-workspace 7'
 alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
-
-# ── App workspace assignments ─────────────────────────────────────────────
-
-[[on-window-detected]]
-if.app-name-regex-substring = 'Ghostty'
-run = 'move-node-to-workspace 1'
-
-[[on-window-detected]]
-if.app-name-regex-substring = 'Firefox'
-run = 'move-node-to-workspace 2'
