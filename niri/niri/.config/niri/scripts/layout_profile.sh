@@ -3,20 +3,25 @@ set -euo pipefail
 
 readonly LOCAL_CONFIG="${HOME}/.config/niri/local.kdl"
 
-function is_ultrawide_active() {
-    niri msg -j outputs 2>/dev/null \
-        | jq -e 'to_entries | any(.[]; .value.current_mode != null and .value.modes[.value.current_mode].width >= 5000)' \
-        > /dev/null 2>&1
+function get_proportion() {
+    local is_uw
+    is_uw="$(niri msg -j outputs 2>/dev/null \
+        | jq 'to_entries | any(.[];
+            .value.current_mode != null and
+            (.value.modes[.value.current_mode].width /
+             .value.modes[.value.current_mode].height) > 2.0
+        )')"
+
+    if [[ "${is_uw}" == "true" ]]; then
+        printf "0.33333"
+    else
+        printf "0.5"
+    fi
 }
 
 function main() {
     local proportion
-
-    if is_ultrawide_active; then
-        proportion="0.33333"
-    else
-        proportion="0.5"
-    fi
+    proportion="$(get_proportion)"
 
     local current=""
     if [[ -f "${LOCAL_CONFIG}" ]]; then
