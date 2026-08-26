@@ -72,7 +72,7 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
-<img src="./_docs/river/logo.svg" width="120px" style="vertical-align: top; margin-right: 5px" /><br />
+<img src="./_docs/river/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 River</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
 A dynamic tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/riverwm/river">GitHub</a> · <a href="https://codeberg.org/river/river/wiki">Wiki</a> ]
