@@ -13,11 +13,15 @@ sketchybar --bar \
     height=36 \
     color="${BAR_COLOR}" \
     border_width=0 \
-    shadow=off \
+    corner_radius=12 \
+    blur_radius=20 \
+    shadow=on \
     position=top \
     sticky=on \
-    padding_right=10 \
-    padding_left=10
+    y_offset=8 \
+    margin=8 \
+    padding_right=12 \
+    padding_left=12
 
 # ── Defaults ─────────────────────────────────────────────────────────────────
 
@@ -37,6 +41,7 @@ source "${CONFIG_DIR}/items/spaces.sh"
 
 # Right: system status (right-to-left order)
 
+source "${CONFIG_DIR}/items/resources.sh"
 source "${CONFIG_DIR}/items/clock.sh"
 source "${CONFIG_DIR}/items/battery.sh"
 source "${CONFIG_DIR}/items/wifi.sh"

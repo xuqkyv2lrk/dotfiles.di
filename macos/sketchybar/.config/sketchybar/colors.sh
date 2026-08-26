@@ -16,7 +16,7 @@ export SHADOW="0xff11111b"         # mShadow     — crust
 export INACTIVE="0xff585b70"       # inactive border color (from niri config)
 
 # Semantic aliases used by items
-export BAR_COLOR="${SURFACE}"
+export BAR_COLOR="0xdd1e1e2e"
 export ITEM_BG_COLOR="${SURFACE_VARIANT}"
 export ACCENT_COLOR="${ACCENT}"
 export ICON_COLOR="${ACCENT}"
