@@ -1,0 +1,106 @@
+# AeroSpace config — keybindings mirror niri setup (Mod → alt/option)
+# https://nikitabobko.github.io/AeroSpace/guide
+
+after-login-command = []
+after-startup-command = ['exec-and-forget sketchybar']
+start-at-login = true
+
+exec-on-workspace-change = [
+    '/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
+]
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.bottom     = 8
+outer.top        = 8
+outer.right      = 8
+
+# ── Main mode ───────────────────────────────────────────────────────────────
+
+[mode.main.binding]
+
+# Apps
+alt-enter = 'exec-and-forget open -a Ghostty'
+alt-o     = 'exec-and-forget open -a Firefox'
+alt-e     = 'exec-and-forget open -a Finder'
+alt-d     = 'exec-and-forget open -a Raycast'
+
+# Window management
+alt-q       = 'close'
+alt-shift-f = 'fullscreen'
+alt-v       = 'layout floating tiling'
+alt-r       = 'layout tiles horizontal vertical'
+alt-b       = 'balance-sizes'
+
+# Resize (Mod+Alt+1-4 preset widths equivalent)
+alt-ctrl-1 = ['resize width 640']
+alt-ctrl-2 = ['resize width 960']
+alt-ctrl-3 = ['resize width 1280']
+alt-ctrl-4 = ['resize width 99999']
+
+# Fine resize
+alt-shift-r = 'resize smart +50'
+alt-ctrl-r  = 'resize smart -50'
+
+# Reload config
+alt-shift-c = 'reload-config'
+
+# Focus (Mod+Arrow equivalents)
+alt-left  = 'focus left'
+alt-right = 'focus right'
+alt-up    = 'focus up'
+alt-down  = 'focus down'
+
+# Move window (Mod+Shift+Arrow equivalents)
+alt-shift-left  = 'move left'
+alt-shift-right = 'move right'
+alt-shift-up    = 'move up'
+alt-shift-down  = 'move down'
+
+# Move to monitor (Mod+Alt+Arrow equivalents)
+alt-ctrl-left  = 'move-node-to-monitor left'
+alt-ctrl-right = 'move-node-to-monitor right'
+
+# Workspaces (Mod+1-9 equivalents)
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# Move to workspace (Mod+Shift+1-9 equivalents)
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
+alt-shift-7 = 'move-node-to-workspace 7'
+alt-shift-8 = 'move-node-to-workspace 8'
+alt-shift-9 = 'move-node-to-workspace 9'
+
+# ── App workspace assignments ─────────────────────────────────────────────
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Ghostty'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Firefox'
+run = 'move-node-to-workspace 2'

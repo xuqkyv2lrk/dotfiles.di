@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Nerd Font icons used in sketchybar items
+
+export ICON_APPLE=""
+export ICON_CLOCK="󰥔"
+export ICON_BATTERY_100=""
+export ICON_BATTERY_75=""
+export ICON_BATTERY_50=""
+export ICON_BATTERY_25=""
+export ICON_BATTERY_0=""
+export ICON_BATTERY_CHARGING="󰂄"
+export ICON_WIFI="󰖩"
+export ICON_WIFI_OFF="󰖪"
+export ICON_VOLUME_HIGH="󰕾"
+export ICON_VOLUME_LOW="󰖀"
+export ICON_VOLUME_MUTE="󰝟"
+export ICON_SPACE="󰊠"
+export ICON_SPACE_ACTIVE="󰊡"
