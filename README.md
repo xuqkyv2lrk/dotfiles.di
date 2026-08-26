@@ -72,6 +72,18 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
+<img src="./_docs/river/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
+River</h3>
+<div style="margin-top: 0; font-size: 0.9em;">
+A dynamic tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/riverwm/river">GitHub</a> · <a href="https://codeberg.org/river/river/wiki">Wiki</a> ]
+</div>
+<br />
+</div>
+
+<br />
+
+<div align="center">
+<h3 style="margin-bottom: 0;">
 <img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 Noctalia</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
@@ -91,7 +103,7 @@ Compositor configs delegate all shell functionality to Noctalia via IPC rather t
 <img src="./_docs/aerospace/logo.png" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 AeroSpace</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
-A tiling window manager for macOS (Apple Silicon) with SketchyBar as the status bar&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">GitHub</a> · <a href="https://nikitabobko.github.io/AeroSpace/guide">Guide</a> ]
+A tiling window manager for macOS (Apple Silicon) with <a href="https://github.com/FelixKratz/SketchyBar">SketchyBar</a> as the status bar&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">GitHub</a> · <a href="https://nikitabobko.github.io/AeroSpace/guide">Guide</a> ]
 </div>
 <br />
 </div>
