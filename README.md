@@ -11,7 +11,7 @@
 <p>
   <a href="https://archlinux.org"><img src="https://img.shields.io/badge/Arch%20Linux-1793D1?logo=arch-linux&logoColor=fff&style=flat" alt="Arch Linux" /></a>
   <a href="https://ubuntu.com"><img src="https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
-  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white" alt="macOS" /></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-555555?style=flat&logo=apple&logoColor=white" alt="macOS" /></a>
 </p>
 </div>
 
@@ -72,7 +72,6 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
-<img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 Noctalia</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
 A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/noctalia-dev">GitHub</a> · <a href="https://noctalia.dev">Website</a> · <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
@@ -80,6 +79,17 @@ A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;
 <div style="margin-top: 0.4em; font-size: 0.85em; color: #888;">
 Handles the bar, launcher, notifications, lock screen, session management, screenshots, and wallpapers.
 Compositor configs delegate all shell functionality to Noctalia via IPC rather than bundling their own tools.
+</div>
+<br />
+</div>
+
+<br />
+
+<div align="center">
+<h3 style="margin-bottom: 0;">
+macOS</h3>
+<div style="margin-top: 0; font-size: 0.9em;">
+AeroSpace tiling window manager and SketchyBar status bar for Apple Silicon&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">AeroSpace</a> · <a href="https://github.com/FelixKratz/SketchyBar">SketchyBar</a> ]
 </div>
 <br />
 </div>
