@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./_docs/ui-circular.png" alt="dotfiles.di" width="250px" />
 <h3>dotfiles.di</h3>
-<p>Desktop interface configurations for Hyprland, Niri, Sway, River, and GNOME — managed with GNU Stow.</p>
+<p>Desktop interface configurations for Hyprland, Niri, Sway, River, GNOME, and macOS — managed with GNU Stow.</p>
 <p>
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="License" /></a>
   <a href="https://gitlab.com/wd2nf8gqct/dotfiles.di"><img src="https://img.shields.io/badge/GitLab-Main-orange.svg?logo=gitlab" alt="GitLab" /></a>
@@ -11,6 +11,7 @@
 <p>
   <a href="https://archlinux.org"><img src="https://img.shields.io/badge/Arch%20Linux-1793D1?logo=arch-linux&logoColor=fff&style=flat" alt="Arch Linux" /></a>
   <a href="https://ubuntu.com"><img src="https://img.shields.io/badge/Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white" alt="Ubuntu" /></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white" alt="macOS" /></a>
 </p>
 </div>
 
@@ -109,6 +110,13 @@ GNOME manages its own shell, so Noctalia is not needed:
 stow gnome
 ```
 
+For macOS, stow the packages individually from the `macos/` directory:
+
+```bash
+stow -d macos aerospace
+stow -d macos sketchybar
+```
+
 For full machine setup — package installation, hardware configuration, and bootstrapping — see [dotfiles.bootstrap](https://gitlab.com/wd2nf8gqct/dotfiles.bootstrap).
 
 ## Repository layout
@@ -116,43 +124,25 @@ For full machine setup — package installation, hardware configuration, and boo
 Each top-level directory is a collection of stow packages. Each sub-directory within it
 is an independent stow package targeting `~/.config` (or `~/` for systemd and bin).
 
-```
-.
-├── gnome/              # GNOME shell config and extensions
-├── hyprland/
-│   ├── bin/            # start-hypr launcher script
-│   ├── hypr/           # Hyprland + hyprlock config
-│   ├── kvantum/        # Kvantum theme
-│   ├── qt5ct/          # Qt5 theme
-│   ├── gtk-2.0/
-│   ├── gtk-3.0/
-│   └── gtk-4.0/
-├── niri/
-│   ├── bin/            # start-niri launcher script
-│   ├── hypr/           # hyprlock config
-│   ├── niri/           # Niri compositor config
-│   ├── swappy/         # screenshot annotation config
-│   ├── gtk-3.0/
-│   ├── gtk-4.0/
-│   └── xdg/            # mimeapps.list
-├── quickshell/         # Noctalia shell layer config (handles idle)
-├── river/
-│   ├── bin/            # start-river launcher script
-│   ├── hypr/           # hyprlock config
-│   ├── kanshi/         # output management config
-│   ├── river/          # River compositor config (init script)
-│   ├── gtk-3.0/
-│   └── gtk-4.0/
-└── sway/
-    ├── bin/            # start-sway launcher script
-    ├── hypr/           # hyprlock config
-    ├── kanshi/         # output management config
-    ├── swappy/         # screenshot annotation config
-    ├── sway/           # Sway compositor config
-    ├── gtk-3.0/
-    ├── gtk-4.0/
-    └── swaynag/        # swaynag dialog config
-```
+**Linux**
+
+| Package | Description |
+|---------|-------------|
+| `gnome` | GNOME shell config and extensions |
+| `hyprland/hypr` | Hyprland + hyprlock config |
+| `hyprland/bin` | start-hypr launcher script |
+| `niri/niri` | Niri compositor config |
+| `niri/bin` | start-niri launcher script |
+| `quickshell/noctalia` | Noctalia shell layer config |
+| `river/river` | River compositor config |
+| `sway/sway` | Sway compositor config |
+
+**macOS**
+
+| Package | Description |
+|---------|-------------|
+| `macos/aerospace` | AeroSpace tiling window manager |
+| `macos/sketchybar` | SketchyBar status bar |
 
 ## License
 
