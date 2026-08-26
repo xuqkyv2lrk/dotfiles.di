@@ -138,6 +138,7 @@ For macOS, stow the packages individually from the `macos/` directory:
 ```bash
 stow -d macos aerospace
 stow -d macos sketchybar
+stow -d macos borders
 ```
 
 For full machine setup — package installation, hardware configuration, and bootstrapping — see [dotfiles.bootstrap](https://gitlab.com/wd2nf8gqct/dotfiles.bootstrap).
@@ -166,6 +167,7 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 |---------|-------------|
 | `macos/aerospace` | AeroSpace tiling window manager |
 | `macos/sketchybar` | SketchyBar status bar |
+| `macos/borders` | JankyBorders focused-window highlight |
 
 ## License
 

@@ -2,7 +2,10 @@
 # https://nikitabobko.github.io/AeroSpace/guide
 
 after-login-command = []
-after-startup-command = ['exec-and-forget sketchybar']
+after-startup-command = [
+    'exec-and-forget sketchybar',
+    'exec-and-forget ~/.config/borders/bordersrc',
+]
 start-at-login = true
 
 exec-on-workspace-change = [
@@ -53,6 +56,12 @@ alt-ctrl-4 = ['resize width 99999']
 # Fine resize
 alt-shift-r = 'resize smart +50'
 alt-ctrl-r  = 'resize smart -50'
+
+# Join window into adjacent container (manual dwindle nesting)
+alt-shift-j = 'join-with down'
+alt-shift-k = 'join-with up'
+alt-shift-h = 'join-with left'
+alt-shift-l = 'join-with right'
 
 # Reload config
 alt-shift-c = 'reload-config'
