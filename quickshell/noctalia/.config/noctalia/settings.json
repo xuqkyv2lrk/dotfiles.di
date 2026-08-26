@@ -694,6 +694,11 @@
                 "directory": "~/.dotfiles.di/wallpapers",
                 "name": "DP-1",
                 "wallpaper": ""
+            },
+            {
+                "directory": "/home/x0xgo/.dotfiles.di/wallpapers",
+                "name": "DP-3",
+                "wallpaper": ""
             }
         ],
         "overviewBlur": 0.4,
