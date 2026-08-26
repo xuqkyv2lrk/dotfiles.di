@@ -72,6 +72,7 @@ A scrollable-tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://githu
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
+<img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 Noctalia</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
 A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/noctalia-dev">GitHub</a> · <a href="https://noctalia.dev">Website</a> · <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
