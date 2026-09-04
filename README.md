@@ -102,7 +102,7 @@ Compositor configs delegate all shell functionality to Noctalia via IPC rather t
 <img src="./_docs/aerospace/logo.png" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 AeroSpace</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
-A tiling window manager for macOS (Apple Silicon) with <a href="https://github.com/FelixKratz/SketchyBar">SketchyBar</a> as the status bar&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">GitHub</a> · <a href="https://nikitabobko.github.io/AeroSpace/guide">Guide</a> ]
+A tiling window manager for macOS (Apple Silicon), using the native menu bar&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/nikitabobko/AeroSpace">GitHub</a> · <a href="https://nikitabobko.github.io/AeroSpace/guide">Guide</a> ]
 </div>
 <br />
 </div>
@@ -137,7 +137,6 @@ For macOS, stow the packages individually from the `macos/` directory:
 
 ```bash
 stow -d macos aerospace
-stow -d macos sketchybar
 stow -d macos borders
 ```
 
@@ -166,7 +165,6 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 | Package | Description |
 |---------|-------------|
 | `macos/aerospace` | AeroSpace tiling window manager |
-| `macos/sketchybar` | SketchyBar status bar |
 | `macos/borders` | JankyBorders focused-window highlight |
 
 ## License
