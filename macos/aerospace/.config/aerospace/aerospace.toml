@@ -1,17 +1,31 @@
 # AeroSpace config — keybindings mirror niri setup (Mod → alt/option)
 # https://nikitabobko.github.io/AeroSpace/guide
 
+config-version = 2
+
 after-login-command = []
+# AeroSpace defaults a workspace to accordion at launch when several windows
+# get scheduled onto it at once (a one-time onboarding heuristic, not
+# something that recurs on later workspace switches — see
+# https://github.com/nikitabobko/AeroSpace/issues/775). Force every
+# persistent workspace back to tiles once, right after startup, instead of
+# re-flattening on every workspace change (that wiped out manual join-with
+# nesting every time you switched away and back).
 after-startup-command = [
-    'exec-and-forget sketchybar',
-    'exec-and-forget ~/.config/borders/bordersrc',
+    'layout --workspace 1 --root tiles',
+    'layout --workspace 2 --root tiles',
+    'layout --workspace 3 --root tiles',
+    'layout --workspace 4 --root tiles',
+    'layout --workspace 5 --root tiles',
+    'layout --workspace 6 --root tiles',
+    'layout --workspace 7 --root tiles',
+    'layout --workspace 8 --root tiles',
+    'layout --workspace 9 --root tiles',
 ]
 start-at-login = true
 
-exec-on-workspace-change = [
-    '/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
-]
+# persistent-workspaces no longer inferred from bindings in config-version 2
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
@@ -22,11 +36,65 @@ default-root-container-orientation = 'auto'
 
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+# Okta Verify's MFA prompt should float and stay centered instead of tiling
+# into the grid or reopening wherever macOS last placed it. Must come before
+# the catch-all `if = 'true'` rule below — AeroSpace stops at the first
+# matching on-window-detected callback unless check-further-callbacks is set.
+[[on-window-detected]]
+if.app-id = 'com.okta.mobile'
+run = ['layout floating', 'exec-and-forget ~/.config/aerospace/scripts/center-window.sh "Okta Verify"']
+
+# Raycast's command bar is a launcher, not a tileable window — float it and
+# keep it centered instead of letting the catch-all rule below drop it into
+# the grid.
+[[on-window-detected]]
+if.app-id = 'com.raycast.macos'
+run = ['layout floating', 'exec-and-forget ~/.config/aerospace/scripts/center-window.sh "Raycast"']
+
+# System Settings is a fixed-size utility window, not something worth tiling.
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['layout floating', 'exec-and-forget ~/.config/aerospace/scripts/center-window.sh "System Settings"']
+
+# Finder (alt-e) — float and center every window instead of tiling the file
+# browser into the grid.
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = ['layout floating', 'exec-and-forget ~/.config/aerospace/scripts/center-window.sh "Finder"']
+
+# 1Password — hardcoded by app-id instead of relying on the dialog heuristic
+# below. That heuristic floats by window shape (no fullscreen button), and a
+# 1Password update changed its unlock-prompt chrome enough to fall through
+# it and get force-tiled instead.
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = ['layout floating', 'exec-and-forget ~/.config/aerospace/scripts/center-window.sh "1Password"']
+
+# AeroSpace already floats windows its own "dialog heuristic" recognizes —
+# windows without a fullscreen button, excluding terminal apps — before any
+# on-window-detected callback runs (see
+# https://nikitabobko.github.io/AeroSpace/guide#dialog-heuristics). That
+# heuristic is exactly the "little floating box" case (1Password's browser-
+# extension unlock prompt, Tailscale's status menu, and anything similar we
+# haven't hit yet), so lean on it generically instead of hardcoding every
+# app: if a window already landed in a floating container by the time we
+# see it, just center it instead of leaving it wherever macOS placed it.
+# Only windows the heuristic did NOT float fall through to force-tiling.
+[[on-window-detected]]
+if = 'test %{window-parent-container-layout} = floating'
+run = ['exec-and-forget ~/.config/aerospace/scripts/center-window.sh']
+
+[[on-window-detected]]
+if = 'true'
+run = ['layout tiling']
+
 [gaps]
 inner.horizontal = 8
 inner.vertical   = 8
 outer.left       = 8
 outer.bottom     = 8
+# macOS already reserves the menu-bar/notch strip; this is the same 8px
+# breathing gap used on every other edge.
 outer.top        = 8
 outer.right      = 8
 
@@ -35,16 +103,40 @@ outer.right      = 8
 [mode.main.binding]
 
 # Apps
-alt-enter = 'exec-and-forget open -a Ghostty'
-alt-o     = 'exec-and-forget open -a Firefox'
+# `open -a` on an already-running single-instance app just activates it
+# instead of opening a new window. `open -n` forces a real new window, but it
+# spawns a whole new OS process each time (Ghostty: fresh Metal context, GPU
+# setup, login shell — ~400ms and one more process left running per window).
+# Ghostty ships an AppleScript dictionary with a native "new window" command
+# that talks to the already-running process instead — same window, ~170ms,
+# no extra process. Firefox has no scripting dictionary, so it stays on
+# `open -n` (a browser window opening in ~400ms isn't the same pain point as
+# a terminal launched dozens of times a session).
+alt-enter = 'exec-and-forget osascript -e "tell application \"Ghostty\" to new window"'
+alt-o     = 'exec-and-forget open -n -a Firefox'
 alt-e     = 'exec-and-forget open -a Finder'
 alt-d     = 'exec-and-forget open -a Raycast'
+
+# Lock screen — mirrors niri's Mod+L binding.
+alt-l = 'exec-and-forget ~/.config/aerospace/scripts/lock-screen.sh'
+# Settings — mirrors niri's Mod+Shift+S (noctalia settings toggle).
+alt-shift-s = 'exec-and-forget open -a "System Settings"'
 
 # Window management
 alt-q       = 'close'
 alt-shift-f = 'fullscreen'
 alt-v       = 'layout floating tiling'
 alt-r       = 'layout tiles horizontal vertical'
+# accordion moved off bare alt-a — too easy to hit by accident and it stacks
+# every window. alt-shift-t is the panic button back to a clean tiled layout.
+alt-shift-a = 'layout accordion tiles'
+# alt-w mirrors niri's Mod+W (toggle-column-tabbed-display) for muscle memory.
+# AeroSpace has no per-column tabbed-display toggle — 'layout accordion tiles'
+# on the focused container is the closest analog (i3 calls accordion "stacked
+# /tabbed"): it stacks just that container's windows in place, same as
+# alt-shift-a above, just under the key niri users reach for.
+alt-w = 'layout accordion tiles'
+alt-shift-t = ['flatten-workspace-tree', 'layout tiles horizontal', 'balance-sizes']
 alt-b       = 'balance-sizes'
 
 # Resize (Mod+Alt+1-4 preset widths equivalent)
