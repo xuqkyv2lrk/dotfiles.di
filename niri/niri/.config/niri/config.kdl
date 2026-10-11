@@ -47,7 +47,7 @@ output "DP-1" {
 }
 
 output "DP-3" {
-    mode "7680x2160@59.987"
+    mode "7680x2160@119.997"
     scale 1.5
 }
 
