@@ -32,7 +32,14 @@ function main() {
         exit 0
     fi
 
-    printf 'layout {\n    default-column-width { proportion %s; }\n}\n' "${proportion}" > "${LOCAL_CONFIG}"
+    # Replace only the layout block; other per-machine overrides in local.kdl must survive
+    local tmp
+    tmp="$(mktemp)"
+    {
+        [[ -f "${LOCAL_CONFIG}" ]] && sed '/^layout {$/,/^}$/d' "${LOCAL_CONFIG}"
+        printf 'layout {\n    default-column-width { proportion %s; }\n}\n' "${proportion}"
+    } > "${tmp}"
+    mv "${tmp}" "${LOCAL_CONFIG}"
     niri msg action load-config-file
 }
 
