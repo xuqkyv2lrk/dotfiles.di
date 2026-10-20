@@ -211,7 +211,6 @@ binds {
     Mod+Ctrl+Alt+2 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "50%"; }
     Mod+Ctrl+Alt+3 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "66.667%"; }
     Mod+Ctrl+Alt+4 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "100%"; }
-    Mod+Shift+B { spawn "~/.config/niri/scripts/dock_toggle.sh"; }
     Mod+Shift+T { spawn "sh" "-c" "~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"; }
     Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
     Mod+Shift+I { spawn "~/.config/niri/scripts/noctalia_ctl.sh" "call" "idleInhibitor" "toggle"; }

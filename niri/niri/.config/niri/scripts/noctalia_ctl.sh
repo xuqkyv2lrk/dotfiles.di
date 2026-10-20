@@ -76,7 +76,6 @@ function call_v5() {
         "settings toggle")           run noctalia msg settings-toggle ;;
         "lockScreen lock")           run noctalia msg session lock ;;
         "idleInhibitor toggle")      run noctalia msg caffeine-toggle ;;
-        "dock toggle")               run noctalia msg dock-toggle ;;
         "media toggle")              run noctalia msg media toggle ;;
         "wallpaper set")
             # v4 takes <path> [screen]; v5 takes [connector] <path>
