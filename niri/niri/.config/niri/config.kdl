@@ -331,6 +331,12 @@ window-rule {
     open-floating true
 }
 
+// Noctalia v5 settings is a regular window, not a panel
+window-rule {
+    match app-id=r#"^dev\.noctalia\.Noctalia$"# title=r#"^Noctalia Settings"#
+    open-floating true
+}
+
 window-rule {
     match app-id="lxqt-policykit-agent"
     open-floating true
