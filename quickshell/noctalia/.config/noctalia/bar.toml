@@ -1,0 +1,43 @@
+[bar]
+order = ["main"]
+
+[bar.main]
+enabled = true
+position = "top"
+reserve_space = true
+background_opacity = 0.95
+widget_spacing = 6
+auto_hide = false
+show_on_workspace_switch = true
+
+start = ["workspaces", "cpu", "cpu-temp", "memory", "media"]
+center = ["clock"]
+end = ["tray", "notifications", "volume", "brightness", "network", "bluetooth", "battery", "control-center", "session"]
+
+[widget.clock]
+format = "{:%a, %b %d // %H:%M}"
+tooltip_format = "{:%a, %b %d // %H:%M}"
+
+[widget.workspaces]
+style = "regular"
+show_labels = false
+focused_color = "tertiary"
+hide_when_empty = false
+
+# v5 sysmon shows one stat per widget; v4 combined these three
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.cpu-temp]
+type = "sysmon"
+stat = "cpu_temp"
+
+[widget.memory]
+type = "sysmon"
+stat = "ram_used"
+
+[widget.media]
+artist_first = true
+max_length = 250
+title_scroll = "on_hover"

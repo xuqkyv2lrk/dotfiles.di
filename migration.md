@@ -26,7 +26,7 @@ We run both versions on the ROG laptop while we port. A temporary wrapper script
 ## Stages
 
 1. Switch layer and hotkeys. Done on niri.
-2. Baseline v5 config in TOML. Next.
+2. Baseline v5 config in TOML. In progress: `bar.toml` is done (bar, lanes, clock, workspaces, system monitor, media). Lock screen, notifications, wallpaper, idle, and theme are still to do.
 3. Port the v4 settings into TOML.
 4. Triage the custom v4 work (keep, replace, or drop each item).
 5. Packaging and bootstrap for Arch and Ubuntu.
@@ -59,6 +59,9 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 - The wrapper is scaffolding only. At cutover the callers switch to `noctalia msg` directly and the wrapper is deleted.
 - The settings window is a regular toplevel in v5, so niri opens it floating (`dev.noctalia.Noctalia`, title "Noctalia Settings").
 - We dropped the dock keybind and script.
+- v5 config files live in `quickshell/noctalia/.config/noctalia/` as `*.toml`, split by topic. `~/.config/noctalia` resolves into that directory through Home Manager, so a new file is picked up on the next `noctalia msg config-reload`. We check every change with `noctalia config validate`.
+- The v4 System Monitor widget showed CPU usage, CPU temperature, and memory together. v5 shows one stat per widget, so `bar.toml` defines three (`cpu`, `cpu-temp`, `memory`).
+- In `bar.toml` we only carry over v4 values that map clearly: position, background opacity, widget spacing, clock format, workspace pill style, and media options. Thickness, padding, radius, and blur stay at v5 defaults until we see the bar and decide.
 - We did not carry over the clamshell script from the earlier abandoned branch. Niri already disables the laptop panel when the lid closes, and the script hardcoded another machine's output names.
 
 ## Things we learned
@@ -71,6 +74,7 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 
 - Find the v5 way to show notification history, possibly a Control Center tab.
 - Decide what replaces the v4 bar display toggle.
+- Bar items with no clean v5 mapping yet: right-click on the bar opening the Control Center, the volume widget's middle-click command (`pwvucontrol`), the battery widget's graphic display mode, and the v4 media widget's progress ring and ring visualizer (v5 has a separate `audio_visualizer` widget).
 - Tune the v5 lock screen, which now has effects.
 - Choose where the Control Center opens instead of the screen center.
 - The nix `lock-before-suspend` service still calls v4 IPC directly and the module decides whether to apply itself by looking for `noctalia-qs`.
