@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call notifications toggleHistory
+"${HOME}/.config/niri/scripts/noctalia_ctl.sh" call notifications toggleHistory

@@ -25,7 +25,7 @@ function set_random() {
     local wallpaper
     wallpaper="$(matching_wallpapers "${screen}" | shuf -n1)" || return 0
     [[ -z "${wallpaper}" ]] && return 0
-    qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call wallpaper set "${wallpaper}" "${screen}"
+    "${HOME}/.config/niri/scripts/noctalia_ctl.sh" call wallpaper set "${wallpaper}" "${screen}"
 }
 
 function pick_wallpaper() {
@@ -43,7 +43,7 @@ function pick_wallpaper() {
         | fuzzel --dmenu --prompt "${screen}: " 2>/dev/null)" || return 0
     [[ -z "${selection}" ]] && return 0
 
-    qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call wallpaper set \
+    "${HOME}/.config/niri/scripts/noctalia_ctl.sh" call wallpaper set \
         "${WALLPAPER_DIR}/${name_to_file["${selection}"]}" "${screen}"
 }
 

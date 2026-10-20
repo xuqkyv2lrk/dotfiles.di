@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-qs ipc -p "${HOME}/.dotfiles.di/quickshell/noctalia-shell" call sessionMenu toggle
+"${HOME}/.config/niri/scripts/noctalia_ctl.sh" call sessionMenu toggle
