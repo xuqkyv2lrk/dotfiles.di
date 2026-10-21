@@ -14,7 +14,7 @@ auto_hide = false
 show_on_workspace_switch = true
 
 start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory"]
-center = ["clock", "sp-c1", "sep", "sp-c2", "media"]
+center = ["sp-lead", "clock", "sp-c1", "sep", "sp-c2", "media"]
 end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
 
 # right-click on the bar background opens the Control Center by default; it opened everywhere
@@ -47,6 +47,11 @@ type = "spacer"
 length = 13
 
 # separator between the clock and the player
+# the fixed-width player is wider than the clock; this centers the logo on the screen
+[widget.sp-lead]
+type = "spacer"
+length = 51
+
 [widget.sp-c1]
 type = "spacer"
 length = 14
@@ -116,5 +121,6 @@ color = "error"
 [widget.media]
 hide_when_no_media = false
 artist_first = true
-max_length = 300
+min_length = 180
+max_length = 180
 title_scroll = "on_hover"
