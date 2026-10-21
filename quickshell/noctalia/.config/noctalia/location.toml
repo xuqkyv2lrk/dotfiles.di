@@ -1,0 +1,12 @@
+# South Riding, VA from v4. v5 geocodes the address online, and night light and weather both
+# use the resulting coordinates.
+[location]
+auto_locate = false
+address = "South Riding, VA"
+
+# v4 used Fahrenheit, with weather effects on. The 24-hour clock and locale first day of week
+# need no setting, since v5 follows the system locale.
+[weather]
+enabled = true
+unit = "imperial"
+effects = true

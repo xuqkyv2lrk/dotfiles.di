@@ -1,0 +1,6 @@
+# Same as v4: on, 6500 K by day and 4993 K at night. The schedule follows sunrise and sunset
+# from [location], which matches v4's automatic schedule. v5 ships with night light off.
+[nightlight]
+enabled = true
+temperature_day = 6500
+temperature_night = 4993
