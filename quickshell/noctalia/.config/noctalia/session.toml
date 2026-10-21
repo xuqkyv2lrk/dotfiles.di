@@ -1,0 +1,21 @@
+# v5's five default actions in their default order, with the v4 10 s countdown on the ones that end
+# the session or power the machine down. Pressing an action once starts the countdown, pressing it
+# again runs it immediately, and Escape cancels. Lock has no countdown since it would only add a click.
+[[shell.session.actions]]
+action = "lock"
+
+[[shell.session.actions]]
+action = "logout"
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "reboot"
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "shutdown"
+countdown_seconds = 10

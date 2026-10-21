@@ -4,3 +4,4 @@ niri/niri/.config/niri/local.kdl
 niri/niri/.config/niri/noctalia-version
 quickshell/noctalia/.config/noctalia/local.toml
 quickshell/noctalia/.config/noctalia/visualizer.toml
+quickshell/noctalia/.config/noctalia/lockscreen-widgets.toml
