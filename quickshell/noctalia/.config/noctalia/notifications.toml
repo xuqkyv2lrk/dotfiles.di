@@ -1,0 +1,18 @@
+# Toast values chosen in the Settings window (top center, 0.8 opacity, secondary border, follow
+# the focused output, keep one hour of history). The overlay layer is carried over from v4 so
+# toasts show above fullscreen apps.
+[notification]
+position = "top_center"
+background_opacity = 0.8
+border_color = "secondary"
+follow_focused_output = true
+history_retention_hours = 1
+layer = "overlay"
+
+# OSD popups sit top center like the toasts, with the v4 2 s delay and opacity. v5 also has popups
+# for wifi, bluetooth, power profile, caffeine, night light, do not disturb, lock keys, keyboard
+# layout and media, which stay at their defaults.
+[osd]
+position = "top_center"
+hide_delay_ms = 2000
+background_opacity = 1.0
