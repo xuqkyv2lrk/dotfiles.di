@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Usage: wallpaper_cycle.sh [--pick]
-#   (no args)  random wallpaper per screen, matched to screen resolution
-#   --pick     fuzzel picker per screen, filtered to matching resolution
+# Usage: wallpaper_cycle.sh
+# Sets a random wallpaper on every screen, matched to the screen's resolution by filename.
+# The native picker (noctalia msg panel-toggle wallpaper) is bound separately.
 
 readonly WALLPAPER_DIR="${HOME}/.dotfiles.di/wallpapers"
 
@@ -28,39 +28,16 @@ function set_random() {
     noctalia msg wallpaper-set "${screen}" "${wallpaper}"
 }
 
-function pick_wallpaper() {
-    local screen="$1"
-    local filename display selection
-
-    declare -A name_to_file
-    while IFS= read -r filepath; do
-        filename="$(basename "${filepath}")"
-        display="$(echo "${filename}" | sed 's/^[0-9]*x[0-9]*_//; s/\.[^.]*$//; s/_/ /g')"
-        name_to_file["${display}"]="${filename}"
-    done < <(matching_wallpapers "${screen}")
-
-    selection="$(printf '%s\n' "${!name_to_file[@]}" | sort \
-        | fuzzel --dmenu --prompt "${screen}: " 2>/dev/null)" || return 0
-    [[ -z "${selection}" ]] && return 0
-
-    noctalia msg wallpaper-set "${screen}" \
-        "${WALLPAPER_DIR}/${name_to_file["${selection}"]}"
-}
-
 function connected_screens() {
     niri msg -j outputs 2>/dev/null \
         | jq -r 'to_entries[] | select(.value.current_mode != null) | .key'
 }
 
 function main() {
-    local mode="${1:---random}"
     local screen
 
     while IFS= read -r screen; do
-        case "${mode}" in
-            --pick) pick_wallpaper "${screen}" ;;
-            *)      set_random "${screen}" ;;
-        esac
+        set_random "${screen}"
     done < <(connected_screens)
 }
 
