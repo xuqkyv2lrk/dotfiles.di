@@ -13,8 +13,8 @@ widget_spacing = 8
 auto_hide = false
 show_on_workspace_switch = true
 
-start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory", "gap-b", "media"]
-center = ["clock"]
+start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory"]
+center = ["clock", "sp-c", "media"]
 end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
 
 # right-click on the bar background opens the Control Center by default; it opened everywhere
@@ -46,6 +46,11 @@ length = 16
 type = "spacer"
 length = 13
 
+# space between the clock and the player
+[widget.sp-c]
+type = "spacer"
+length = 18
+
 [widget.clock]
 format = "{:%a, %b %d // %H:%M}"
 tooltip_format = "{:%a, %b %d // %H:%M}"
@@ -61,14 +66,10 @@ occupied_color = "on_surface_variant"
 empty_color = "on_surface_variant"
 hide_when_empty = false
 
-# v4 put wider gaps between its three widgets than inside the system monitor
+# v4 put a wider gap between the workspaces and the system monitor than inside it
 [widget.gap-a]
 type = "spacer"
 length = 20
-
-[widget.gap-b]
-type = "spacer"
-length = 21
 
 # v5 sysmon shows one stat per widget; v4 combined these three
 [widget.cpu]
@@ -86,6 +87,10 @@ type = "sysmon"
 stat = "ram_used"
 visualization = "none"
 
+# v4 showed the volume text only on hover; v5 has no hover reveal, so hide it
+[widget.volume]
+show_label = false
+
 [widget.battery]
 display_mode = "graphic"
 show_label = true
@@ -96,6 +101,7 @@ font_scale = 1.11
 color = "error"
 
 [widget.media]
+hide_when_no_media = true
 artist_first = true
-max_length = 250
+max_length = 500
 title_scroll = "on_hover"

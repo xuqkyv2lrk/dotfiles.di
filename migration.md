@@ -64,6 +64,8 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 - Bar spacing was matched to v4 by measuring screenshots at 1.5x scale, not by eye. A spacer widget's gap is about 1.5 times its length plus 3 physical pixels. v4 spaced the right-hand widgets about 28 px apart and the stats about 16 px, so `bar.toml` uses spacers on both lanes. The bluetooth gaps still copy v4's extra-wide spacing.
 - Workspace pills use `pill_scale = 0.68`, `active_pill_size = 2.3`, and `inactive_pill_size = 0.9`, which matched v4's 38x17 and 16x17 px pills. The battery uses `display_mode = "graphic"` at `scale = 0.9` with `font_scale = 1.11` so its text keeps its size.
 - Right-click on the empty bar opened the Control Center, so `bar.toml` binds the dead-zone `right` action to `none`. `shell.toml` sets `open_near_click_control_center = true` so the Control Center drops down under the widget you click. Keybinds still open it at the bar center.
+- The media widget sits in the center lane next to the clock, with a spacer between them, and hides itself when no player is active. Its `max_length` is 500 so long titles fit.
+- The audio visualizer is a desktop widget (`desktop.toml`), not a bar widget, so it can hang from the bar's bottom edge like the reference rice. It has no background card, uses 128 bands (the maximum for one widget) in a 440 px box, and keeps the primary and secondary colors. Desktop widgets render on the Bottom layer, so windows cover it, and it is tied to the `DP-3` output.
 - The theme is a custom palette (`palettes/CatppuccinLavender.json`) built from v4's generated `colors.json`, selected in `theme.toml`. v5's built-in Catppuccin has no accent variants.
 - In `bar.toml` we only carry over v4 values that map clearly: position, background opacity, widget spacing, clock format, workspace pill style, and media options. Thickness, padding, radius, and blur stay at v5 defaults until we see the bar and decide.
 - We did not carry over the clamshell script from the earlier abandoned branch. Niri already disables the laptop panel when the lid closes, and the script hardcoded another machine's output names.
@@ -77,6 +79,7 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 
 ## Open items
 
+- Upgrade to Noctalia 5.3.0 by running `nru` (a full flake update) once the remaining settings are ported, with no separate pin. 5.3.0 moves the battery text inside the pill in graphic mode. We are on 5.2.1 until then, so the battery label sits beside the pill.
 - Decide what replaces the v4 bar display toggle.
 - Bar items with no clean v5 mapping yet: right-click on the bar opening the Control Center, the volume widget's middle-click command (`pwvucontrol`), the battery widget's graphic display mode, and the v4 media widget's progress ring and ring visualizer (v5 has a separate `audio_visualizer` widget).
 - Tune the v5 lock screen, which now has effects.

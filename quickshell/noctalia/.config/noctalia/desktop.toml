@@ -1,0 +1,26 @@
+# Spectrum hangs from the bottom edge of the bar, centered on the clock and player.
+# One widget is capped at 128 bands; a 440 px box gives about 3.4 px per bar.
+# Desktop widgets render on the Bottom layer, so windows can cover it.
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = ["audio-under-bar"]
+
+[desktop_widgets.widget.audio-under-bar]
+type = "audio_visualizer"
+output = "DP-3"
+cx = 2560.0
+cy = 50.0
+box_width = 440.0
+box_height = 32.0
+flip_y = true
+
+[desktop_widgets.widget.audio-under-bar.settings]
+bands = 128
+background = false
+background_padding = 0.0
+mirrored = false
+centered = false
+show_when_idle = false
+color_1 = "primary"
+color_2 = "secondary"
