@@ -16,11 +16,11 @@ riverctl set-repeat 25 600
 riverctl map normal "$mod" Return spawn foot
 riverctl map normal "$mod" O      spawn firefox
 riverctl map normal "$mod" E      spawn nautilus
-riverctl map normal "$mod" D      spawn "$HOME/.config/river/scripts/launcher.sh"
-riverctl map normal "$mod" P      spawn "$HOME/.config/river/scripts/session_menu.sh"
+riverctl map normal "$mod" D      spawn "noctalia msg panel-toggle launcher"
+riverctl map normal "$mod" P      spawn "noctalia msg panel-toggle session"
 
 # ---- Session ----
-riverctl map normal "$mod"       L spawn "sh -c 'qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock'"
+riverctl map normal "$mod"       L spawn "noctalia msg session lock"
 riverctl map normal "$mod"       M exit
 
 # ---- Window management ----
@@ -61,31 +61,30 @@ riverctl map-pointer normal "$mod" BTN_RIGHT  resize-view
 riverctl map-pointer normal "$mod" BTN_MIDDLE toggle-float
 
 # ---- Noctalia IPC ----
-riverctl map normal "$mod+Shift"   N spawn "$HOME/.config/river/scripts/notifications.sh"
-riverctl map normal "$mod+Shift"   M spawn "$HOME/.config/river/scripts/media.sh"
-riverctl map normal "$mod+Shift"   S spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call settings toggle'"
-riverctl map normal "$mod+Shift"   C spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call controlCenter toggle'"
-riverctl map normal "$mod+Shift"   B spawn "$HOME/.config/river/scripts/dock_toggle.sh"
-riverctl map normal "$mod+Shift"   T spawn "$HOME/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"
-riverctl map normal "$mod+Shift"   I spawn "sh -c 'qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call idleInhibitor toggle'"
-riverctl map normal "$mod+Control" V spawn "$HOME/.config/river/scripts/clipboard.sh"
+riverctl map normal "$mod+Shift"   N spawn "noctalia msg panel-toggle control-center notifications"
+riverctl map normal "$mod+Shift"   M spawn "noctalia msg media toggle"
+riverctl map normal "$mod+Shift"   S spawn "noctalia msg settings-toggle"
+riverctl map normal "$mod+Shift"   C spawn "noctalia msg panel-toggle control-center"
+riverctl map normal "$mod+Shift"   T spawn "noctalia msg bar-toggle"
+riverctl map normal "$mod+Shift"   I spawn "noctalia msg caffeine-toggle"
+riverctl map normal "$mod+Control" V spawn "noctalia msg panel-toggle clipboard"
 
 # ---- Media and brightness (work on lock screen too) ----
 for mode in normal locked; do
-    riverctl map "$mode" None XF86AudioRaiseVolume  spawn "pamixer --increase 5"
-    riverctl map "$mode" None XF86AudioLowerVolume  spawn "pamixer --decrease 5"
-    riverctl map "$mode" None XF86AudioMute         spawn "pamixer --toggle-mute"
-    riverctl map "$mode" None XF86AudioMicMute      spawn "pamixer --default-source --toggle-mute"
-    riverctl map "$mode" None XF86AudioPlay         spawn "playerctl play-pause"
-    riverctl map "$mode" None XF86AudioPrev         spawn "playerctl previous"
-    riverctl map "$mode" None XF86AudioNext         spawn "playerctl next"
-    riverctl map "$mode" None XF86MonBrightnessUp   spawn "brightnessctl set +10%"
-    riverctl map "$mode" None XF86MonBrightnessDown spawn "brightnessctl set 10%-"
+    riverctl map "$mode" None XF86AudioRaiseVolume  spawn "noctalia msg volume-up 5"
+    riverctl map "$mode" None XF86AudioLowerVolume  spawn "noctalia msg volume-down 5"
+    riverctl map "$mode" None XF86AudioMute         spawn "noctalia msg volume-mute"
+    riverctl map "$mode" None XF86AudioMicMute      spawn "noctalia msg mic-mute"
+    riverctl map "$mode" None XF86AudioPlay         spawn "noctalia msg media toggle"
+    riverctl map "$mode" None XF86AudioPrev         spawn "noctalia msg media previous"
+    riverctl map "$mode" None XF86AudioNext         spawn "noctalia msg media next"
+    riverctl map "$mode" None XF86MonBrightnessUp   spawn "noctalia msg brightness-up"
+    riverctl map "$mode" None XF86MonBrightnessDown spawn "noctalia msg brightness-down"
 done
 
 # ---- Screenshots ----
-riverctl map normal None        Print spawn "sh -c 'pgrep -x slurp >/dev/null || grim -g \"\$(slurp)\" - | swappy -f -'"
-riverctl map normal Shift       Print spawn "sh -c 'grim - | swappy -f -'"
+riverctl map normal None        Print spawn "noctalia msg screenshot-region"
+riverctl map normal Shift       Print spawn "noctalia msg screenshot-annotate"
 riverctl map normal Control     Print spawn "record-region"
 
 # ---- Appearance ----
@@ -114,4 +113,4 @@ rivertile -view-padding 2 -outer-padding 2 &
 
 # ---- Autostart ----
 kanshi &
-qs -p ~/.dotfiles.di/quickshell/noctalia-shell &
+noctalia &

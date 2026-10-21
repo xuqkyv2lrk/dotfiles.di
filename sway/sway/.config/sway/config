@@ -29,7 +29,7 @@ shadows disable
 
 corner_radius 5
 
-layer_effects "quickshell" blur enable
+layer_effects "noctalia-bar-main" blur enable
 layer_effects "bemenu" blur enable
 
 default_dim_inactive 0.25
@@ -128,9 +128,9 @@ input "type:pointer" {
     bindsym $mod+q kill
 
     # Start your launcher
-    bindsym $mod+d exec ~/.config/sway/scripts/launcher.sh
+    bindsym $mod+d exec noctalia msg panel-toggle launcher
 
-    bindsym $mod+p exec ~/.config/sway/scripts/session_menu.sh
+    bindsym $mod+p exec noctalia msg panel-toggle session
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -145,14 +145,13 @@ input "type:pointer" {
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t catppuccin -m 'Do you want to exit sway?' -B 'Yes' 'swaymsg exit'
 
-# TODO Only show the notification is the image is actually copied/saved in swappy
 # Screenshots
 #
-# Full screen screenshot with swappy
-bindsym Shift+Print exec grim - | swappy -f - -o /tmp/screenshot.png; if [ $? -eq 0 ] && [ -f /tmp/screenshot.png ]; then notify-send -i /tmp/screenshot.png "Screenshot" "Full screen captured"; rm /tmp/screenshot.png; fi
+# Full screen screenshot with the annotation editor
+bindsym Shift+Print exec noctalia msg screenshot-annotate
 
-# Select area screenshot with swappy
-bindsym Print exec grim -g "$(slurp)" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Area selection captured" && rm /tmp/screenshot.png
+# Select area screenshot, saved and copied by Noctalia
+bindsym Print exec noctalia msg screenshot-region
 
 # Active window screenshot with swappy
 bindsym Ctrl+Alt+Print exec bash -c 'grim -g "$(swaymsg -t get_tree | jq -r '"'"'.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"'"'"')" - | swappy -f - -o /tmp/screenshot.png && [ -f /tmp/screenshot.png ] && notify-send -i /tmp/screenshot.png "Screenshot" "Active window captured" && rm /tmp/screenshot.png'
@@ -290,22 +289,22 @@ bindsym $mod+e exec nautilus
 #
 # Screen Lock
 #
-bindsym Ctrl+Alt+l exec sh -c "qs ipc --any-display -p \"${HOME}/.dotfiles.di/quickshell/noctalia-shell\" call lockScreen lock"
+bindsym Ctrl+Alt+l exec noctalia msg session lock
 
 #
 # Autostart
 #
-exec qs -p ~/.dotfiles.di/quickshell/noctalia
+exec noctalia
 
 bindgesture swipe:left workspace prev
 bindgesture swipe:right workspace next
 
 # Toggle control center
-bindsym $mod+Shift+n exec ~/.config/sway/scripts/notifications.sh
+bindsym $mod+Shift+n exec noctalia msg panel-toggle control-center notifications
 
 # Noctalia shell
-bindsym $mod+Shift+t exec ~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh
-bindsym $mod+Shift+i exec qs ipc -p ~/.dotfiles.di/quickshell/noctalia-shell call idleInhibitor toggle
+bindsym $mod+Shift+t exec noctalia msg bar-toggle
+bindsym $mod+Shift+i exec noctalia msg caffeine-toggle
 
 for_window [title="File Operation Progress"] floating enable
 for_window [app_id="org.gnome.Nautilus"] floating enable, resize set 1000px 650px, move position center
