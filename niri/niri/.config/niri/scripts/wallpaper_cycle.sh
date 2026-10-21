@@ -25,7 +25,7 @@ function set_random() {
     local wallpaper
     wallpaper="$(matching_wallpapers "${screen}" | shuf -n1)" || return 0
     [[ -z "${wallpaper}" ]] && return 0
-    "${HOME}/.config/niri/scripts/noctalia_ctl.sh" call wallpaper set "${wallpaper}" "${screen}"
+    noctalia msg wallpaper-set "${screen}" "${wallpaper}"
 }
 
 function pick_wallpaper() {
@@ -43,8 +43,8 @@ function pick_wallpaper() {
         | fuzzel --dmenu --prompt "${screen}: " 2>/dev/null)" || return 0
     [[ -z "${selection}" ]] && return 0
 
-    "${HOME}/.config/niri/scripts/noctalia_ctl.sh" call wallpaper set \
-        "${WALLPAPER_DIR}/${name_to_file["${selection}"]}" "${screen}"
+    noctalia msg wallpaper-set "${screen}" \
+        "${WALLPAPER_DIR}/${name_to_file["${selection}"]}"
 }
 
 function connected_screens() {
