@@ -48,7 +48,7 @@ Each row was checked against `noctalia msg --help` on the installed v5, and the 
 | `idleInhibitor toggle` | `caffeine-toggle` | works |
 | `media toggle` | `media toggle` | works |
 | `wallpaper set <path> [screen]` | `wallpaper-set [connector] <path>` | works, argument order is swapped |
-| `notifications toggleHistory` | unknown | open, no panel id is documented |
+| `notifications toggleHistory` | `panel-toggle control-center notifications` | works, history is a Control Center tab |
 | bar display toggle script | `bar-toggle` or `bar-auto-hide-set` | open, behavior not confirmed |
 
 The dock toggle was removed. The dock is disabled in both versions and the old key never worked on nix.
@@ -68,11 +68,11 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 
 - On nix the v4 process is `.quickshell-wrapped`, so `pgrep -x qs` never matches. Scripts that detect the running shell use the full command line instead.
 - `layout_profile.sh` used to overwrite the whole of `local.kdl` whenever the monitor setup changed. It now replaces only its own layout block, so per-machine overrides such as the ROG render device survive.
+- v5 has no standalone notification history panel. History is the `notifications` tab of the Control Center. Other tab ids are `home`, `media`, `audio`, `monitor`, `system`, `network`, `bluetooth`, `weather`, `calendar`, `screen-time`, and `power`.
 - `local.kdl` is the gitignored per-machine override that the shared niri config includes at the end.
 
 ## Open items
 
-- Find the v5 way to show notification history, possibly a Control Center tab.
 - Decide what replaces the v4 bar display toggle.
 - Bar items with no clean v5 mapping yet: right-click on the bar opening the Control Center, the volume widget's middle-click command (`pwvucontrol`), the battery widget's graphic display mode, and the v4 media widget's progress ring and ring visualizer (v5 has a separate `audio_visualizer` widget).
 - Tune the v5 lock screen, which now has effects.

@@ -85,7 +85,7 @@ function call_v5() {
                 run noctalia msg wallpaper-set "${1}"
             fi
             ;;
-        "notifications toggleHistory") die "no v5 mapping yet for notifications history" ;;
+        "notifications toggleHistory") run noctalia msg panel-toggle control-center notifications ;;
         *) die "no v5 mapping for '${target} ${fn}'" ;;
     esac
 }
