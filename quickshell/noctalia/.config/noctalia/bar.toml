@@ -6,13 +6,45 @@ enabled = true
 position = "top"
 reserve_space = true
 background_opacity = 0.95
-widget_spacing = 6
+margin_ends = 0
+margin_edge = 0
+capsule = false
+widget_spacing = 8
 auto_hide = false
 show_on_workspace_switch = true
 
-start = ["workspaces", "cpu", "cpu-temp", "memory", "media"]
+start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory", "gap-b", "media"]
 center = ["clock"]
-end = ["tray", "notifications", "volume", "brightness", "network", "bluetooth", "battery", "control-center", "session"]
+end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
+
+# right-click on the bar background opens the Control Center by default; it opened everywhere
+[bar.main.dead_zone.actions]
+right = "none"
+
+# v4 spaced the right-hand widgets about 28 px apart (physical) versus 16 inside the stats
+[widget.sp-1]
+type = "spacer"
+length = 11
+
+[widget.sp-2]
+type = "spacer"
+length = 15
+
+[widget.sp-3]
+type = "spacer"
+length = 20
+
+[widget.sp-4]
+type = "spacer"
+length = 14
+
+[widget.sp-5]
+type = "spacer"
+length = 16
+
+[widget.sp-6]
+type = "spacer"
+length = 13
 
 [widget.clock]
 format = "{:%a, %b %d // %H:%M}"
@@ -20,22 +52,48 @@ tooltip_format = "{:%a, %b %d // %H:%M}"
 
 [widget.workspaces]
 style = "regular"
+pill_scale = 0.68
+active_pill_size = 2.3
+inactive_pill_size = 0.9
 show_labels = false
 focused_color = "tertiary"
+occupied_color = "on_surface_variant"
+empty_color = "on_surface_variant"
 hide_when_empty = false
+
+# v4 put wider gaps between its three widgets than inside the system monitor
+[widget.gap-a]
+type = "spacer"
+length = 20
+
+[widget.gap-b]
+type = "spacer"
+length = 21
 
 # v5 sysmon shows one stat per widget; v4 combined these three
 [widget.cpu]
 type = "sysmon"
 stat = "cpu_usage"
+visualization = "none"
 
 [widget.cpu-temp]
 type = "sysmon"
 stat = "cpu_temp"
+visualization = "none"
 
 [widget.memory]
 type = "sysmon"
 stat = "ram_used"
+visualization = "none"
+
+[widget.battery]
+display_mode = "graphic"
+show_label = true
+scale = 0.9
+font_scale = 1.11
+
+[widget.session]
+color = "error"
 
 [widget.media]
 artist_first = true
