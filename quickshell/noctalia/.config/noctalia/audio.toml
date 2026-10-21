@@ -1,0 +1,5 @@
+# Master switch for the shell's own sounds: screenshot shutter, volume change, notifications,
+# and charger plug/unplug. Turn individual ones back on with enable_volume_sounds,
+# enable_notification_sounds, enable_power_sounds, and enable_screenshot_sounds.
+[audio]
+enable_sounds = false
