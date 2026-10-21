@@ -114,7 +114,7 @@ font_scale = 1.11
 color = "error"
 
 [widget.media]
-hide_when_no_media = true
+hide_when_no_media = false
 artist_first = true
-max_length = 500
+max_length = 300
 title_scroll = "on_hover"
