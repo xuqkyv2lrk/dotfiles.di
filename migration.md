@@ -26,7 +26,7 @@ We run both versions on the ROG laptop while we port. A temporary wrapper script
 ## Stages
 
 1. Switch layer and hotkeys. Done on niri.
-2. Baseline v5 config in TOML. In progress: `bar.toml`, `theme.toml`, `shell.toml`, and the custom palette are done. The theme still needs a review against v4. Lock screen, notifications, wallpaper, and idle are still to do.
+2. Baseline v5 config in TOML. In progress: `bar.toml`, `theme.toml`, `shell.toml`, and the custom palette are done. The theme still needs a review against v4. Idle and the lock screen are done (`idle.toml`, `lockscreen.toml`). Notifications and wallpaper are still to do.
 3. Port the v4 settings into TOML.
 4. Triage the custom v4 work (keep, replace, or drop each item).
 5. Packaging and bootstrap for Arch and Ubuntu.
@@ -67,6 +67,8 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 - The media widget sits in the center lane next to the clock, with a spacer between them. It is locked to 180 px (`min_length` and `max_length` both 180), so the layout never shifts when a track starts or changes, and longer titles clip and scroll on hover. A leading spacer (`sp-lead`) centers the logo on the screen, which is where the visualizer's middle sits. Scroll mode `always` was tried and rejected: it wraps the title with no gap, and v5 has no scroll interval option. It stays on the bar even with no player, where it shows its built-in Nothing Playing placeholder (`hide_when_no_media = false`).
 - The audio visualizer is a desktop widget, not a bar widget, so it can hang from the bar's bottom edge like the reference rice. `niri/niri/.config/niri/scripts/visualizer_layout.sh` generates its config (`visualizer.toml`, untracked) for every connected output from niri's logical width, because v5 only takes fixed `cx` coordinates per output. `output_watch.sh` runs it at startup and whenever the set of outputs changes, so it follows monitor and laptop-panel changes. It has no background card and keeps the primary and secondary colors. One widget is capped at 128 bands, so it uses two mirrored halves (256 bars, bass in the middle) that overlap by about 72 px. The lowest bands at each inner edge are near zero and can leave a gap in the middle, so the halves overlap to close it. The look still varies a little with the music, because how quiet those bands are changes from moment to moment. Desktop widgets render on the Bottom layer, so windows cover it.
 - A separator between the clock and the player shows the OS logo, tinted with the theme's `tertiary` color at `scale = 1.3`. The logo SVGs are tracked in `logos/` (`nixos.svg`, `arch.svg`, `ubuntu.svg`, all single-color so the tint works). `bar.toml` defines the widget with a diamond fallback, and an untracked `local.toml` on each machine sets `custom_image` to that machine's logo with `custom_image_colorize = true`. Bootstrap and the nix config should write `local.toml` from the detected distro when we migrate the other machines. The Arch and Ubuntu logos come from the Simple Icons set, so check trademark terms if the repository is ever shared widely.
+- Idle uses the v4 timings: lock at 300 s, screen off at 600 s, suspend at 1800 s (locks first), with a 5 s dim before each action. v5 ships with every idle behavior disabled, so without `idle.toml` nothing locks or sleeps. A fast test (8 s and 16 s) confirmed the screen-off fires. The lock firing on idle was not directly confirmed.
+- The lock screen has no transition (`transition = []`). Every effect (we tried zoom) added a visible delay to locking and unlocking, probably from capturing the large output, and an instant lock also avoids a bright flash between the idle dim and the lock screen. v5.2.1 only has fade, wipe, disc, stripes, zoom, and honeycomb. The docs also list vortex, pixel, diamond, golden, and melt, which this version rejects as unknown values.
 - The theme is a custom palette (`palettes/CatppuccinLavender.json`) built from v4's generated `colors.json`, selected in `theme.toml`. v5's built-in Catppuccin has no accent variants.
 - In `bar.toml` we only carry over v4 values that map clearly: position, background opacity, widget spacing, clock format, workspace pill style, and media options. Thickness, padding, radius, and blur stay at v5 defaults until we see the bar and decide.
 - We did not carry over the clamshell script from the earlier abandoned branch. Niri already disables the laptop panel when the lid closes, and the script hardcoded another machine's output names.
@@ -82,6 +84,8 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 
 - Upgrade to Noctalia 5.3.0 by running `nru` (a full flake update) once the remaining settings are ported, with no separate pin. 5.3.0 moves the battery text inside the pill in graphic mode. We are on 5.2.1 until then, so the battery label sits beside the pill. The documented `hide_when_idle` option for the media widget is also newer than 5.2.1, which reports it as an unknown setting. Until then the media widget stays visible while a browser player is paused, because Firefox keeps its player registered.
 - Decide what replaces the v4 bar display toggle.
+- The v4 lock screen's analog clock and compact layout are not ported. v5 builds the lock screen from `lockscreen_widgets`, which we have not read yet.
+- Caffeine (v5's idle inhibitor) blocks every idle behavior while on. It persists, so check it when idle does not fire. The v4 helper services `noctalia-media-inhibit` and `noctalia-plex-dnd` still run but call v4 IPC and do nothing in v5.
 - Bar items with no clean v5 mapping yet: right-click on the bar opening the Control Center, the volume widget's middle-click command (`pwvucontrol`), the battery widget's graphic display mode, and the v4 media widget's progress ring and ring visualizer (v5 has a separate `audio_visualizer` widget).
 - Tune the v5 lock screen, which now has effects.
 - Choose where the Control Center opens instead of the screen center.
@@ -90,6 +94,7 @@ The dock toggle was removed. The dock is disabled in both versions and the old k
 - Replace the v4 plugins with Luau equivalents or drop them.
 - The hyprland, sway, and river script directories still call v4 IPC. Decide whether those compositors stay supported.
 - Update the bootstrap installer and package lists for Arch and Ubuntu.
+- Near the end, evaluate `noctalia-greeter` (https://github.com/noctalia-dev/noctalia-greeter), a greetd greeter that syncs wallpaper and palette from the v5 shell (`noctalia msg greeter-sync`). Today NixOS uses SilentSDDM with the catppuccin-mocha theme, and the Arch and Ubuntu bootstrap configures no greeter. Check multi-monitor and fingerprint behavior and how to hand off safely from the current display manager before switching.
 
 ## Migrating the other machines
 
