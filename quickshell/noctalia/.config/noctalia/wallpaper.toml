@@ -1,0 +1,22 @@
+# Same as v4: crop, black fallback, honeycomb at 1 s, one folder for every monitor, no rotation.
+# Wallpapers are chosen per output by niri/scripts/wallpaper_cycle.sh through `wallpaper-set`.
+[wallpaper]
+enabled = true
+directory = "~/.dotfiles.di/wallpapers"
+fill_mode = "crop"
+fill_color = "#000000"
+transition = ["honeycomb"]
+transition_duration = 1000
+edge_smoothness = 0.25
+transition_on_startup = false
+per_monitor_directories = false
+
+[wallpaper.automation]
+enabled = false
+interval_seconds = 300
+order = "random"
+
+[backdrop]
+enabled = false
+blur_intensity = 0.4
+tint_intensity = 0.6
