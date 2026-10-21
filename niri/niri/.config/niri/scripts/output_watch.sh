@@ -15,6 +15,8 @@ function main() {
     prev_outputs="$(connected_outputs)"
     local current_outputs
 
+    "${SCRIPT_DIR}/visualizer_layout.sh" || true
+
     while true; do
         while IFS= read -r line; do
             if [[ "${line}" == *"Workspaces changed"* ]]; then
@@ -23,6 +25,7 @@ function main() {
                     prev_outputs="${current_outputs}"
                     sleep 1
                     "${SCRIPT_DIR}/layout_profile.sh" || true
+                    "${SCRIPT_DIR}/visualizer_layout.sh" || true
                     if [[ -f "${RESUME_FLAG}" ]]; then
                         rm -f "${RESUME_FLAG}"
                     else
