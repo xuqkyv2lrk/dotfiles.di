@@ -1,0 +1,8 @@
+# Region captures save to the folder below and go to the clipboard, with no editor.
+# Same file naming as the old swappy setup.
+[shell.screenshot]
+directory = "~/Documents/Screenshots"
+filename_pattern = "screenshot-%Y%m%d-%H%M%S"
+save_to_file = true
+copy_to_clipboard = true
+annotate = false

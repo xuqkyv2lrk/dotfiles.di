@@ -68,6 +68,9 @@ cursor {
     xcursor-size 24
 }
 
+// niri's own window screenshots land next to Noctalia's region screenshots
+screenshot-path "~/Documents/Screenshots/screenshot-%Y%m%d-%H%M%S.png"
+
 debug {
     render-drm-device "/dev/dri/renderD128"
     disable-cursor-plane
@@ -186,7 +189,7 @@ binds {
     Mod+P { spawn "~/.config/niri/scripts/session_menu.sh"; }
     Mod+W { toggle-column-tabbed-display; }
     Mod+Shift+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh"; }
-    Mod+Ctrl+W { spawn "~/.config/niri/scripts/wallpaper_cycle.sh" "--pick"; }
+    Mod+Ctrl+W { spawn "noctalia" "msg" "panel-toggle" "wallpaper"; }
     Mod+Shift+F { fullscreen-window; }
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "~/.config/niri/scripts/notifications.sh"; }
@@ -211,7 +214,7 @@ binds {
     Mod+Ctrl+Alt+2 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "50%"; }
     Mod+Ctrl+Alt+3 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "66.667%"; }
     Mod+Ctrl+Alt+4 { spawn "~/.config/niri/scripts/set_workspace_width.sh" "100%"; }
-    Mod+Shift+T { spawn "sh" "-c" "~/.dotfiles.di/quickshell/noctalia-shell/Scripts/bash/bar-display-toggle.sh"; }
+    Mod+Shift+T { spawn "noctalia" "msg" "bar-toggle"; }
     Mod+Ctrl+V { spawn "~/.config/niri/scripts/clipboard.sh"; }
     Mod+Shift+I { spawn "~/.config/niri/scripts/noctalia_ctl.sh" "call" "idleInhibitor" "toggle"; }
 
@@ -269,22 +272,23 @@ binds {
     Mod+Ctrl+9 { move-window-to-workspace 9; }
 
     // Media controls
-    XF86AudioRaiseVolume { spawn "pamixer" "--increase" "5"; }
-    XF86AudioLowerVolume { spawn "pamixer" "--decrease" "5"; }
-    XF86AudioMute { spawn "pamixer" "--toggle-mute"; }
-    XF86AudioMicMute { spawn "pamixer" "--default-source" "--toggle-mute"; }
-    XF86AudioPlay { spawn "playerctl" "play-pause"; }
-    XF86AudioPrev { spawn "playerctl" "previous"; }
-    XF86AudioNext { spawn "playerctl" "next"; }
-    
+    XF86AudioRaiseVolume { spawn "noctalia" "msg" "volume-up" "5"; }
+    XF86AudioLowerVolume { spawn "noctalia" "msg" "volume-down" "5"; }
+    XF86AudioMute { spawn "noctalia" "msg" "volume-mute"; }
+    XF86AudioMicMute { spawn "noctalia" "msg" "mic-mute"; }
+    XF86AudioPlay { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioPrev { spawn "noctalia" "msg" "media" "previous"; }
+    XF86AudioNext { spawn "noctalia" "msg" "media" "next"; }
+
     // Brightness controls
-    XF86MonBrightnessUp { spawn "brightnessctl" "set" "+10%"; }
-    XF86MonBrightnessDown { spawn "brightnessctl" "set" "10%-"; }
+    XF86MonBrightnessUp { spawn "noctalia" "msg" "brightness-up"; }
+    XF86MonBrightnessDown { spawn "noctalia" "msg" "brightness-down"; }
 
     // Screenshots
-    Print { spawn "sh" "-c" "pgrep -x slurp >/dev/null || grim -g \"$(slurp)\" - | swappy -f -"; }
-    Shift+Print { spawn "sh" "-c" "pgrep -x swappy >/dev/null || grim - | swappy -f -"; }
+    Print { spawn "noctalia" "msg" "screenshot-region"; }
+    Shift+Print { spawn "noctalia" "msg" "screenshot-annotate"; }
     Ctrl+Alt+Print { screenshot-window; }
+    Ctrl+Shift+Print { spawn "~/.config/niri/scripts/screenshot_window.sh"; }
     Ctrl+Print { spawn "record-region"; }
 }
 
