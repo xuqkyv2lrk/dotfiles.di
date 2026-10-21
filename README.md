@@ -83,10 +83,10 @@ A dynamic tiling Wayland compositor&nbsp;&nbsp;&nbsp;[ <a href="https://github.c
 
 <div align="center">
 <h3 style="margin-bottom: 0;">
-<img src="./_docs/quickshell/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
+<img src="./_docs/noctalia/logo.svg" width="36px" style="vertical-align: top; margin-right: 5px" /><br />
 Noctalia</h3>
 <div style="margin-top: 0; font-size: 0.9em;">
-A Quickshell-based shell layer shared across all Wayland compositors&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/noctalia-dev">GitHub</a> · <a href="https://noctalia.dev">Website</a> · <a href="https://quickshell.outfoxxed.me">Quickshell</a> ]
+A native Wayland shell layer shared across all compositors&nbsp;&nbsp;&nbsp;[ <a href="https://github.com/noctalia-dev">GitHub</a> · <a href="https://noctalia.dev">Website</a> ]
 </div>
 <div style="margin-top: 0.4em; font-size: 0.85em; color: #888;">
 Handles the bar, launcher, notifications, lock screen, session management, screenshots, and wallpapers.
@@ -124,7 +124,7 @@ stow sway
 stow river
 
 # Then stow Noctalia (bar, launcher, notifications, lock screen, etc.)
-stow -d quickshell noctalia
+stow -d noctalia noctalia
 ```
 
 GNOME manages its own shell, so Noctalia is not needed:
@@ -155,7 +155,7 @@ is an independent stow package targeting `~/.config` (or `~/` for systemd and bi
 | `hyprland/bin` | start-hypr launcher script |
 | `niri/niri` | Niri compositor config |
 | `niri/bin` | start-niri launcher script |
-| `quickshell/noctalia` | Noctalia shell layer config |
+| `noctalia/noctalia` | Noctalia shell layer config |
 | `river/river` | River compositor config |
 | `sway/sway` | Sway compositor config |
 
