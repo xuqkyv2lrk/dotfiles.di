@@ -28,6 +28,7 @@ function main() {
                     "${SCRIPT_DIR}/layout_profile.sh" || true
                     "${SCRIPT_DIR}/visualizer_layout.sh" || true
                     "${SCRIPT_DIR}/lockscreen_layout.sh" || true
+                    "${SCRIPT_DIR}/noctalia_refresh_widgets.sh" || true
                     if [[ -f "${RESUME_FLAG}" ]]; then
                         rm -f "${RESUME_FLAG}"
                     else
