@@ -1,24 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generates the lock screen widgets (clock and login box) for every connected
-# output, placed from each output's logical size, so the lock screen follows monitor changes.
+# Generates the lock screen widgets for every connected output, so the same design applies on
+# each screen: v5 only stores lock screen widgets per output, and its editor writes entries
+# for just the output it was used on.
+# The design is the one built by hand in the lock screen editor on DP-3: an analog clock and a
+# compact login box. Positions are fractions of each output's logical height.
 # Usage: lockscreen_layout.sh [--print]
 #   --print  write the TOML to stdout instead of the config file
-# Environment: LOCKSCREEN_LAYOUT (compact | regular) and LOCKSCREEN_CLOCK (digital | analog).
 # v5 also copies the layout into its state file, which wins over this file, so a changed
 # value needs that section removed from the state file while v5 is stopped.
 
 readonly OUTPUT_FILE="${HOME}/.config/noctalia/lockscreen-widgets.toml"
-readonly LAYOUT="${LOCKSCREEN_LAYOUT:-compact}"
-readonly CLOCK_STYLE="${LOCKSCREEN_CLOCK:-digital}"
-readonly LOGIN_WIDTH=810
-LOGIN_HEIGHT=70
-[[ "${LAYOUT}" == "regular" ]] && LOGIN_HEIGHT=196
-CLOCK_WIDTH=520
-CLOCK_HEIGHT=180
-[[ "${CLOCK_STYLE}" == "analog" ]] && { CLOCK_WIDTH=360; CLOCK_HEIGHT=360; }
-readonly LOGIN_BOTTOM_GAP=182
+readonly CLOCK_WIDTH=429.3
+readonly CLOCK_HEIGHT=302.8
+readonly CLOCK_Y=0.4607
+readonly LOGIN_WIDTH=400.0
+readonly LOGIN_HEIGHT=70.0
+readonly LOGIN_Y=0.6556
 
 function connected_outputs() {
     niri msg -j outputs 2>/dev/null \
@@ -32,8 +31,8 @@ function emit_widget() {
     printf 'output = "%s"\n' "${3}"
     printf 'cx = %s\n' "${6}"
     printf 'cy = %s\n' "${7}"
-    printf 'box_width = %s.0\n' "${8}"
-    printf 'box_height = %s.0\n' "${9}"
+    printf 'box_width = %s\n' "${8}"
+    printf 'box_height = %s\n' "${9}"
     printf 'placement_width = %s.0\n' "${4}"
     printf 'placement_height = %s.0\n' "${5}"
     printf 'rotation = 0.0\n'
@@ -47,17 +46,17 @@ function generate() {
     while read -r name width height; do
         [[ -n "${name}" ]] || continue
         cx="$(awk -v w="${width}" 'BEGIN { printf "%.1f", w / 2 }')"
-        cy_clock="$(awk -v h="${height}" 'BEGIN { printf "%.1f", h * 0.4 }')"
-        cy_login="$(awk -v h="${height}" -v g="${LOGIN_BOTTOM_GAP}" 'BEGIN { printf "%.1f", h - g }')"
+        cy_clock="$(awk -v h="${height}" -v y="${CLOCK_Y}" 'BEGIN { printf "%.1f", h * y }')"
+        cy_login="$(awk -v h="${height}" -v y="${LOGIN_Y}" 'BEGIN { printf "%.1f", h * y }')"
         order+=("\"lockscreen-widget-clock-${name}\"" "\"lockscreen-login-box@${name}\"")
 
         body+="$(emit_widget "lockscreen-widget-clock-${name}" clock "${name}" "${width}" "${height}" "${cx}" "${cy_clock}" "${CLOCK_WIDTH}" "${CLOCK_HEIGHT}")"$'\n'
         body+=$'\n'"[lockscreen_widgets.widget.\"lockscreen-widget-clock-${name}\".settings]"$'\n'
-        body+="clock_style = \"${CLOCK_STYLE}\""$'\nformat = "{:%H:%M}"\n'
+        body+=$'background = false\nclock_style = "analog"\ncolor = "primary"\nformat = "{:%H:%M}"\n'
 
         body+="$(emit_widget "lockscreen-login-box@${name}" login_box "${name}" "${width}" "${height}" "${cx}" "${cy_login}" "${LOGIN_WIDTH}" "${LOGIN_HEIGHT}")"$'\n'
         body+=$'\n'"[lockscreen_widgets.widget.\"lockscreen-login-box@${name}\".settings]"$'\n'
-        body+="layout = \"${LAYOUT}\""$'\n'
+        body+=$'layout = "compact"\ncenter_password_text = true\ninput_opacity = 0.5\nshow_login_button = false\nshow_unlock_hint = false\n'
     done < <(connected_outputs)
 
     [[ "${#order[@]}" -gt 0 ]] || return 1
@@ -84,6 +83,7 @@ function main() {
     fi
 
     mv "${tmp}" "${OUTPUT_FILE}"
+    chmod 644 "${OUTPUT_FILE}"
     noctalia msg config-reload >/dev/null 2>&1 || true
 }
 
