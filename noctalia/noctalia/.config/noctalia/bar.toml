@@ -15,7 +15,7 @@ show_on_workspace_switch = true
 
 start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory"]
 center = ["sp-lead", "clock", "sp-c1", "sep", "sp-c2", "media"]
-end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
+end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "sp-7", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
 
 # right-click on the bar background opens the Control Center by default; it opened everywhere
 [bar.main.dead_zone.actions]
@@ -24,7 +24,7 @@ right = "none"
 # v4 spaced the right-hand widgets about 28 px apart (physical) versus 16 inside the stats
 [widget.sp-1]
 type = "spacer"
-length = 11
+length = 17
 
 [widget.sp-2]
 type = "spacer"
@@ -32,7 +32,7 @@ length = 15
 
 [widget.sp-3]
 type = "spacer"
-length = 20
+length = 13
 
 [widget.sp-4]
 type = "spacer"
@@ -40,11 +40,15 @@ length = 14
 
 [widget.sp-5]
 type = "spacer"
-length = 16
+length = 15
 
 [widget.sp-6]
 type = "spacer"
 length = 13
+
+[widget.sp-7]
+type = "spacer"
+length = 15
 
 # separator between the clock and the player
 # the fixed-width player is wider than the clock; this centers the logo on the screen
