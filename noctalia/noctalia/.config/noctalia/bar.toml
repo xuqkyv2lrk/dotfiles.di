@@ -15,7 +15,7 @@ show_on_workspace_switch = true
 
 start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory"]
 center = ["sp-lead", "clock", "sp-c1", "sep", "sp-c2", "media"]
-end = ["tray", "notifications", "sp-1", "volume", "sp-2", "brightness", "sp-7", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
+end = ["tray", "sp-8", "notifications", "sp-1", "volume", "sp-2", "brightness", "sp-7", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
 
 # right-click on the bar background opens the Control Center by default; it opened everywhere
 [bar.main.dead_zone.actions]
@@ -47,6 +47,10 @@ type = "spacer"
 length = 13
 
 [widget.sp-7]
+type = "spacer"
+length = 15
+
+[widget.sp-8]
 type = "spacer"
 length = 15
 
