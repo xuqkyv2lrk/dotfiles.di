@@ -291,6 +291,13 @@ binds {
     Ctrl+Alt+Print { screenshot-window; }
     Ctrl+Shift+Print { spawn "~/.config/niri/scripts/screenshot_window.sh"; }
     Ctrl+Print { spawn "record-region"; }
+
+    // ASUS ROG keys (no effect on machines without asusctl)
+    XF86Launch1 { spawn "rog-control-center"; }
+    XF86Launch4 { spawn "asusctl" "profile" "next"; }
+    XF86Launch3 { spawn "asusctl" "aura" "effect" "--next-mode"; }
+    XF86KbdBrightnessUp { spawn "asusctl" "leds" "next"; }
+    XF86KbdBrightnessDown { spawn "asusctl" "leds" "prev"; }
 }
 
 
@@ -332,6 +339,11 @@ window-rule {
 
 window-rule {
     match app-id="bluetui"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^org\.opengamingcollective\.rog-control-center$"#
     open-floating true
 }
 
