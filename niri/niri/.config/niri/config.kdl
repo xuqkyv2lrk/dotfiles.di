@@ -194,7 +194,8 @@ binds {
     Mod+V { toggle-window-floating; }
     Mod+Shift+N { spawn "noctalia" "msg" "panel-toggle" "control-center" "notifications"; }
     Mod+Shift+M { spawn "noctalia" "msg" "media" "toggle"; }
-    Mod+Shift+S { spawn "noctalia" "msg" "settings-toggle"; }
+    Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
+    Mod+Shift+S { spawn "noctalia" "msg" "screenshot-region"; }
     Mod+Shift+C { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
     Mod+M { quit; }
     Mod+Q { close-window; }
