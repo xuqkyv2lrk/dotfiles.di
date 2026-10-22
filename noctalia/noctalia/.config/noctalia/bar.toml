@@ -22,6 +22,10 @@ end = ["tray", "sp-8", "notifications", "sp-1", "volume", "sp-2", "brightness", 
 right = "none"
 
 # v4 spaced the right-hand widgets about 28 px apart (physical) versus 16 inside the stats
+[widget.tray]
+type = "tray"
+drawer = true
+
 [widget.sp-1]
 type = "spacer"
 length = 17
