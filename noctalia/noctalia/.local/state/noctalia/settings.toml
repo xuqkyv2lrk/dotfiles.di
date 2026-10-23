@@ -1,0 +1,144 @@
+config_version = 15
+
+[backdrop]
+blur_intensity = 0.39999999105930328
+tint_intensity = 0.15999999642372131
+
+[desktop_widgets]
+schema_version = 2
+widget_order = [ "audio-eDP-2-left", "audio-eDP-2-right" ]
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.audio-eDP-2-left]
+    box_height = 32.0
+    box_width = 330.0
+    cx = 724.0
+    cy = 50.0
+    flip_x = true
+    flip_y = true
+    output = "eDP-2"
+    placement_height = 1067.0
+    placement_width = 1707.0
+    rotation = 0.0
+    type = "audio_visualizer"
+
+        [desktop_widgets.widget.audio-eDP-2-left.settings]
+        background = false
+        background_padding = 0.0
+        bands = 128
+        centered = false
+        color_1 = "primary"
+        color_2 = "secondary"
+        mirrored = false
+        show_when_idle = false
+
+    [desktop_widgets.widget.audio-eDP-2-right]
+    box_height = 32.0
+    box_width = 330.0
+    cx = 982.0
+    cy = 50.0
+    flip_y = true
+    output = "eDP-2"
+    placement_height = 1067.0
+    placement_width = 1707.0
+    rotation = 0.0
+    type = "audio_visualizer"
+
+        [desktop_widgets.widget.audio-eDP-2-right.settings]
+        background = false
+        background_padding = 0.0
+        bands = 128
+        centered = false
+        color_1 = "primary"
+        color_2 = "secondary"
+        mirrored = false
+        show_when_idle = false
+
+[dock]
+enabled = false
+
+[lockscreen]
+blurred_desktop = true
+
+[lockscreen_widgets]
+enabled = true
+schema_version = 2
+widget_order = [ "lockscreen-widget-clock-eDP-2", "lockscreen-login-box@eDP-2" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-2"]
+    box_height = 70.0
+    box_width = 400.0
+    cx = 853.5
+    cy = 699.55560302734375
+    output = "eDP-2"
+    placement_height = 1067.0
+    placement_width = 1707.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-2".settings]
+        center_password_text = true
+        input_opacity = 0.5
+        layout = "compact"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = false
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = false
+        show_weather = true
+
+    [lockscreen_widgets.widget.lockscreen-widget-clock-eDP-2]
+    box_height = 302.79998779296875
+    box_width = 429.29998779296875
+    cx = 853.5
+    cy = 491.56069946289062
+    output = "eDP-2"
+    placement_height = 1067.0
+    placement_width = 1707.0
+    rotation = 0.0
+    type = "clock"
+
+        [lockscreen_widgets.widget.lockscreen-widget-clock-eDP-2.settings]
+        background = false
+        clock_style = "analog"
+        color = "primary"
+        format = "{:%H:%M}"
+
+[notification]
+background_opacity = 0.79999998211860657
+border_color = "secondary"
+follow_focused_output = true
+history_retention_hours = 1
+position = "top_center"
+
+[shell.greeter_sync]
+auto_sync = true
+
+[theme]
+builtin = "Catppuccin"
+custom_palette = "CatppuccinLavender"
+mode = "dark"
+source = "custom"
+wallpaper_scheme = "m3-content"
+
+[wallpaper.default]
+path = "/home/x0xgo/.dotfiles.di/wallpapers/7680x2160_anime_cat_milky_way.jpg"
+
+[wallpaper.last]
+path = "/home/x0xgo/.dotfiles.di/wallpapers/2560x1440_bubbles.png"
+
+[wallpaper.monitors.DP-3]
+path = "/home/x0xgo/.dotfiles.di/wallpapers/7680x2160_anime_cat_milky_way.jpg"
+
+[wallpaper.monitors.eDP-2]
+path = "/home/x0xgo/.dotfiles.di/wallpapers/2560x1440_bubbles.png"
