@@ -1,0 +1,11 @@
+[Unit]
+Description=Re-center the Noctalia bar logo
+
+[Timer]
+# shortly after login, once noctalia is up
+OnActiveSec=20
+# hourly, so the midnight date change and a wake from suspend are both covered
+OnCalendar=*-*-* *:00:30
+
+[Install]
+WantedBy=graphical-session.target

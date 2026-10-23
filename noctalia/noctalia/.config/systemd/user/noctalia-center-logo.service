@@ -1,0 +1,6 @@
+[Unit]
+Description=Center the Noctalia bar logo
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/noctalia_center_logo.sh
