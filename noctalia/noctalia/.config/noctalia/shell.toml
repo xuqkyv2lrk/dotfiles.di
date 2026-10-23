@@ -1,2 +1,5 @@
+[shell]
+password_style = "random"
+
 [shell.panel]
 open_near_click_control_center = true
