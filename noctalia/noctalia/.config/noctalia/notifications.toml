@@ -8,6 +8,17 @@ border_color = "secondary"
 follow_focused_output = true
 history_retention_hours = 1
 layer = "overlay"
+filter_order = ["default-duration"]
+
+# v5 has no global toast duration: a catch-all filter (match_content is a regex) shortens every
+# toast to 4 s, from the default of about 6 s. allowed_urgencies had no effect when tested on 5.3.0,
+# so critical toasts are shortened too.
+[notification.filter.default-duration]
+match_content = ".*"
+show_toast = true
+save_history = true
+play_sound = true
+override_duration = 4000
 
 # OSD popups sit top center like the toasts, with the v4 2 s delay and opacity. v5 also has popups
 # for wifi, bluetooth, power profile, caffeine, night light, do not disturb, lock keys, keyboard
