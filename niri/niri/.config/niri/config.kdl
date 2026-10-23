@@ -72,7 +72,6 @@ cursor {
 screenshot-path "~/Documents/Screenshots/screenshot-%Y%m%d-%H%M%S.png"
 
 debug {
-    render-drm-device "/dev/dri/renderD128"
     disable-cursor-plane
 }
 
