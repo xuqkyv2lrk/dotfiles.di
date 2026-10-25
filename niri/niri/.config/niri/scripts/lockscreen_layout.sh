@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generates the lock screen widgets for every connected output, so the same design applies on
-# each screen: v5 only stores lock screen widgets per output, and its editor writes entries
-# for just the output it was used on.
+# Generates the lock screen widgets for every common output name plus any connected one, so the
+# same design applies on each screen, even one plugged in while locked: v5 only stores lock
+# screen widgets per output, and its editor writes entries for just the output it was used on.
 # The design is the one built by hand in the lock screen editor on DP-3: an analog clock and a
 # compact login box. Positions are fractions of each output's logical height.
 # Usage: lockscreen_layout.sh [--print]
@@ -18,10 +18,23 @@ readonly CLOCK_Y=0.4607
 readonly LOGIN_WIDTH=400.0
 readonly LOGIN_HEIGHT=70.0
 readonly LOGIN_Y=0.6556
+readonly REF_WIDTH=1920
+readonly REF_HEIGHT=1080
+readonly KNOWN_OUTPUTS=(
+    eDP-1 eDP-2
+    DP-1 DP-2 DP-3 DP-4 DP-5 DP-6 DP-7 DP-8
+    HDMI-A-1 HDMI-A-2 HDMI-A-3
+    DP-1-1 DP-1-2 DP-1-3 DP-2-1 DP-2-2 DP-2-3
+)
 
-function connected_outputs() {
-    niri msg -j outputs 2>/dev/null \
-        | jq -r 'to_entries[] | select(.value.logical != null) | "\(.key) \(.value.logical.width) \(.value.logical.height)"'
+# Known names first, then any connected output not among them, in a stable order so the
+# generated file only changes when a new connector name shows up
+function all_outputs() {
+    local name
+    printf '%s\n' "${KNOWN_OUTPUTS[@]}"
+    while read -r name; do
+        [[ -n "${name}" && " ${KNOWN_OUTPUTS[*]} " != *" ${name} "* ]] && printf '%s\n' "${name}"
+    done < <(niri msg -j outputs 2>/dev/null | jq -r 'keys[]' | sort)
 }
 
 # emit_widget <id> <type> <output> <width> <height> <cx> <cy> <box_w> <box_h>
@@ -39,11 +52,11 @@ function emit_widget() {
 }
 
 function generate() {
-    local name width height cx cy_clock cy_login
+    local name width="${REF_WIDTH}" height="${REF_HEIGHT}" cx cy_clock cy_login
     local -a order=()
     local body=""
 
-    while read -r name width height; do
+    while read -r name; do
         [[ -n "${name}" ]] || continue
         cx="$(awk -v w="${width}" 'BEGIN { printf "%.1f", w / 2 }')"
         cy_clock="$(awk -v h="${height}" -v y="${CLOCK_Y}" 'BEGIN { printf "%.1f", h * y }')"
@@ -57,7 +70,7 @@ function generate() {
         body+="$(emit_widget "lockscreen-login-box@${name}" login_box "${name}" "${width}" "${height}" "${cx}" "${cy_login}" "${LOGIN_WIDTH}" "${LOGIN_HEIGHT}")"$'\n'
         body+=$'\n'"[lockscreen_widgets.widget.\"lockscreen-login-box@${name}\".settings]"$'\n'
         body+=$'layout = "compact"\ncenter_password_text = true\ninput_opacity = 0.5\nshow_login_button = false\nshow_unlock_hint = false\n'
-    done < <(connected_outputs)
+    done < <(all_outputs)
 
     [[ "${#order[@]}" -gt 0 ]] || return 1
 
