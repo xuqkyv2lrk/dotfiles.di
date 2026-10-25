@@ -38,6 +38,11 @@ function main() {
     fi
     [[ "${1:-}" == "--check" ]] && exit 0
 
+    # Killing v5 while it holds the session lock leaves niri on its red fail-safe screen
+    while [[ "$(noctalia msg status 2>/dev/null | jq -r '.locked')" == "true" ]]; do
+        sleep 2
+    done
+
     pkill -x '.noctalia-wrapp' || true
     sleep 2
     python3 - "${STATE_FILE}" <<'EOF'
