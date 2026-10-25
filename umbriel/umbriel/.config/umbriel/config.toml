@@ -28,6 +28,8 @@ layout.scrolling.default_extent_fraction = 0.333
 [output.DP-3]
 mode = "7680x2160@120"
 scale = 1.5
+# HDR only for fullscreen content with HDR metadata, so the SDR desktop is untouched
+hdr = "auto"
 layout.scrolling.default_extent_fraction = 0.333
 
 # ==============================================================================
