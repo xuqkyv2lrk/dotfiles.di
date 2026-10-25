@@ -15,9 +15,11 @@ readonly STATE_FILE="${NOCTALIA_STATE_FILE:-${HOME}/.local/state/noctalia/settin
 function widget_order() {
     local file="${1}" section="${2}"
     [[ -f "${file}" ]] || return 0
+    # v5 writes long arrays over several lines, so collect up to the closing bracket
     awk -v sec="[${section}]" '
-        /^\[/ { in_sec = ($0 == sec) }
-        in_sec && /^[[:space:]]*widget_order/ { gsub(/[[:space:]]/, ""); print; exit }
+        !in_arr && /^\[/ { in_sec = ($0 == sec) }
+        in_sec && /^[[:space:]]*widget_order/ { in_arr = 1 }
+        in_arr { line = line $0; if ($0 ~ /\]/) { gsub(/[[:space:]]/, "", line); sub(/,\]$/, "]", line); print line; exit } }
     ' "${file}"
 }
 
