@@ -15,6 +15,15 @@ show_on_workspace_switch = true
 
 start = ["workspaces", "gap-a", "cpu", "cpu-temp", "memory"]
 center = ["sp-lead", "clock", "sp-c1", "sep", "sp-c2", "media"]
+end = ["tray", "sp-8", "notifications", "sp-1", "volume", "sp-2", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
+
+# brightness only shows on the laptop panel; elsewhere its hidden widget left both spacers
+[bar.main.monitor.edp1]
+match = "eDP-1"
+end = ["tray", "sp-8", "notifications", "sp-1", "volume", "sp-2", "brightness", "sp-7", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
+
+[bar.main.monitor.edp2]
+match = "eDP-2"
 end = ["tray", "sp-8", "notifications", "sp-1", "volume", "sp-2", "brightness", "sp-7", "network", "sp-3", "bluetooth", "sp-4", "battery", "sp-5", "control-center", "sp-6", "session"]
 
 # right-click on the bar background opens the Control Center by default; it opened everywhere
