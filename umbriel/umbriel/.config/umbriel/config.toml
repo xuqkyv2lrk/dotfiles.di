@@ -17,7 +17,7 @@ lid_open = "umbriel msg output-enable:eDP-2"
 # Outputs
 
 [output.eDP-2]
-scale = 2.0
+scale = 1.5
 layout.scrolling.default_extent_fraction = 0.5
 
 [output.DP-1]
