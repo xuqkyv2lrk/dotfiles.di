@@ -1,4 +1,4 @@
-# Hyprland-style active border: a mostly mauve gradient into green at 45 degrees, rotating once every 3 s
+# Hyprland-style active border: a mostly mauve gradient into blue at 45 degrees, rotating once every 3 s
 [effects.preset.gradient]
 kind = "border"
 shader = "shader.glsl"
