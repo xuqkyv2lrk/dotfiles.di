@@ -139,7 +139,7 @@ For macOS, stow the packages individually from the `macos/` directory:
 stow -d macos aerospace
 ```
 
-For full machine setup — package installation, hardware configuration, and bootstrapping — see [dotfiles.bootstrap](https://gitlab.com/wd2nf8gqct/dotfiles.bootstrap).
+For full machine setup — package installation, hardware configuration, and bootstrapping — see [dotfiles.bootstrap](https://gitlab.com/wd2nf8gqct/dotfiles.bootstrap), or run `bash <(curl -fsSL dots.ethi.cz/boot)` on a fresh machine.
 
 ## Repository layout
 
