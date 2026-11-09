@@ -23,6 +23,7 @@ x-scheme-handler/webcals=thunderbird.desktop
 text/calendar=thunderbird.desktop
 application/x-extension-ics=thunderbird.desktop
 x-scheme-handler/net.thunderbird=thunderbird.desktop
+x-scheme-handler/bitwarden=bitwarden.desktop
 
 [Added Associations]
 x-scheme-handler/webcal=thunderbird.desktop;
