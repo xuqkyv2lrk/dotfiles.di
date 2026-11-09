@@ -1,0 +1,3 @@
+# Low-battery notification and warning colour at or below this percentage
+[battery]
+warning_threshold = 20
