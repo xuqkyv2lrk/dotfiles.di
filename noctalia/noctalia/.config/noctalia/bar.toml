@@ -132,6 +132,7 @@ show_label = false
 
 [widget.battery]
 display_mode = "graphic"
+warning_color = "#f38ba8" # Catppuccin Mocha red
 show_label = true
 scale = 0.9
 font_scale = 1.11
