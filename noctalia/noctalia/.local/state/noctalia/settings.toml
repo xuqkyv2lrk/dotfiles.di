@@ -16,13 +16,13 @@ widget_order = [ "audio-eDP-2-left", "audio-eDP-2-right" ]
     [desktop_widgets.widget.audio-eDP-2-left]
     box_height = 32.0
     box_width = 330.0
-    cx = 723.575927734375
-    cy = 49.953140258789062
+    cx = 724.00006103515625
+    cy = 50.0
     flip_x = true
     flip_y = true
     output = "eDP-2"
-    placement_height = 1066.0
-    placement_width = 1706.0
+    placement_height = 1067.0
+    placement_width = 1707.0
     rotation = 0.0
     type = "audio_visualizer"
 
@@ -39,12 +39,12 @@ widget_order = [ "audio-eDP-2-left", "audio-eDP-2-right" ]
     [desktop_widgets.widget.audio-eDP-2-right]
     box_height = 32.0
     box_width = 330.0
-    cx = 981.4248046875
-    cy = 49.953140258789062
+    cx = 982.00006103515625
+    cy = 50.0
     flip_y = true
     output = "eDP-2"
-    placement_height = 1066.0
-    placement_width = 1706.0
+    placement_height = 1067.0
+    placement_width = 1707.0
     rotation = 0.0
     type = "audio_visualizer"
 
@@ -548,11 +548,11 @@ widget_order = [
     [lockscreen_widgets.widget."lockscreen-login-box@eDP-2"]
     box_height = 70.0
     box_width = 400.0
-    cx = 853.0
-    cy = 698.82220458984375
+    cx = 853.5
+    cy = 699.47772216796875
     output = "eDP-2"
-    placement_height = 1066.0
-    placement_width = 1706.0
+    placement_height = 1067.0
+    placement_width = 1707.0
     rotation = 0.0
     type = "login_box"
 
@@ -878,11 +878,11 @@ widget_order = [
     [lockscreen_widgets.widget.lockscreen-widget-clock-eDP-2]
     box_height = 302.79998779296875
     box_width = 429.29998779296875
-    cx = 853.0
-    cy = 491.14962768554688
+    cx = 853.5
+    cy = 491.6103515625
     output = "eDP-2"
-    placement_height = 1066.0
-    placement_width = 1706.0
+    placement_height = 1067.0
+    placement_width = 1707.0
     rotation = 0.0
     type = "clock"
 
